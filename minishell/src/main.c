@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/20 09:18:21 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/04/20 09:45:26 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,64 @@ char	*ft_get_prompt(int exit_status)
 }
 
 
+int is_delimiter(char c) {
+    return c == ' ' || c == '|' || c == '<' || c == '>';
+}
+
+char **ft_split_quoted(const char *str) {
+    if (!str) return NULL;
+
+    char **result = malloc(sizeof(char *) * (strlen(str) + 1));
+    if (!result) return NULL;
+
+    int i = 0, j = 0, start = 0;
+    char quote = 0;
+    while (str[i]) {
+        if ((str[i] == '"' || str[i] == '\'') && (!quote || quote == str[i])) {
+            quote = quote ? 0 : str[i];
+        } else if (!quote && is_delimiter(str[i])) {
+            if (i > start) {
+                result[j] = strndup(str + start, i - start);
+                j++;
+            }
+            if (!isspace(str[i])) {
+                result[j] = strndup(str + i, 1);
+                j++;
+            }
+            start = i + 1;
+        }
+        i++;
+    }
+
+    if (i > start) {
+        result[j] = strndup(str + start, i - start);
+        j++;
+    }
+
+    result[j] = NULL; 
+    return result;
+}
+
+char *strtrim(const char *str) {
+    if (!str)
+        return NULL;
+    
+    while (isspace((unsigned char)*str)) str++;
+
+    const char *end = str + strlen(str) - 1;
+    while (end > str && isspace((unsigned char)*end)) end--;
+
+    size_t len = end - str + 1;
+    char *trimmed = malloc(len + 1);
+    if (!trimmed) {
+        perror("malloc failed");
+        exit(EXIT_FAILURE);
+    }
+    strncpy(trimmed, str, len);
+    trimmed[len] = '\0';
+    return trimmed;
+}
+
 char *preprocess_input(const char *line)
 {
     int len = strlen(line);
@@ -86,30 +144,6 @@ char *preprocess_input(const char *line)
     return (result);
 }
 
-// Function to trim leading and trailing whitespace from a string
-char *strtrim(const char *str) {
-    if (!str) return NULL;
-
-    // Find the first non-whitespace character
-    while (isspace((unsigned char)*str)) str++;
-
-    // Find the last non-whitespace character
-    const char *end = str + strlen(str) - 1;
-    while (end > str && isspace((unsigned char)*end)) end--;
-
-    // Allocate and copy the trimmed string
-    size_t len = end - str + 1;
-    char *trimmed = malloc(len + 1);
-    if (!trimmed) {
-        perror("malloc failed");
-        exit(EXIT_FAILURE);
-    }
-    strncpy(trimmed, str, len);
-    trimmed[len] = '\0';
-    return trimmed;
-}
-
-// Function to create a new token
 t_token *create_token(t_token_type type, const char *value) {
     t_token *new_token = malloc(sizeof(t_token));
     if (!new_token) {
@@ -117,12 +151,12 @@ t_token *create_token(t_token_type type, const char *value) {
         exit(EXIT_FAILURE);
     }
     new_token->type = type;
-    new_token->value = strdup(value); // Copy the value
+    new_token->value = strdup(value);
     new_token->next = NULL;
     return new_token;
 }
 
-// Function to add a token to the end of the list
+
 void add_token(t_token **head, t_token *new_token) {
     if (!*head) {
         *head = new_token;
@@ -135,7 +169,6 @@ void add_token(t_token **head, t_token *new_token) {
     }
 }
 
-// Function to detect the token type based on the string
 t_token_type detect_token_type(const char *str) {
     if (strcmp(str, "|") == 0) {
         return TOKEN_PIPE;
@@ -152,32 +185,27 @@ t_token_type detect_token_type(const char *str) {
     } else if (strcmp(str, "<<") == 0) {
         return TOKEN_REDIR_HEREDOC;
     } else {
-        return TOKEN_WORD; // Default to word for commands/arguments
+        return TOKEN_WORD;
     }
 }
 
-// Tokenize the input string using ft_split and strtrim
+
 t_token *tokenize_input(const char *line) {
     t_token *tokens = NULL;
 
-    // Split the input line into parts using ft_split
-    char **parts = ft_split((char *)line, ' '); // Split by spaces
+    char **parts = ft_split_quoted(line);
     if (!parts) return NULL;
 
-    // Iterate over the parts
     for (int i = 0; parts[i] != NULL; i++) {
-        char *trimmed = strtrim(parts[i]); // Trim whitespace from each part
-        if (*trimmed != '\0') { // Ignore empty tokens
-            // Detect the token type and create a token
+        char *trimmed = strtrim(parts[i]);
+        if (*trimmed != '\0') {
             t_token_type type = detect_token_type(trimmed);
             t_token *new_token = create_token(type, trimmed);
-            // Add the token to the list
             add_token(&tokens, new_token);
         }
-        free(trimmed); // Free the trimmed string
+        free(trimmed);
     }
 
-    // Free the split parts
     for (int i = 0; parts[i] != NULL; i++) {
         free(parts[i]);
     }
@@ -186,7 +214,6 @@ t_token *tokenize_input(const char *line) {
     return tokens;
 }
 
-// Function to free the token list
 void free_tokens(t_token *tokens) {
     while (tokens) {
         t_token *temp = tokens;
@@ -227,7 +254,6 @@ void print_tokens(t_token *tokens) {
     printf("\n");
 }
 
-
 /************************************************************************************************/
 
 void handle_input(const char *line)
@@ -267,3 +293,4 @@ int	main(int ac, char **av, char **env)
 	}
 	return (0);
 }
+
