@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/10 18:33:52 by melkess           #+#    #+#             */
-/*   Updated: 2025/04/20 09:14:50 by sgmih            ###   ########.fr       */
+/*   Created: 2025/04/15 11:05:48 by melkess           #+#    #+#             */
+/*   Updated: 2025/04/18 10:17:51 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/executor.h"
 
-void	env(t_env *envh)
+int	ft_strcmp(const char *s1, const char *s2)
 {
-	while (envh)
-	{
-		if (envh->value)
-			printf("%s=%s\n", envh->key, envh->value);
-		envh = envh->next;
-	}
+	size_t	i;
+
+	i = 0;
+	while ((s1[i] || s2[i]) && s1[i] == s2[i])
+		i++;
+	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }

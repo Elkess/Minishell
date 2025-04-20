@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   ft_dstrlen.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/10 18:33:52 by melkess           #+#    #+#             */
-/*   Updated: 2025/04/20 09:14:50 by sgmih            ###   ########.fr       */
+/*   Created: 2025/04/12 10:22:18 by melkess           #+#    #+#             */
+/*   Updated: 2025/04/18 14:26:57 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/executor.h"
 
-void	env(t_env *envh)
+size_t	ft_dstrlen(const char **s)
 {
-	while (envh)
-	{
-		if (envh->value)
-			printf("%s=%s\n", envh->key, envh->value);
-		envh = envh->next;
-	}
+	size_t	i;
+
+	i = 0;
+	while (s && s[i])
+		i++;
+	return (i);
 }

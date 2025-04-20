@@ -1,23 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   ft_isdigit.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/10 18:33:52 by melkess           #+#    #+#             */
-/*   Updated: 2025/04/20 09:14:50 by sgmih            ###   ########.fr       */
+/*   Created: 2024/10/24 16:54:40 by melkess           #+#    #+#             */
+/*   Updated: 2025/04/18 12:01:11 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/executor.h"
 
-void	env(t_env *envh)
+int	ft_isdigit(int n)
 {
-	while (envh)
-	{
-		if (envh->value)
-			printf("%s=%s\n", envh->key, envh->value);
-		envh = envh->next;
-	}
+	if (n >= '0' && n <= '9')
+		return (1);
+	return (0);
 }

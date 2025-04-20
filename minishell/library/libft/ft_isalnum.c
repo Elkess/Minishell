@@ -1,23 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   ft_isalnum.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/10 18:33:52 by melkess           #+#    #+#             */
-/*   Updated: 2025/04/20 09:14:50 by sgmih            ###   ########.fr       */
+/*   Created: 2024/10/24 16:52:52 by melkess           #+#    #+#             */
+/*   Updated: 2025/04/15 12:26:12 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/executor.h"
 
-void	env(t_env *envh)
+int	ft_isalnum(int c)
 {
-	while (envh)
-	{
-		if (envh->value)
-			printf("%s=%s\n", envh->key, envh->value);
-		envh = envh->next;
-	}
+	if (ft_isdigit(c) || ft_isalpha(c))
+		return (1);
+	return (0);
 }

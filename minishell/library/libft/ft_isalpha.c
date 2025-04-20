@@ -1,23 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   ft_isalpha.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/10 18:33:52 by melkess           #+#    #+#             */
-/*   Updated: 2025/04/20 09:14:50 by sgmih            ###   ########.fr       */
+/*   Created: 2025/04/15 12:22:38 by melkess           #+#    #+#             */
+/*   Updated: 2025/04/15 12:22:48 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/executor.h"
 
-void	env(t_env *envh)
+int	ft_isalpha(int a)
 {
-	while (envh)
-	{
-		if (envh->value)
-			printf("%s=%s\n", envh->key, envh->value);
-		envh = envh->next;
-	}
+	if ((a >= 'A' && a <= 'Z') || (a >= 'a' && a <= 'z'))
+		return (1);
+	return (0);
 }

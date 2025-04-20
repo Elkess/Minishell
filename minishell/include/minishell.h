@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/19 12:02:08 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/04/20 08:49:30 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <stdlib.h>
+
 
 typedef enum e_token_type
 {
@@ -75,6 +76,24 @@ typedef struct s_tree
 }   t_tree;
 
 
-t_token *tokenize_input(const char *line);
+
+// function libft
+int         ft_atoi(const char *str);
+long long   ft_atol(const char *str,int sign);
+size_t      ft_strlen(const char *s);
+size_t      ft_dstrlen(const char **s);
+char        **ft_split(char const *s, char c);
+char        *ft_strjoin(char const *s1, char const *s2);
+void        ft_putstr_fd(char *s, int fd);
+void        ft_putchar_fd(char c, int fd);
+char        *ft_substr(char const *s, unsigned int start, size_t len);
+char        *ft_strdup(const char *s1);
+int         ft_strcmp(const char *s1, const char *s2);
+int         ft_strncmp(const char *s1, const char *s2, size_t n);
+int         ft_isalpha(int a);
+int         ft_isdigit(int n);
+int         ft_isalnum(int c);
+char        *ft_strchr(const char *s, int c);
+
 
 #endif

@@ -1,23 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/10 18:33:52 by melkess           #+#    #+#             */
-/*   Updated: 2025/04/20 09:14:50 by sgmih            ###   ########.fr       */
+/*   Created: 2025/04/12 10:28:42 by melkess           #+#    #+#             */
+/*   Updated: 2025/04/15 18:12:02 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/executor.h"
 
-void	env(t_env *envh)
+char	*ft_strdup(const char *s1)
 {
-	while (envh)
+	char	*s;
+	size_t	i;
+
+	i = 0;
+	while (s1[i])
+		i++;
+	s = (char *)malloc(i + 1 * sizeof(char));
+	if (!s)
+		return (NULL);
+	i = 0;
+	while (s1[i])
 	{
-		if (envh->value)
-			printf("%s=%s\n", envh->key, envh->value);
-		envh = envh->next;
+		s[i] = s1[i];
+		i++;
 	}
+	s[i] = '\0';
+	return (s);
 }
