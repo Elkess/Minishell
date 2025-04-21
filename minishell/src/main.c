@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/21 14:31:51 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/04/21 16:41:43 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void print_tokens(t_token *head) {
     };
     
     while (current) {
-        printf("Token %d: Type=%s, Value='%s'\n", 
+        printf("Token %d: Type=%s, Value=%s\n", 
                i++, 
                type_names[current->type], 
                current->value);
@@ -50,13 +50,7 @@ void handle_input(const char *line)
     t_token *tokens;
     
     tokens = parse_input(line);
-
-    if (tokens) {
-        print_tokens(tokens);
-        free_tokens(tokens);
-    } else {
-        printf("Tokenization failed.\n");
-    }
+    print_tokens(tokens);
 }
 
 int	main(int ac, char **av, char **env)
