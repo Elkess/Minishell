@@ -6,11 +6,11 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 13:36:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/21 14:12:19 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/04/21 14:18:02 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../include/parser.h"
 
 t_token *create_token(t_token_type type, char *value)
 {

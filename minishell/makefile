@@ -8,7 +8,7 @@ READLINEFLAG = -lreadline
 READLINE_L = $(shell brew --prefix readline)/lib
 READLINE_I = $(shell brew --prefix readline)/include
 
-Funs =	src/main.c  \
+Funs =	src/main.c \
 		src/parser/parser_utils.c \
 		src/parser/parser.c \
 		library/libft/ft_atoi.c  \

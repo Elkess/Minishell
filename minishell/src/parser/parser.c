@@ -6,11 +6,11 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 13:35:16 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/21 14:12:21 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/04/21 14:17:57 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../include/parser.h"
 
 int	contains_wildcard(const char *word)
 {
