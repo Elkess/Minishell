@@ -3,23 +3,6 @@
 
 # include "../include/minishell.h"
 
-# include <stdio.h>
-# include <stdlib.h>
-# include <unistd.h>
-# include <limits.h>
-#include <string.h>
-#include <dirent.h>
-# include <fcntl.h>
-
-
-typedef struct	s_env
-{
-	char			*key;
-	char			*value;
-	struct s_env	*next;
-	struct s_env	*prev;
-}	t_env;
-
 int	executor(t_tree *tree,t_env	*envh);
 
 // builts in

@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/20 08:49:30 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/04/21 14:04:32 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,20 +17,29 @@
 # include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+#include <stdbool.h>
+
 # include <stdlib.h>
+# include <unistd.h>
+# include <limits.h>
+#include <string.h>
+#include <dirent.h>
+# include <fcntl.h>
 
 
 typedef enum e_token_type
 {
-    TOKEN_WORD  = 1,
-    TOKEN_PIPE   = 2,
+    TOKEN_WORD,
+    TOKEN_PIPE,
     TOKEN_AND,
     TOKEN_OR,
     TOKEN_REDIR_IN,
     TOKEN_REDIR_OUT,
     TOKEN_REDIR_APPEND,
     TOKEN_REDIR_HEREDOC,
-    TOKEN_GROUP
+    TOKEN_PAREN_OPEN,
+    TOKEN_PAREN_CLOSE 
+    ///TOKEN_GROUP
 } t_token_type;
 
 typedef struct s_token
@@ -75,6 +84,13 @@ typedef struct s_tree
     struct s_tree    *right;      // right command (for pipe)
 }   t_tree;
 
+typedef struct	s_env
+{
+	char			*key;
+	char			*value;
+	struct s_env	*next;
+	struct s_env	*prev;
+}	t_env;
 
 
 // function libft
