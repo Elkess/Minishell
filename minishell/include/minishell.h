@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/21 14:04:32 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/04/23 17:26:38 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,12 @@
 # define MINISHELL_H
 
 # include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 # include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 #include <stdbool.h>
-
-# include <stdlib.h>
-# include <unistd.h>
-# include <limits.h>
-#include <string.h>
-#include <dirent.h>
-# include <fcntl.h>
-
 
 typedef enum e_token_type
 {
@@ -38,16 +32,39 @@ typedef enum e_token_type
     TOKEN_REDIR_APPEND,
     TOKEN_REDIR_HEREDOC,
     TOKEN_PAREN_OPEN,
-    TOKEN_PAREN_CLOSE 
+    TOKEN_PAREN_CLOSE,
+    TOKEN_SINGL_AND,
+    TOKEN_FILERED_OUT,
+    TOKEN_FILERED_IN,
+    TOKEN_FILERED_APPEND,
+    TOKEN_FILERED_HEREDOC
     ///TOKEN_GROUP
 } t_token_type;
 
 typedef struct s_token
 {
-    t_token_type    type;
     char           *value;
+    t_token_type    type;
     struct s_token *next;
 } t_token;
+
+/**************************************************/
+
+typedef struct s_garbcoll
+{
+	void				*ptr;
+	struct s_garbcoll	*next;
+}	t_garbcoll;
+
+typedef struct s_tool
+{
+    int         paren; // 0 for null , 1 for ()
+	int			quoted; // 0 for null , 1 for singl , 2 for duble 
+	int			anderr; // is singl & 
+    t_garbcoll	*grbg; // for garbage collect
+}	t_tool;
+
+/**************************************************/
 
 typedef enum e_node_type
 {
@@ -92,24 +109,24 @@ typedef struct	s_env
 	struct s_env	*prev;
 }	t_env;
 
+// Function declarations
+char		*ft_get_prompt(void);
+t_garbcoll	*new_garbcoll(void *value);
+void		add_to_grbg(t_garbcoll **head, void *value);
+void		clear_garbcoll(t_garbcoll *head);
 
-// function libft
-int         ft_atoi(const char *str);
-long long   ft_atol(const char *str,int sign);
-size_t      ft_strlen(const char *s);
-size_t      ft_dstrlen(const char **s);
-char        **ft_split(char const *s, char c);
-char        *ft_strjoin(char const *s1, char const *s2);
-void        ft_putstr_fd(char *s, int fd);
-void        ft_putchar_fd(char c, int fd);
-char        *ft_substr(char const *s, unsigned int start, size_t len);
-char        *ft_strdup(const char *s1);
-int         ft_strcmp(const char *s1, const char *s2);
-int         ft_strncmp(const char *s1, const char *s2, size_t n);
-int         ft_isalpha(int a);
-int         ft_isdigit(int n);
-int         ft_isalnum(int c);
-char        *ft_strchr(const char *s, int c);
+t_token		*tokens_lst(char *cmd, t_tool *tool);
+t_tree		*parsing_input(char *line, t_tool *tool);
+void		print_list(t_token *node);
+
+void		create_delim_token(char *cmd, int *i, t_token **token, t_tool *tool);
+t_token		*lst_new(void *str, t_tool *tool);
+void	    init_type(t_token **token);
+void		lst_add_back(t_token **head, t_token *token);
+char		*ft_my_strdup(const char *s1, size_t size, t_tool *tool);
+int			is_delimter(char c, char d);
+void		hundel_quotes_paren(t_tool *tool, char cmd);
+void        create_tokens(t_token **token, char *cmd, int *i, t_tool *tool);
 
 
 #endif

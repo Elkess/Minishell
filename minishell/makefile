@@ -26,7 +26,7 @@ Funs =	src/main.c \
 		library/libft/ft_strjoin.c  \
 		library/libft/ft_strlen.c  \
 		library/libft/ft_strncmp.c  \
-		library/libft/ft_substr.c
+		library/libft/ft_substr.c  \
 
 OFuns = $(Funs:.c=.o)
 

@@ -6,11 +6,11 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 11:31:10 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/20 08:51:08 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/04/23 14:19:55 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/parser.h"
+#include "../../include/executor.h"
 
 static int	ft_nbr_words(const char *s, char c)
 {
