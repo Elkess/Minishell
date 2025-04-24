@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/23 18:07:06 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/04/24 10:10:55 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,6 +214,18 @@ static int	ft_strcmp(char *s1, char *s2)
 	}
 	return (0);
 }
+
+static void	ft_putstr_fd(char *s, int fd)
+{
+	unsigned int	i;
+
+	i = 0;
+	if (!s)
+		return ;
+	while (s[i])
+		i++;
+	write(fd, s, i);
+}
 /******************************************** function libft *********************************************/
 
 
@@ -401,6 +413,76 @@ void	create_tokens(t_token **token, char *cmd, int *i, t_tool *tool)
 	}
 }
 
+// static int	pars_err_utils(t_token *token, t_tool *tool)
+// {
+// 	int		lst_token;
+// 	t_token	*token_heredoc;
+
+// 	lst_token = 0;
+// 	token_heredoc = NULL;
+// 	while (token)
+// 	{
+// 		if (token->type > 0 && !is_redarection(token->type))
+// 			lst_token = token->type;
+// 		if (condtion(token) || (lst_token && lst_token == TOKEN_PAREN_CLOSE && token->type == 0))
+// 		{
+// 			tool->err = 2;
+// 			write(2, "minishell$> : syntax error near unexpected token `", 49);
+// 			ft_putstr_fd(token->value, 2);
+// 			write(2, "'\n", 2);
+// 			ft_clearhd(token_heredoc);
+// 			return (1);
+// 		}
+// 		if (token->type == 14 && token->next && heredoc(tool, &(token->next->value), &token_heredoc))
+// 		{
+// 			ft_clearhd(token_heredoc);
+// 			write(2, "syntax error in token_heredoc \n", 31);
+// 			return (1);
+// 		}
+// 		token = token->next;
+// 	}
+// }
+
+int	pars_err(t_token **token, t_tool *tool)
+{
+	t_token	*tmp;
+
+	tmp = *token;
+	if (tmp && (tmp->type == 1 || tmp->type == 2 || tmp->type == 3 || tmp->type == 4 || tmp->type == 5
+		|| tmp->type == 6 || tmp->type == 7 || tmp->type == 9 || tmp->type == 10))
+	{
+		tool->err = 2;
+		write(2, "minishell$> : syntax error near unexpected token `", 50);
+		ft_putstr_fd(tmp->value, 2);
+		write(2, "'\n", 2);
+		return (1);
+	}
+	// if (pars_err_utils(tmp, tool))
+	// 	return (1);
+	if (tool->paren|| tool->quoted || tool->anderr == 1)
+	{
+		if (tool->paren)
+			write(2, "minishell$> : syntax error near unexpected token `)'\n", 53);
+		else if (tool->anderr == 1)
+			write(2, "minishell$> : syntax error near unexpected token `&'\n", 53);
+		else
+			write(2, "minishell$> : syntax error quotes\n", 35);
+		tool->err = 2;
+		return (1);
+	}
+	return (0);
+}
+
+t_token	*check_token(t_token **token, t_tool *tool)
+{
+	if (pars_err(token, tool))
+		return (NULL);
+	// update_lst(node, tool);
+	// redarection_join_arg(node, tool);
+	// trime(*node, tool);
+	return (*token);
+}
+
 t_token	*tokens_lst(char *cmd, t_tool *tool)
 {
 	t_token	*token;
@@ -409,6 +491,7 @@ t_token	*tokens_lst(char *cmd, t_tool *tool)
 	i = 0;
 	tool->quoted = 0;
 	tool->anderr = 0;
+	tool->paren = 0;
 	token = NULL;
 	while (cmd && cmd[i])
 	{
@@ -428,7 +511,7 @@ t_token	*tokens_lst(char *cmd, t_tool *tool)
 			create_tokens(&token, cmd, &i, tool);
 		i++;
 	}
-	return (token); // just for while 
+	return (check_token(&token, tool)); // just for while 
 }
 
 t_tree	*parsing_input(char *line, t_tool *tool)

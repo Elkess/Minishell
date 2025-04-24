@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/23 17:26:38 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/04/24 10:00:22 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 #include <stdbool.h>
+# include <fcntl.h>
 
 typedef enum e_token_type
 {
@@ -60,7 +61,8 @@ typedef struct s_tool
 {
     int         paren; // 0 for null , 1 for ()
 	int			quoted; // 0 for null , 1 for singl , 2 for duble 
-	int			anderr; // is singl & 
+	int			anderr; // is singl &
+    int			err;
     t_garbcoll	*grbg; // for garbage collect
 }	t_tool;
 
