@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:26:01 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/24 10:31:53 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/04/24 12:03:09 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,28 +31,37 @@ static int	ft_strcmp(char *s1, char *s2)
 }
 /******************************************** function libft **********************************************/
 
-void	init_type(t_token **token)
+void	init_token(t_token **token, int priority, int type)
 {
-	if (!ft_strcmp((*token)->value, "("))
-		(*token)->type = TOKEN_PAREN_OPEN;
-	else if (!ft_strcmp((*token)->value, ")"))
-		(*token)->type = TOKEN_PAREN_CLOSE;
-	else if (!ft_strcmp((*token)->value, "&&"))
-		(*token)->type = TOKEN_AND;
-	else if (!ft_strcmp((*token)->value, "||"))
-		(*token)->type = TOKEN_OR;
-	else if (!ft_strcmp((*token)->value, "|"))
-		(*token)->type = TOKEN_PIPE;
-	else if (!ft_strcmp((*token)->value, ">"))
-		(*token)->type = TOKEN_REDIR_OUT;
-	else if (!ft_strcmp((*token)->value, ">>"))
-		(*token)->type = TOKEN_REDIR_APPEND;
-	else if (!ft_strcmp((*token)->value, "<<"))
-		(*token)->type = TOKEN_REDIR_HEREDOC;
-	else if (!ft_strcmp((*token)->value, "<"))
-		(*token)->type = TOKEN_REDIR_IN;
-	else
-		(*token)->type = 0; // unknow type
+	(*token)->priority = priority;
+	(*token)->type = type;
+}
+
+void init_type(t_token **token)
+{
+    if (!token || !*token || !(*token)->value)
+        return ;
+
+    if (!ft_strcmp((*token)->value, "("))
+        init_token(token, prio_open_par, TOKEN_PAREN_OPEN);
+    else if (!ft_strcmp((*token)->value, ")"))
+        init_token(token, prio_close_par, TOKEN_PAREN_CLOSE);
+    else if (!ft_strcmp((*token)->value, "&&"))
+        init_token(token, prio_and, TOKEN_AND);
+    else if (!ft_strcmp((*token)->value, "||"))
+        init_token(token, prio_or, TOKEN_OR);
+    else if (!ft_strcmp((*token)->value, "|"))
+        init_token(token, prio_pipe, TOKEN_PIPE);
+    else if (!ft_strcmp((*token)->value, ">"))
+        init_token(token, prio_redir_out, TOKEN_REDIR_OUT);
+    else if (!ft_strcmp((*token)->value, ">>"))
+        init_token(token, prio_appand, TOKEN_REDIR_APPEND);
+    else if (!ft_strcmp((*token)->value, "<<"))
+        init_token(token, prio_here_doc, TOKEN_REDIR_HEREDOC);
+    else if (!ft_strcmp((*token)->value, "<"))
+        init_token(token, prio_redir_in, TOKEN_REDIR_IN);
+    else
+        init_token(token, 0, TOKEN_WORD);
 }
 
 char	*ft_my_strdup(const char *s1, size_t size, t_tool *tool)
@@ -79,14 +88,14 @@ void	init_type_utils(t_token *token, t_token *next_token)
 	if (next_token && token)
 	{
 		if (next_token->type == TOKEN_REDIR_OUT)
-			token->type = TOKEN_FILERED_OUT;
+		init_token(&token, 0, TOKEN_FILERED_OUT);
 		else if (next_token->type == TOKEN_REDIR_IN)
-			token->type = TOKEN_FILERED_IN;
+			init_token(&token, 0, TOKEN_FILERED_IN);
 		else if (next_token->type == TOKEN_REDIR_APPEND)
-			token->type = TOKEN_FILERED_APPEND;
+			init_token(&token, 0, TOKEN_FILERED_APPEND);
 		else if (next_token->type == TOKEN_REDIR_HEREDOC)
-			token->type = TOKEN_FILERED_HEREDOC;
+			init_token(&token, 0, TOKEN_FILERED_HEREDOC);
 		else
-			token->type = TOKEN_WORD;
+			init_token(&token, 0, TOKEN_WORD);
 	}
 }

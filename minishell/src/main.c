@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/24 10:33:21 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/04/24 13:48:48 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void print_list(t_token *node)
 	while (node)
 	{
 		printf("Value: %s\n", node->value);
+		printf("Value: %d\n", node->priority);
 		printf("Type: %s (%d)\n", get_token_type_name(node->type), node->type);
 		printf("----------\n");
 		node = node->next;
@@ -80,6 +81,18 @@ static void	ft_putstr_fd(char *s, int fd)
 }
 /******************************************** function libft *********************************************/
 
+int	is_redarection(int type)
+{
+	if (type == TOKEN_REDIR_IN || type == TOKEN_REDIR_OUT || type == TOKEN_REDIR_APPEND
+		|| type == TOKEN_REDIR_HEREDOC)
+		return (1);
+	return (0);
+}
+
+// static int condition(t_token *token)
+// {
+// 	if (token->)
+// }
 
 // static int	pars_err_utils(t_token *token, t_tool *tool)
 // {
@@ -109,6 +122,27 @@ static void	ft_putstr_fd(char *s, int fd)
 // 		token = token->next;
 // 	}
 // }
+
+
+// static int	condtion(t_lst *n)
+// {
+// 	if (n->prio > 0 && !n->next && n->type != CLOSE_PARENTH)
+// 		return (1);
+// 	if (n->next && (n->prio > 2 && n->prio < 6 && n->next->prio > 2
+// 			&& n->next->prio < 6))
+// 		return (1);
+// 	if (n->next && n->type > 0 && n->next->type > 0 && n->type != CLOSE_PARENTH
+// 		&& n->next->type != OPEN_PARENTH && !is_redarection(n->type)
+// 		&& !is_redarection(n->next->type))
+// 		return (1);
+// 	if ((is_redarection(n->type) && !(n->next->type < 0)) || ((n->type <= 0
+// 				&& n->next && n->next->type == OPEN_PARENTH)
+// 			|| (n->type == CLOSE_PARENTH && n->next && n->next->type == 0))
+// 		|| (n->next && n->type == n->next->type && n->next->type <= 0))
+// 		return (1);
+// 	return (0);
+// }
+
 
 int	pars_err(t_token **token, t_tool *tool)
 {
