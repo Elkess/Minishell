@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/24 10:00:22 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/04/24 10:36:01 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,12 +123,15 @@ void		print_list(t_token *node);
 
 void		create_delim_token(char *cmd, int *i, t_token **token, t_tool *tool);
 t_token		*lst_new(void *str, t_tool *tool);
+t_token	*lastone(t_token *head);
 void	    init_type(t_token **token);
 void		lst_add_back(t_token **head, t_token *token);
 char		*ft_my_strdup(const char *s1, size_t size, t_tool *tool);
 int			is_delimter(char c, char d);
 void		hundel_quotes_paren(t_tool *tool, char cmd);
 void        create_tokens(t_token **token, char *cmd, int *i, t_tool *tool);
+void	init_type_utils(t_token *token, t_token *next_token);
+t_token	*check_token(t_token **token, t_tool *tool);
 
 
 #endif

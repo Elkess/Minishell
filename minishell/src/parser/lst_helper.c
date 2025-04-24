@@ -1,0 +1,65 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lst_helper.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/24 10:23:41 by sgmih             #+#    #+#             */
+/*   Updated: 2025/04/24 10:24:34 by sgmih            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../include/parser.h"
+
+t_token	*lst_new(void *str, t_tool *tool)
+{
+	t_token	*token;
+
+	if (!str)
+		return (NULL);
+	token = (t_token *) malloc(sizeof(t_token));
+	if (!token)
+		return (NULL);
+	add_to_grbg(&tool->grbg, token);
+	token->value = str;
+	init_type(&token);
+	token->next = NULL;
+	return (token);
+}
+
+t_token	*lastone(t_token *head)
+{
+	if (!head)
+		return (NULL);
+	while (head->next)
+		head = head->next;
+	return (head);
+}
+
+void	lst_add_back(t_token **head, t_token *token)
+{
+	t_token	*tmp;
+
+	if (!head || !token)
+	{
+		if (!token)
+			write(2, "minishell$> : malloc error\n", 27);
+		return ;
+	}
+	if (!*head)
+	{
+		*head = token;
+		(*head)->next = NULL;
+		return ;
+	}
+	else
+	{
+		tmp = *head;
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = token;
+		token->next = NULL;
+		return ;
+	}
+}
