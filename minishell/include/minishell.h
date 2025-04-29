@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/24 13:11:57 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/04/29 08:48:12 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,10 @@ typedef enum e_token_type
     TOKEN_PAREN_OPEN,
     TOKEN_PAREN_CLOSE,
     TOKEN_SINGL_AND,
-    TOKEN_FILERED_OUT,
-    TOKEN_FILERED_IN,
-    TOKEN_FILERED_APPEND,
-    TOKEN_FILERED_HEREDOC
-    ///TOKEN_GROUP
+    TOKEN_FILERED_OUT = -2,   // File after >
+    TOKEN_FILERED_IN = -3,    // File after <
+    TOKEN_FILERED_APPEND = -5,// File after >>
+    TOKEN_FILERED_HEREDOC = -4 // Delimiter after <<
 } t_token_type;
 
 typedef struct s_token
@@ -95,7 +94,8 @@ typedef enum e_redir_type
     REDIR_IN,        // <
     REDIR_OUT,       // >
     REDIR_APPEND,    // >>
-    REDIR_HEREDOC    // <<
+    REDIR_HEREDOC,    // <<
+    REDIR_NONE       // Invalid or no redirection
 }   t_redir_type;
 
 typedef struct s_redir
@@ -147,6 +147,7 @@ void		hundel_quotes_paren(t_tool *tool, char cmd);
 void        create_tokens(t_token **token, char *cmd, int *i, t_tool *tool);
 void        init_type_utils(t_token *token, t_token *next_token);
 t_token     *check_token(t_token **token, t_tool *tool);
+int         pars_err(t_token **token, t_tool *tool);
 
 
 #endif

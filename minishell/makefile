@@ -9,14 +9,12 @@ READLINE_L = $(shell brew --prefix readline)/lib
 READLINE_I = $(shell brew --prefix readline)/include
 
 Funs =	src/main.c \
-		src/parser/parser_utils.c \
 		src/parser/parser.c \
 		src/parser/token_lst.c  \
 		src/parser/token_lst_utils.c  \
-		src/parser/parser.c  \
 		src/parser/lst_helper.c  \
-		src/parser/parser_utils.c  \
-		src/parser/ft_garbage_collect.c
+		src/parser/ft_garbage_collect.c \
+		src/parser/pars_err.c
 
 OFuns = $(Funs:.c=.o)
 

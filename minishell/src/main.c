@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/24 13:48:48 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/04/29 08:54:34 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ void print_list(t_token *node)
 {
 	while (node)
 	{
+		printf("----------\n");
 		printf("Value: %s\n", node->value);
 		printf("Value: %d\n", node->priority);
 		printf("Type: %s (%d)\n", get_token_type_name(node->type), node->type);
@@ -64,121 +65,140 @@ void print_list(t_token *node)
 	}
 }
 
+// Helper function to convert t_redir_type to string
+static const char *redir_type_to_string(t_redir_type type)
+{
+    switch (type)
+    {
+        case REDIR_IN:      return "REDIR_IN";
+        case REDIR_OUT:     return "REDIR_OUT";
+        case REDIR_APPEND:  return "REDIR_APPEND";
+        case REDIR_HEREDOC: return "REDIR_HEREDOC";
+        case REDIR_NONE:    return "REDIR_NONE";
+        default:            return "UNKNOWN";
+    }
+}
+
+// Function to print the t_redir list
+void print_redir_list(t_redir *redir)
+{
+    if (!redir)
+    {
+        printf("No redirections found.\n");
+        return;
+    }
+    while (redir)
+    {
+        printf("{index: %zu, type: %s, file: \"%s\", next: %s}\n",
+               redir->index,
+               redir_type_to_string(redir->type),
+               redir->file ? redir->file : "NULL",
+               redir->next ? "..." : "NULL");
+        redir = redir->next;
+    }
+}
+
 /******************************************** end print tokens *********************************************/
 
-/******************************************** function libft **********************************************/
-
-static void	ft_putstr_fd(char *s, int fd)
+// Helper function to create a new redirection node
+static t_redir *create_redir_node(size_t index, t_redir_type type, char *file, t_tool *tool)
 {
-	unsigned int	i;
-
-	i = 0;
-	if (!s)
-		return ;
-	while (s[i])
-		i++;
-	write(fd, s, i);
-}
-/******************************************** function libft *********************************************/
-
-int	is_redarection(int type)
-{
-	if (type == TOKEN_REDIR_IN || type == TOKEN_REDIR_OUT || type == TOKEN_REDIR_APPEND
-		|| type == TOKEN_REDIR_HEREDOC)
-		return (1);
-	return (0);
+    t_redir *node;
+	
+	node = (t_redir *) malloc(sizeof(t_redir));
+    if (!node)
+        return (NULL);
+	add_to_grbg(&tool->grbg, node);
+    node->index = index;
+    node->type = type;
+    node->file = file;
+    node->next = NULL;
+    return (node);
 }
 
-// static int condition(t_token *token)
-// {
-// 	if (token->)
-// }
-
-// static int	pars_err_utils(t_token *token, t_tool *tool)
-// {
-// 	int		lst_token;
-// 	t_token	*token_heredoc;
-// 	lst_token = 0;
-// 	token_heredoc = NULL;
-// 	while (token)
-// 	{
-// 		if (token->type > 0 && !is_redarection(token->type))
-// 			lst_token = token->type;
-// 		if (condtion(token) || (lst_token && lst_token == TOKEN_PAREN_CLOSE && token->type == 0))
-// 		{
-// 			tool->err = 2;
-// 			write(2, "minishell$> : syntax error near unexpected token `", 49);
-// 			ft_putstr_fd(token->value, 2);
-// 			write(2, "'\n", 2);
-// 			ft_clearhd(token_heredoc);
-// 			return (1);
-// 		}
-// 		if (token->type == 14 && token->next && heredoc(tool, &(token->next->value), &token_heredoc))
-// 		{
-// 			ft_clearhd(token_heredoc);
-// 			write(2, "syntax error in token_heredoc \n", 31);
-// 			return (1);
-// 		}
-// 		token = token->next;
-// 	}
-// }
-
-
-// static int	condtion(t_lst *n)
-// {
-// 	if (n->prio > 0 && !n->next && n->type != CLOSE_PARENTH)
-// 		return (1);
-// 	if (n->next && (n->prio > 2 && n->prio < 6 && n->next->prio > 2
-// 			&& n->next->prio < 6))
-// 		return (1);
-// 	if (n->next && n->type > 0 && n->next->type > 0 && n->type != CLOSE_PARENTH
-// 		&& n->next->type != OPEN_PARENTH && !is_redarection(n->type)
-// 		&& !is_redarection(n->next->type))
-// 		return (1);
-// 	if ((is_redarection(n->type) && !(n->next->type < 0)) || ((n->type <= 0
-// 				&& n->next && n->next->type == OPEN_PARENTH)
-// 			|| (n->type == CLOSE_PARENTH && n->next && n->next->type == 0))
-// 		|| (n->next && n->type == n->next->type && n->next->type <= 0))
-// 		return (1);
-// 	return (0);
-// }
-
-
-int	pars_err(t_token **token, t_tool *tool)
+t_redir	*update_lst(t_token *token, t_tool *tool)
 {
-	t_token	*tmp;
+	t_redir *redir_head;
+	t_redir *current;
+	t_redir_type redir_type;
+	size_t index;
+	char *file;
 
-	tmp = *token;
-	if (tmp && (tmp->type == 1 || tmp->type == 2 || tmp->type == 3 || tmp->type == 4 || tmp->type == 5
-		|| tmp->type == 6 || tmp->type == 7 || tmp->type == 9 || tmp->type == 10))
+	redir_head = NULL;
+	current = NULL;
+	file = NULL;
+	index = 0;
+
+	while (token)
 	{
-		tool->err = 2;
-		write(2, "minishell$> : syntax error near unexpected token `", 50);
-		ft_putstr_fd(tmp->value, 2);
-		write(2, "'\n", 2);
-		return (1);
+		redir_type = -1;
+		// Map token type to redir type and check for corresponding file token
+
+		if (token->type == REDIR_HEREDOC)
+        {
+            redir_type = REDIR_HEREDOC;
+            if (token->next && token->next->type == TOKEN_FILERED_HEREDOC)
+            {
+                file = token->next->value;
+                token = token->next; // Skip file token
+            }
+        }
+        else if (token->type == REDIR_IN)
+        {
+            redir_type = REDIR_IN;
+            if (token->next && token->next->type == TOKEN_FILERED_IN)
+            {
+                file = token->next->value;
+                token = token->next; // Skip file token
+            }
+        }
+        else if (token->type == REDIR_OUT)
+        {
+            redir_type = REDIR_OUT;
+            if (token->next && token->next->type == TOKEN_FILERED_OUT)
+            {
+                file = token->next->value;
+                token = token->next; // Skip file token
+            }
+        }
+        else if (token->type == REDIR_APPEND)
+        {
+            redir_type = REDIR_APPEND;
+            if (token->next && token->next->type == TOKEN_FILERED_APPEND)
+            {
+                file = token->next->value;
+                token = token->next; // Skip file token
+            }
+        }
+
+		if (redir_type != REDIR_NONE)
+        {
+            t_redir *new_node = create_redir_node(index++, redir_type, file, tool);
+            if (!new_node)
+                return NULL; // Cleanup needed in real implementation
+
+            if (!redir_head)
+            {
+                redir_head = new_node;
+                current = new_node;
+            }
+            else
+            {
+                current->next = new_node;
+                current = new_node;
+            }
+        }
+        token = token->next;
 	}
-	// if (pars_err_utils(tmp, tool))
-	// 	return (1);
-	if (tool->paren|| tool->quoted || tool->anderr == 1)
-	{
-		if (tool->paren)
-			write(2, "minishell$> : syntax error near unexpected token `)'\n", 53);
-		else if (tool->anderr == 1)
-			write(2, "minishell$> : syntax error near unexpected token `&'\n", 53);
-		else
-			write(2, "minishell$> : syntax error quotes\n", 35);
-		tool->err = 2;
-		return (1);
-	}
-	return (0);
+	return (redir_head);
+	
 }
 
 t_token	*check_token(t_token **token, t_tool *tool)
 {
 	if (pars_err(token, tool))
 		return (NULL);
-	// update_lst(node, tool);
+	//update_lst(&token, tool);
 	// redarection_join_arg(node, tool);
 	// trime(*node, tool);
 	return (*token);

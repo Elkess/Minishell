@@ -1,0 +1,6 @@
+file.txt
+include
+library
+makefile
+minishell
+src
