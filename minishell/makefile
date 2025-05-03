@@ -14,7 +14,9 @@ Funs =	src/main.c \
 		src/parser/token_lst_utils.c  \
 		src/parser/lst_helper.c  \
 		src/parser/ft_garbage_collect.c \
-		src/parser/pars_err.c
+		src/parser/pars_err.c \
+		src/parser/pars_trime.c \
+		src/parser/pars_fun_help.c
 
 OFuns = $(Funs:.c=.o)
 

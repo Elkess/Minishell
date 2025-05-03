@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/29 08:48:12 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/03 07:46:59 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,9 +132,9 @@ t_garbcoll	*new_garbcoll(void *value);
 void		add_to_grbg(t_garbcoll **head, void *value);
 void		clear_garbcoll(t_garbcoll *head);
 
-t_token		*tokens_lst(char *cmd, t_tool *tool);
 t_tree		*parsing_input(char *line, t_tool *tool);
-void		print_list(t_token *node);
+t_token		*tokens_lst(char *cmd, t_tool *tool);
+void		print_list(t_token *node); // remove
 
 void		create_delim_token(char *cmd, int *i, t_token **token, t_tool *tool);
 t_token		*lst_new(void *str, t_tool *tool);
@@ -148,6 +148,12 @@ void        create_tokens(t_token **token, char *cmd, int *i, t_tool *tool);
 void        init_type_utils(t_token *token, t_token *next_token);
 t_token     *check_token(t_token **token, t_tool *tool);
 int         pars_err(t_token **token, t_tool *tool);
+void	pars_trime(t_token *head, t_tool *tool);
+size_t	ft_strlen(const char *s);
+char	*ft_strdup(const char *s1, t_tool *tool);
+char	*ft_strchr(const char *s, int c);
+int	ft_strcmp(char *s1, char *s2);
+size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
 
 
 #endif

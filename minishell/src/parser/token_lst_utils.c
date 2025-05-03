@@ -6,30 +6,11 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:26:01 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/24 12:03:09 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/02 13:49:45 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/parser.h"
-
-/******************************************** function libft **********************************************/
-
-static int	ft_strcmp(char *s1, char *s2)
-{
-	int	i;
-
-	i = 0;
-	if (!s1 || !s2)
-		return (-1);
-	while (s1[i] || s2[i])
-	{
-		if (s1[i] != s2[i])
-			return (s2[i] - s1[i]);
-		i++;
-	}
-	return (0);
-}
-/******************************************** function libft **********************************************/
 
 void	init_token(t_token **token, int priority, int type)
 {
@@ -62,25 +43,6 @@ void init_type(t_token **token)
         init_token(token, prio_redir_in, TOKEN_REDIR_IN);
     else
         init_token(token, 0, TOKEN_WORD);
-}
-
-char	*ft_my_strdup(const char *s1, size_t size, t_tool *tool)
-{
-	char		*dup;
-	size_t		i;
-
-	i = 0;
-	dup = (char *) malloc(size + 1 * sizeof(char));
-	if (!dup)
-		return (NULL);
-	add_to_grbg(&tool->grbg, dup);
-	while (i < size)
-	{
-		dup[i] = s1[i];
-		i++;
-	}
-	dup[i] = '\0';
-	return (dup);
 }
 
 void	init_type_utils(t_token *token, t_token *next_token)

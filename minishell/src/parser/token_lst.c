@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:13:04 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/24 10:22:34 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/02 13:47:12 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,26 +147,3 @@ t_token	*tokens_lst(char *cmd, t_tool *tool)
 	}
 	return (check_token(&token, tool)); // just for while 
 }
-
-
-// void create_delim_token(char *cmd, int *i, t_token **token, t_tool *tool)
-// {
-//     int type;
-//     type = is_delimter(cmd[*i], cmd[*i + 1]);
-//     if (type == TOKEN_AND || type == TOKEN_OR ||
-//         type == TOKEN_REDIR_APPEND || type == TOKEN_REDIR_HEREDOC)
-//     {
-//         t_token *new_token = lst_new(ft_my_strdup(&cmd[*i], 2, tool), tool);
-//         if (new_token)
-//             new_token->type = type; // Set token type
-//         lst_add_back(token, new_token);
-//         *i += 1;
-//     }
-//     else
-//     {
-//         t_token *new_token = lst_new(ft_my_strdup(&cmd[*i], 1, tool), tool);
-//         if (new_token)
-//             new_token->type = type; // Set token type
-//         lst_add_back(token, new_token);
-//     }
-// }
