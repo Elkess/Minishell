@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 07:38:27 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/03 07:46:48 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/03 16:47:52 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	pars_trime(t_token *head, t_tool *tool)
 	while (head)
 	{
 		arr = head->value;
-		head->value = ft_strtrim(arr, " ", tool);
+		head->value = ft_strtrim(arr, " ", tool); // FIXME: need tabs to be handled
 		head = head->next;
 	}
 }

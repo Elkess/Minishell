@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/03 07:46:59 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/07 16:36:22 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,20 @@ typedef enum e_token_type
     TOKEN_PIPE,
     TOKEN_AND,
     TOKEN_OR,
+    TOKEN_SPACE,
     TOKEN_REDIR_IN,
     TOKEN_REDIR_OUT,
     TOKEN_REDIR_APPEND,
     TOKEN_REDIR_HEREDOC,
     TOKEN_PAREN_OPEN,
     TOKEN_PAREN_CLOSE,
-    TOKEN_SINGL_AND,
+    TOKEN_SINGL_AND = 11,
+    TOKEN_SINGLE_QUOTE = 12, // represent the quote characters as delimiters.
+    TOKEN_DOUBLE_QUOTE = 13,
+    TOKEN_DOLLAR = 14,
+    TOKEN_WILDCARD = 15,
+    TOKEN_SINGLE_QUOTED_WORD = 16, // Single-quoted string, e.g., 'hello'
+    TOKEN_DOUBLE_QUOTED_WORD = 17, // Double-quoted string, e.g., "world $USER"
     TOKEN_FILERED_OUT = -2,   // File after >
     TOKEN_FILERED_IN = -3,    // File after <
     TOKEN_FILERED_APPEND = -5,// File after >>
@@ -103,6 +110,8 @@ typedef struct s_redir
     size_t            index;
     t_redir_type      type;
     char             *file;
+    int               fd;
+    int               flag;
     struct s_redir   *next;
 }   t_redir;
 
@@ -136,11 +145,12 @@ t_tree		*parsing_input(char *line, t_tool *tool);
 t_token		*tokens_lst(char *cmd, t_tool *tool);
 void		print_list(t_token *node); // remove
 
-void		create_delim_token(char *cmd, int *i, t_token **token, t_tool *tool);
+int create_delim_token(char *cmd, int i, t_token **token, t_tool *tool);
 t_token		*lst_new(void *str, t_tool *tool);
 t_token     *lastone(t_token *head);
 void	    init_type(t_token **token);
 void		lst_add_back(t_token **head, t_token *token);
+void	init_token(t_token **token, int priority, int type);
 char		*ft_my_strdup(const char *s1, size_t size, t_tool *tool);
 int			is_delimter(char c, char d);
 void		hundel_quotes_paren(t_tool *tool, char cmd);

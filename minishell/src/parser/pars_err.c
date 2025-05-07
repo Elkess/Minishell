@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 08:46:52 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/03 07:43:31 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/03 16:52:10 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ static int	condtion(t_token *token)
 			
 	return (0);
 }
+
 static void	ft_clear_token_heredoc(t_token *token_heredoc)
 {
 	while (token_heredoc)
@@ -77,7 +78,7 @@ static int	pars_err_utils(t_token *token, t_tool *tool)
 	lst_token = 0;
 	token_heredoc = NULL;
 	while (token)
-	{
+	{//TODO: nxra7 l amine mn hna 
 		if (token->type > 0 && !is_redirection(token->type))
 			lst_token = token->type;
 		if (condtion(token) || (lst_token && lst_token == TOKEN_PAREN_CLOSE && token->type == 0))
@@ -94,10 +95,11 @@ static int	pars_err_utils(t_token *token, t_tool *tool)
 			ft_clear_token_heredoc(token_heredoc);
 			return (1);
 		}
-		// if (token->type == 14 && token->next && heredoc(tool, &(token->next->value), &token_heredoc))
+					
+		// if (token->type == 7 && token->next && pras_heredoc(tool, &(token->next->value), &token_heredoc))
 		// {
 		// 	ft_clear_token_heredoc(token_heredoc);
-		// 	write(2, "syntax error in token_heredoc \n", 31);
+		// 	write(2, "syntax error in token_redir_heredoc \n", 37);
 		// 	return (1);
 		// }
 		token = token->next;
@@ -120,7 +122,7 @@ int	pars_err(t_token **token, t_tool *tool)
 	}
 	if (pars_err_utils(tmp, tool))
 		return (1);
-	if (tool->paren|| tool->quoted || tool->anderr == 1)
+	if (tool->paren || tool->quoted || tool->anderr == 1)
 	{
 		if (tool->paren)
 			write(2, "minishell$> : syntax error near unexpected token `)'\n", 53);

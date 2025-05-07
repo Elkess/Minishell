@@ -1,7 +1,7 @@
 NAME = minishell
 
 C_Compiler = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = #-Wall -Wextra -Werror
 
 READLINEFLAG = -lreadline
 
