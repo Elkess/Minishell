@@ -6,11 +6,38 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:23:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/24 10:24:34 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/10 09:22:40 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/parser.h"
+
+static void init_type(t_token **token)
+{
+    if (!token || !*token || !(*token)->value)
+        return ;
+
+    if (!ft_strcmp((*token)->value, "("))
+        init_token(token, prio_open_par, TOKEN_PAREN_OPEN);
+    else if (!ft_strcmp((*token)->value, ")"))
+        init_token(token, prio_close_par, TOKEN_PAREN_CLOSE);
+    else if (!ft_strcmp((*token)->value, "&&"))
+        init_token(token, prio_and, TOKEN_AND);
+    else if (!ft_strcmp((*token)->value, "||"))
+        init_token(token, prio_or, TOKEN_OR);
+    else if (!ft_strcmp((*token)->value, "|"))
+        init_token(token, prio_pipe, TOKEN_PIPE);
+    else if (!ft_strcmp((*token)->value, ">"))
+        init_token(token, prio_redir_out, TOKEN_REDIR_OUT);
+    else if (!ft_strcmp((*token)->value, ">>"))
+        init_token(token, prio_appand, TOKEN_REDIR_APPEND);
+    else if (!ft_strcmp((*token)->value, "<<"))
+        init_token(token, prio_here_doc, TOKEN_REDIR_HEREDOC);
+    else if (!ft_strcmp((*token)->value, "<"))
+        init_token(token, prio_redir_in, TOKEN_REDIR_IN);
+    else
+        init_token(token, 0, TOKEN_WORD);
+}
 
 t_token	*lst_new(void *str, t_tool *tool)
 {

@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/06 13:39:40 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/10 08:41:43 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,7 @@ char	*ft_get_prompt(void)
 	return (prompt);
 }
 
-t_token	*check_token(t_token **token, t_tool *tool)
-{
-	if (pars_err(token, tool))
-		return (NULL);
-	//update_lst_redir for fill s_redir 
-	pars_trime(*token, tool);
-	return (*token);
-}
+
 
 // void f()
 // {
@@ -44,6 +37,7 @@ t_token	*check_token(t_token **token, t_tool *tool)
 
 int	main(int ac, char **av, char **env)
 {
+	//atexit(f);
 
 	char	*line;
 	t_tree	*tree;

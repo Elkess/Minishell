@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:29:32 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/24 10:15:39 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/10 09:16:06 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ void	clear_garbcoll(t_garbcoll *head)
 		token = head;
 	}
 }
+
 // test by amine hhhh 
 
 // void clear_garbcoll(t_garbcoll **head)

@@ -6,17 +6,16 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 13:35:16 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/07 16:39:38 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/10 09:19:05 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/parser.h"
 
-
 /******************************************** start print tokens *********************************************/
 
 // Helper function to convert token type to string for readable output
-const char *get_token_type_name(t_token_type type)
+static const char *get_token_type_name(t_token_type type)
 {
     switch (type)
     {
@@ -47,7 +46,7 @@ const char *get_token_type_name(t_token_type type)
 }
 
 // Function to print all tokens in the list, with spaces made visible as underscores
-void print_token_list(t_token *head)
+static void print_token_list(t_token *head)
 {
     int i = 0;
     while (head)
@@ -72,7 +71,7 @@ void print_token_list(t_token *head)
     }
 }
 
-void print_tool(t_tool tool)
+static void print_tool(t_tool tool)
 {
     printf("t_tool struct:\n");
     printf("  paren   = %d\n", tool.paren);
@@ -82,15 +81,13 @@ void print_tool(t_tool tool)
 }
 /******************************************** end print tokens *********************************************/
 
-
-
 t_tree	*parsing_input(char *line, t_tool *tool)
 {
 	t_token	*token;
 	
 	token = tokens_lst(line, tool);
 	print_token_list(token);
-	// print_tool(*tool);
+	print_tool(*tool);
 
 	return (NULL);
 }

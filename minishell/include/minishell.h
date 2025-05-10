@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/07 16:36:22 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/10 09:22:50 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,34 +136,30 @@ typedef struct	s_env
 }	t_env;
 
 // Function declarations
-char		*ft_get_prompt(void);
-t_garbcoll	*new_garbcoll(void *value);
-void		add_to_grbg(t_garbcoll **head, void *value);
-void		clear_garbcoll(t_garbcoll *head);
 
-t_tree		*parsing_input(char *line, t_tool *tool);
-t_token		*tokens_lst(char *cmd, t_tool *tool);
-void		print_list(t_token *node); // remove
+t_tree	*parsing_input(char *line, t_tool *tool);
+t_token	*tokens_lst(char *cmd, t_tool *tool);
+t_token	*check_token(t_token **token, t_tool *tool);
 
-int create_delim_token(char *cmd, int i, t_token **token, t_tool *tool);
 t_token		*lst_new(void *str, t_tool *tool);
 t_token     *lastone(t_token *head);
-void	    init_type(t_token **token);
 void		lst_add_back(t_token **head, t_token *token);
-void	init_token(t_token **token, int priority, int type);
-char		*ft_my_strdup(const char *s1, size_t size, t_tool *tool);
-int			is_delimter(char c, char d);
-void		hundel_quotes_paren(t_tool *tool, char cmd);
-void        create_tokens(t_token **token, char *cmd, int *i, t_tool *tool);
-void        init_type_utils(t_token *token, t_token *next_token);
-t_token     *check_token(t_token **token, t_tool *tool);
-int         pars_err(t_token **token, t_tool *tool);
-void	pars_trime(t_token *head, t_tool *tool);
+void        hundel_quotes_paren(t_tool *tool, char cmd);
+int         is_delimter(char c, char d);
+void        init_redir_file_tokens(t_token *token);
+
+void        add_to_grbg(t_garbcoll **head, void *value);
+void        clear_garbcoll(t_garbcoll *head);
+
 size_t	ft_strlen(const char *s);
+int     is_space(char c);
 char	*ft_strdup(const char *s1, t_tool *tool);
 char	*ft_strchr(const char *s, int c);
-int	ft_strcmp(char *s1, char *s2);
-size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
+int     ft_strcmp(char *s1, char *s2);
+char	*ft_my_strdup(const char *s1, size_t size, t_tool *tool);
+
+void	init_token(t_token **token, int priority, int type);
+
 
 
 #endif
