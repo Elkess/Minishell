@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/10 09:22:50 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/11 11:00:00 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef enum e_token_type
     TOKEN_WILDCARD = 15,
     TOKEN_SINGLE_QUOTED_WORD = 16, // Single-quoted string, e.g., 'hello'
     TOKEN_DOUBLE_QUOTED_WORD = 17, // Double-quoted string, e.g., "world $USER"
+    TOKEN_HAS_QUOTED = 18, // Has quotes
     TOKEN_FILERED_OUT = -2,   // File after >
     TOKEN_FILERED_IN = -3,    // File after <
     TOKEN_FILERED_APPEND = -5,// File after >>
@@ -159,6 +160,7 @@ int     ft_strcmp(char *s1, char *s2);
 char	*ft_my_strdup(const char *s1, size_t size, t_tool *tool);
 
 void	init_token(t_token **token, int priority, int type);
+int	pars_err(t_token **token, t_tool *tool);
 
 
 

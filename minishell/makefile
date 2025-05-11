@@ -1,7 +1,7 @@
 NAME = minishell
 
 C_Compiler = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = #-Wall -Wextra -Werror
 
 READLINEFLAG = -lreadline
 
@@ -15,7 +15,8 @@ Funs =	src/main.c \
 		src/parser/token_funs_help.c \
 		src/parser/lst_helper.c  \
 		src/parser/ft_garbage_collect.c \
-		src/parser/pars_funs_help.c
+		src/parser/pars_funs_help.c \
+		src/parser/pars_err.c
 
 OFuns = $(Funs:.c=.o)
 

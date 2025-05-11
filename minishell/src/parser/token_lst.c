@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:13:04 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/10 09:17:35 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/10 16:14:19 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ static int create_delim_token(char *cmd, int i, t_token **token, t_tool *tool)
         tool->anderr = 1; // Single & is an error
     }
 
-    if (type == TOKEN_AND || type == TOKEN_OR
-        || type == TOKEN_REDIR_APPEND || type == TOKEN_REDIR_HEREDOC)
+    if (type == 2 || type == 3
+        || type == 7 || type == 8)
     {
         new_token = lst_new(ft_my_strdup(&cmd[i], 2, tool), tool);
         new_token->type = type;
@@ -57,7 +57,7 @@ static int  create_space_token(t_token **token, char *cmd, int i, t_tool *tool)
 	space_str = ft_my_strdup(&cmd[n], i - n, tool);
 
 	new_token = lst_new(space_str, tool);
-    new_token->type = TOKEN_SPACE;
+    new_token->type = 4;
 	new_token->priority = 0;
     lst_add_back(token, new_token);
 
@@ -69,18 +69,21 @@ static int	create_cmd_token(t_token **token, char *cmd, int i, t_tool *tool)
 	t_token	*new_token;
 	char	*word_str;
     int     end;
+	t_tool temp_tool; 
 	
+	temp_tool = *tool;
 	new_token = NULL;
 	word_str = NULL;
     end = i;
-    while (cmd[end] && (tool->quoted || (!is_space(cmd[end]) && !is_delimter(cmd[end], cmd[end + 1]))))
-        hundel_quotes_paren(tool, cmd[++end]);
-    
+	
+    while (cmd[end] && (temp_tool.quoted || (!is_space(cmd[end]) && !is_delimter(cmd[end], cmd[end + 1]))))
+        hundel_quotes_paren(&temp_tool, cmd[++end]);
+
     if (end != i)
     {
     	word_str = ft_my_strdup(&cmd[i], end - i, tool);
 		new_token = lst_new(word_str, tool);
-    	new_token->type = TOKEN_WORD;
+    	new_token->type = 0;
 		new_token->priority = 0;
         lst_add_back(token, new_token);
 		
@@ -92,21 +95,12 @@ static int	create_cmd_token(t_token **token, char *cmd, int i, t_tool *tool)
 t_token	*tokens_lst(char *cmd, t_tool *tool)
 {
 	t_token	*token;
-	t_token	*next_token; 
 	int	i;
 
 	i = 0;
-	tool->quoted = 0;
-	tool->anderr = 0;
-	tool->paren = 0;
 	token = NULL;
-	next_token = lastone(token);
-	
 	while (cmd && cmd[i])
 	{
-		// if (cmd[i] == 32 && cmd[i + 1] == '\0')  // for space at end
-		// 	return (token);
-		hundel_quotes_paren(tool, cmd[i]);
 		if (is_space(cmd[i]))
 			i = create_space_token(&token, cmd, i, tool);
 		else if (cmd[i] && (is_delimter(cmd[i], cmd[i + 1]) > 0) && tool->quoted == 0)
@@ -115,5 +109,5 @@ t_token	*tokens_lst(char *cmd, t_tool *tool)
 			i = create_cmd_token(&token, cmd, i, tool);
 		init_redir_file_tokens(token);
 	}
-	return (check_token(&token, tool)); 
+	return (check_token(&token, tool));
 }

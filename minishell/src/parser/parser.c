@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 13:35:16 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/10 09:19:05 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/10 16:14:27 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ static const char *get_token_type_name(t_token_type type)
         case TOKEN_WILDCARD: return "WILDCARD";
         case TOKEN_SINGLE_QUOTED_WORD: return "SINGLE_QUOTED_WORD";
         case TOKEN_DOUBLE_QUOTED_WORD: return "DOUBLE_QUOTED_WORD";
+        case TOKEN_HAS_QUOTED: return "TOKEN_HAS_QUOTED";
         case TOKEN_FILERED_OUT: return "FILERED_OUT";
         case TOKEN_FILERED_IN: return "FILERED_IN";
         case TOKEN_FILERED_APPEND: return "FILERED_APPEND";
@@ -84,10 +85,22 @@ static void print_tool(t_tool tool)
 t_tree	*parsing_input(char *line, t_tool *tool)
 {
 	t_token	*token;
+    int i;
+    
+    tool->quoted = 0;
+    tool->anderr = 0;
+    tool->paren = 0;
+
+    i = 0;
+    while (line && line[i])
+    {
+        hundel_quotes_paren(tool, line[i]);
+        i++;
+    }
 	
 	token = tokens_lst(line, tool);
 	print_token_list(token);
-	print_tool(*tool);
+	// print_tool(*tool);
 
 	return (NULL);
 }

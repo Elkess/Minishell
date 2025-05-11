@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 08:57:56 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/10 09:22:44 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/10 15:48:35 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int is_space(char c)
     return (0);
 }
 
-void hundel_quotes_paren(t_tool *tool, char cmd)
+void	hundel_quotes_paren(t_tool *tool, char cmd)
 {
 	if (cmd == '\'' && tool->quoted == 0)
 		tool->quoted = 1;
