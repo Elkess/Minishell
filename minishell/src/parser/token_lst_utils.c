@@ -59,17 +59,10 @@ static void init_quote_token(t_token *token)
 
 t_token	*check_token(t_token **token, t_tool *tool)
 {
-    t_token *tmp = *token;
-    printf("Token list:\n");
-    while (tmp)
-    {
-        printf("  type: %d, val: '%s'\n", tmp->type, tmp->value);
-        tmp = tmp->next;
-    }
 	init_quote_token(*token);
-    //print_tool(*tool);
 	if (pars_err(token, tool))
 		return (NULL);
+    //print_tool(*tool);
 	//update_lst_redir for fill s_redir 
 	// pars_trime(*token, tool);
 	return (*token);

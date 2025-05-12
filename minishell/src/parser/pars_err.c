@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 08:46:52 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/11 10:59:52 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/12 09:29:57 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,106 +24,85 @@ static void	ft_putstr_fd(char *s, int fd)
 	write(fd, s, i);
 }
 
-static	int	is_redirection(int type)
+static int is_redirection(int type)
 {
-	if (type == 5 || type == 6 || type == 7 || type == 8)
+    if (type == TOKEN_REDIR_IN || type == TOKEN_REDIR_OUT || type == TOKEN_REDIR_APPEND
+		|| type == TOKEN_REDIR_HEREDOC)
 		return (1);
 	return (0);
 }
 
-static int	err_condtion(t_token *token)
+static int condition(t_token *token)
 {
-    t_token *next_non_space;
-	// close par
-	if (token->priority > 0 && !token->next && token->type != prio_close_par) {
-        //printf("Condition 1 triggered for token '%s'\n", token->value);
-        return (1);
-    }
+    t_token *next = token->next;
+    t_token *temp;
+    
 
-    if (token->type == prio_close_par && token->next && token->next->type == 0) {
-        //printf("Condition 2 triggered for token '%s'\n", token->value);
-        return (2); // Error on next token (e.g., 'cmd' in '(ls) cmd')
-    }
-
-
-    // Skip spaces and check operators
-    if (token->next)
+    while (next && next->type == TOKEN_SPACE)
+        next = next->next;
+    
+    // ls |, echo &&, etc....
+    if (token->type == TOKEN_PIPE || token->type == TOKEN_AND || token->type == TOKEN_OR  && !next)
+        return (1); 
+    
+    // || &&, etc...
+    if (next && (token->type == TOKEN_PIPE || token->type == TOKEN_AND || token->type == TOKEN_OR) &&
+                   (next->type == TOKEN_PIPE || next->type == TOKEN_AND || next->type == TOKEN_OR))
+        return 2;
+    
+    //  Closing paren before word → "(echo) ls"
+    if (token->type == TOKEN_PAREN_CLOSE && next && next->type == TOKEN_WORD)
+        return 2;
+    
+    // redir not befor filename
+    if (is_redirection(token->type))
     {
-        next_non_space = token->next;
-        while (next_non_space && next_non_space->type == TOKEN_SPACE)
-            next_non_space = next_non_space->next;
-
-        if (next_non_space && (token->type == prio_pipe || token->type == prio_and || token->type == prio_or) &&
-            (next_non_space->type == prio_pipe || next_non_space->type == prio_and || next_non_space->type == prio_or))
-        {
-            //printf("Condition 4 triggered for token '%s' and next token '%s'\n", token->value, next_non_space->value);
-            return (2);
-        }
-    }
-
-    if (token->next && token->type > 0 && token->next->type > 0 &&
-        token->type != prio_close_par && token->next->type != prio_open_par &&
-        !is_redirection(token->type) && !is_redirection(token->next->type)) {
-        //printf("Condition 5 triggered for token '%s' and next token '%s'\n", token->value, token->next->value);
-        return (1);
-    }
-
-    // Redirection without a file/delimiter
-    if (is_redirection(token->type) && (!token->next || token->next->type >= 0)) {
-        //printf("Condition 6 triggered for token '%s'\n", token->value);
-        return (1);
-    }
-
-	return (0);
-}
-
-static t_token *last_one(t_token *token)
-{
-    t_token *current = token;
-    t_token *last_non_space = NULL;
-
-    while (current)
-    {
-        if (current->type != TOKEN_SPACE)
-            last_non_space = current;
-        current = current->next;
-    }
-    printf("last token: %s\n", last_non_space->value);
-    return (last_non_space);
-}
-
-static int	pars_err_utils(t_token *token, t_tool *tool)
-{
-    t_token *last_token;
-    int i;
-
-    i = 0;
-    last_token = last_one(token); 
-    while(token)
-    {
-        if (token->type == TOKEN_SPACE)
-        {
-            token = token->next;
-            continue ;
-        }
-        if (token->type > 0 && !is_redirection(token->type))
-            i = token->type;
-        if (err_condtion(token) || (i && i == 10 && token->type == 0))
-        {
-			write(2, "minishell$> : syntax error near unexpected token `", 50);
-            if (is_redirection(token->type) && !token->next)
-                write(2, "newline", 7);
-			else if (err_condtion(token) == 2 && token->next)
-                ft_putstr_fd(last_token->value, 2);
-            else
-                ft_putstr_fd(token->value, 2);
-			write(2, "'\n", 2);
-            tool->err = 2;
+        temp = next;
+        while (temp && temp->type == TOKEN_SPACE)
+            temp = temp->next;
+        if (!temp || !((temp->type) < 0 || temp->type == TOKEN_WORD))
             return (1);
+    }
+    if (token->type == TOKEN_WORD && next && next->type == TOKEN_PAREN_OPEN)
+        return (1);
+        
+    return 0;
+}
+
+static int pars_err_utils(t_token *token, t_tool *tool)
+{
+    t_token *lst_token;
+    t_token *next;
+    
+    while (token)
+    {
+        if (token->type != TOKEN_SPACE)
+        {
+            if (condition(token))
+            {
+                lst_token = token;
+                if (condition(token) == 2)
+                {
+                    next = token->next;
+                    while (next && next->type == TOKEN_SPACE)
+                        next = next->next;
+                    if (next)
+                        lst_token = next;
+                }
+                
+                write(2, "minishell$> : syntax error near unexpected token `", 50);
+                if (is_redirection(lst_token->type) && !token->next)
+                    write(2, "newline", 7);
+                else
+                    ft_putstr_fd(lst_token->value, 2);
+                write(2, "'\n", 2);
+                tool->err = 2;
+                return 1;
+            }
         }
         token = token->next;
     }
-    return (0);
+    return 0;
 }
 
 int	pars_err(t_token **token, t_tool *tool)
