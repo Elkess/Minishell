@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 08:46:52 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/12 09:29:57 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/12 10:41:47 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,20 +40,20 @@ static int condition(t_token *token)
 
     while (next && next->type == TOKEN_SPACE)
         next = next->next;
-    
+
     // ls |, echo &&, etc....
-    if (token->type == TOKEN_PIPE || token->type == TOKEN_AND || token->type == TOKEN_OR  && !next)
+    if ((token->type == TOKEN_PIPE || token->type == TOKEN_AND || token->type == TOKEN_OR)  && !next)
         return (1); 
-    
+
     // || &&, etc...
     if (next && (token->type == TOKEN_PIPE || token->type == TOKEN_AND || token->type == TOKEN_OR) &&
                    (next->type == TOKEN_PIPE || next->type == TOKEN_AND || next->type == TOKEN_OR))
         return 2;
-    
+
     //  Closing paren before word → "(echo) ls"
     if (token->type == TOKEN_PAREN_CLOSE && next && next->type == TOKEN_WORD)
         return 2;
-    
+
     // redir not befor filename
     if (is_redirection(token->type))
     {
@@ -65,7 +65,7 @@ static int condition(t_token *token)
     }
     if (token->type == TOKEN_WORD && next && next->type == TOKEN_PAREN_OPEN)
         return (1);
-        
+
     return 0;
 }
 
@@ -73,7 +73,7 @@ static int pars_err_utils(t_token *token, t_tool *tool)
 {
     t_token *lst_token;
     t_token *next;
-    
+
     while (token)
     {
         if (token->type != TOKEN_SPACE)
@@ -89,7 +89,7 @@ static int pars_err_utils(t_token *token, t_tool *tool)
                     if (next)
                         lst_token = next;
                 }
-                
+
                 write(2, "minishell$> : syntax error near unexpected token `", 50);
                 if (is_redirection(lst_token->type) && !token->next)
                     write(2, "newline", 7);

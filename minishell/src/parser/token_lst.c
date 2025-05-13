@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:13:04 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/12 09:18:08 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/13 14:45:57 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ static int	create_cmd_token(t_token **token, char *cmd, int i, t_tool *tool)
     end = i;
 	
     while (cmd[end] && (temp_tool.quoted || (!is_space(cmd[end]) && !is_delimter(cmd[end], cmd[end + 1]))))
-        hundel_quotes_paren(&temp_tool, cmd[++end]);
+        hundel_quotes_paren(&temp_tool, cmd[end++]);
 
     if (end != i)
     {
@@ -107,8 +107,12 @@ t_token	*tokens_lst(char *cmd, t_tool *tool)
 			i = create_delim_token(cmd, i, &token, tool);
 		else
 			i = create_cmd_token(&token, cmd, i, tool);
-		if (token->type == TOKEN_WORD)
-			init_redir_file_tokens(token);
+		update_token(&token, tool);
+		init_redir_file_tokens(token);
+		init_quote_token(token);
+
+		// if (pars_err(&token, tool))
+		// 	return (NULL);
 	}
-	return (check_token(&token, tool));
+	return (token);
 }

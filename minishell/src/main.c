@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/11 18:26:33 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/13 14:44:48 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,6 @@ char	*ft_get_prompt(void)
 	return (prompt);
 }
 
-
-
-// void f()
-// {
-//     system("leaks -q minishell");
-// }
-
-
 int	main(int ac, char **av, char **env)
 {
 	//atexit(f);
@@ -49,11 +41,7 @@ int	main(int ac, char **av, char **env)
 	while (1)
 	{
 		line = ft_get_prompt();
-		//printf("Line input: %s\n", line);
-
 		tree = parsing_input(line, &tool);
-
-		//handle_input(line);
 		free(line);
 	}
 	return (0);

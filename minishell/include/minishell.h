@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/12 08:54:05 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/13 14:24:29 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,11 @@ typedef enum e_priority
 
 /**************************************************/
 
+
+
+
+
+
 typedef enum e_node_type
 {
     NODE_COMMAND,
@@ -121,12 +126,18 @@ typedef struct s_tree
     t_node_type      type;
     char            **cmd;        // argv if NODE_COMMAND
     t_redir          *redirs;     // linked list of redirs
-    int              fd[2];       // pipe fds (used during execution)
     int              is_ambiguous;
 
     struct s_tree    *left;       // left command (for pipe)
     struct s_tree    *right;      // right command (for pipe)
 }   t_tree;
+
+
+
+
+
+/**************************************************/
+
 
 typedef struct	s_env
 {
@@ -140,7 +151,10 @@ typedef struct	s_env
 
 t_tree	*parsing_input(char *line, t_tool *tool);
 t_token	*tokens_lst(char *cmd, t_tool *tool);
-t_token	*check_token(t_token **token, t_tool *tool);
+// t_token	*check_token(t_token **token, t_tool *tool);
+
+void init_quote_token(t_token *token);
+t_token *update_token(t_token **token, t_tool *tool);
 
 t_token		*lst_new(void *str, t_tool *tool);
 t_token     *lastone(t_token *head);

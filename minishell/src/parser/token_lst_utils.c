@@ -12,6 +12,34 @@
 
 #include "../../include/parser.h"
 
+t_token *update_token(t_token **token, t_tool *tool)
+{
+    t_token *current = *token;
+    t_token *prev = NULL;
+    t_token *next = NULL;
+
+    while (current != NULL)
+    {
+        next = current->next;
+        if (current->type == 4)
+        {
+            if (prev == NULL)
+                *token = next;
+            else
+                prev->next = next;
+            free(current->value);
+            free(current);
+            current = next;
+        }
+        else
+        {
+            prev = current;
+            current = next;
+        }
+    }
+    return (*token);
+}
+
 static int has_concat_quotes(char *value)
 {
     int i = 0;
@@ -28,7 +56,7 @@ static int has_concat_quotes(char *value)
     return (0);
 }
 
-static void init_quote_token(t_token *token)
+void init_quote_token(t_token *token)
 {
     t_token *current;
 	 char *val;
@@ -55,15 +83,4 @@ static void init_quote_token(t_token *token)
         }
         current = current->next;
     }
-}
-
-t_token	*check_token(t_token **token, t_tool *tool)
-{
-	init_quote_token(*token);
-	if (pars_err(token, tool))
-		return (NULL);
-    //print_tool(*tool);
-	//update_lst_redir for fill s_redir 
-	// pars_trime(*token, tool);
-	return (*token);
 }
