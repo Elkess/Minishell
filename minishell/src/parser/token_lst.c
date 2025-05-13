@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:13:04 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/13 14:45:57 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/13 15:35:01 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,11 +108,12 @@ t_token	*tokens_lst(char *cmd, t_tool *tool)
 		else
 			i = create_cmd_token(&token, cmd, i, tool);
 		update_token(&token, tool);
-		init_redir_file_tokens(token);
+		if (token && token->type == TOKEN_WORD || is_delimter(cmd[i], cmd[i + 1]) == 0)
+    		init_redir_file_tokens(token);
 		init_quote_token(token);
 
-		// if (pars_err(&token, tool))
-		// 	return (NULL);
+		if (pars_err(&token, tool))
+			return (NULL);
 	}
 	return (token);
 }

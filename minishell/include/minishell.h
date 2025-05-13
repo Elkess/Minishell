@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/13 14:24:29 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/13 15:26:28 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,7 @@ t_token     *lastone(t_token *head);
 void		lst_add_back(t_token **head, t_token *token);
 void        hundel_quotes_paren(t_tool *tool, char cmd);
 int         is_delimter(char c, char d);
-void        init_redir_file_tokens(t_token *token);
+void init_redir_file_tokens(t_token *token);
 
 void        add_to_grbg(t_garbcoll **head, void *value);
 void        clear_garbcoll(t_garbcoll *head);

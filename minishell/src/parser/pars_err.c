@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 08:46:52 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/12 10:41:47 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/13 15:48:22 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,6 @@ static int condition(t_token *token)
     t_token *next = token->next;
     t_token *temp;
     
-
-    while (next && next->type == TOKEN_SPACE)
-        next = next->next;
-
     // ls |, echo &&, etc....
     if ((token->type == TOKEN_PIPE || token->type == TOKEN_AND || token->type == TOKEN_OR)  && !next)
         return (1); 
@@ -76,34 +72,24 @@ static int pars_err_utils(t_token *token, t_tool *tool)
 
     while (token)
     {
-        if (token->type != TOKEN_SPACE)
+        if (condition(token))
         {
-            if (condition(token))
-            {
-                lst_token = token;
-                if (condition(token) == 2)
-                {
-                    next = token->next;
-                    while (next && next->type == TOKEN_SPACE)
-                        next = next->next;
-                    if (next)
-                        lst_token = next;
-                }
-
-                write(2, "minishell$> : syntax error near unexpected token `", 50);
-                if (is_redirection(lst_token->type) && !token->next)
-                    write(2, "newline", 7);
-                else
-                    ft_putstr_fd(lst_token->value, 2);
-                write(2, "'\n", 2);
-                tool->err = 2;
-                return 1;
-            }
+            lst_token = token;
+            write(2, "minishell$> : syntax error near unexpected token `", 50);
+            if (is_redirection(lst_token->type) && !token->next)
+                write(2, "newline", 7);
+            else
+                ft_putstr_fd(lst_token->value, 2);
+            write(2, "'\n", 2);
+            tool->err = 2;
+            return (1);
         }
         token = token->next;
     }
     return 0;
 }
+
+
 
 int	pars_err(t_token **token, t_tool *tool)
 {

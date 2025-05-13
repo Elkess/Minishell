@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 13:35:16 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/13 14:38:16 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/13 15:34:48 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,7 +213,7 @@ t_redir *create_redir(t_token *token, t_tool *tool, size_t index)
         redir->type = REDIR_HEREDOC;
     else
         redir->type = REDIR_NONE;
-    redir->file = NULL;
+    redir->file = token->next->value;
     redir->fd = -1;
     redir->flag = 0;
     redir->next = NULL;
@@ -232,7 +232,7 @@ t_redir *redir(t_token **input, t_tool *tool)
     while (*input && ((*input)->type == TOKEN_REDIR_IN || (*input)->type == TOKEN_REDIR_OUT ||
             (*input)->type == TOKEN_REDIR_APPEND || (*input)->type == TOKEN_REDIR_HEREDOC))
     {
-        add_redir(&redir, create_redir(*input, tool, redir_index++));
+        add_redir(&redir, create_redir(*input, tool, redir_index));
         *input = (*input)->next;
     }
     return (redir);
@@ -300,6 +300,8 @@ t_tree	*parsing_input(char *line, t_tool *tool)
 	
 	token = tokens_lst(line, tool);
 	print_token_list(token);
+
+    // puts("\n");
     // // Process redirections
     // t_token *current_token = token;
     // redirs = redir(&current_token, tool);

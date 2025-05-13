@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 08:57:56 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/13 14:05:30 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/13 15:33:17 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,10 +93,8 @@ void	init_token(t_token **token, int priority, int type)
 	(*token)->type = type;
 }
 
-void init_redir_file_tokens(t_token *token)
-{
+void init_redir_file_tokens(t_token *token) {
     t_token *current;
-	 t_token *file_token;
     
     current = token;
     while (current && current->next)
@@ -104,19 +102,16 @@ void init_redir_file_tokens(t_token *token)
         if (current->type == TOKEN_REDIR_OUT || current->type == TOKEN_REDIR_IN ||
             current->type == TOKEN_REDIR_APPEND || current->type == TOKEN_REDIR_HEREDOC)
         {
-            file_token = current->next;
-            while (file_token && file_token->type == TOKEN_SPACE)
-                file_token = file_token->next;
-            if (file_token)
+            if (current->next && current->next->type == TOKEN_WORD)
             {
                 if (current->type == TOKEN_REDIR_OUT)
-                    init_token(&file_token, 0, TOKEN_FILERED_OUT);
+                    init_token(&current->next, 0, TOKEN_FILERED_OUT);
                 else if (current->type == TOKEN_REDIR_IN)
-                    init_token(&file_token, 0, TOKEN_FILERED_IN);
+                    init_token(&current->next, 0, TOKEN_FILERED_IN);
                 else if (current->type == TOKEN_REDIR_APPEND)
-                    init_token(&file_token, 0, TOKEN_FILERED_APPEND);
+                    init_token(&current->next, 0, TOKEN_FILERED_APPEND);
                 else if (current->type == TOKEN_REDIR_HEREDOC)
-                    init_token(&file_token, 0, TOKEN_FILERED_HEREDOC);
+                    init_token(&current->next, 0, TOKEN_FILERED_HEREDOC);
             }
         }
         current = current->next;
