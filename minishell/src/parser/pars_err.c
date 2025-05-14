@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 08:46:52 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/14 09:35:43 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/14 10:17:17 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,14 @@ static int condition(t_token *token)
     {
         if (!token->next)
         {
-            puts("condi 4");
+            puts("condi 1-4");
             return (3); // e.g., ">", "<", ">>", "<<"
         }
-        if (token->next->type != TOKEN_WORD)
+		printf("token: %d\n", token->next->type);
+        if (token->next->type == TOKEN_PIPE || token->next->type == TOKEN_AND || token->next->type == TOKEN_OR)
         {
-            puts("condi 4");
+			printf("token: %s\n", token->next->value);
+            puts("condi 2-4");
             return (2); // e.g., "> |", "< )"
         }
     }

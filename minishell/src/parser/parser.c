@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 13:35:16 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/14 09:49:59 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/14 10:20:25 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -299,7 +299,7 @@ t_tree	*parsing_input(char *line, t_tool *tool)
     }
 	
 	token = tokens_lst(line, tool);
-	//print_token_list(token);
+	print_token_list(token);
 
     if (pars_err(&token, tool))
         return (NULL);
