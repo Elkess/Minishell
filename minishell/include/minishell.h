@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/13 15:26:28 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/13 18:11:27 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,7 @@ t_token	*tokens_lst(char *cmd, t_tool *tool);
 
 void init_quote_token(t_token *token);
 t_token *update_token(t_token **token, t_tool *tool);
+int	pars_err_utils(t_token *token, t_tool *tool);
 
 t_token		*lst_new(void *str, t_tool *tool);
 t_token     *lastone(t_token *head);

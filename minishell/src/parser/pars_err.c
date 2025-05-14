@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 08:46:52 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/13 15:48:22 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/14 09:35:43 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,59 +34,96 @@ static int is_redirection(int type)
 
 static int condition(t_token *token)
 {
-    t_token *next = token->next;
-    t_token *temp;
-    
-    // ls |, echo &&, etc....
-    if ((token->type == TOKEN_PIPE || token->type == TOKEN_AND || token->type == TOKEN_OR)  && !next)
-        return (1); 
-
-    // || &&, etc...
-    if (next && (token->type == TOKEN_PIPE || token->type == TOKEN_AND || token->type == TOKEN_OR) &&
-                   (next->type == TOKEN_PIPE || next->type == TOKEN_AND || next->type == TOKEN_OR))
-        return 2;
-
-    //  Closing paren before word → "(echo) ls"
-    if (token->type == TOKEN_PAREN_CLOSE && next && next->type == TOKEN_WORD)
-        return 2;
-
-    // redir not befor filename
     if (is_redirection(token->type))
     {
-        temp = next;
-        while (temp && temp->type == TOKEN_SPACE)
-            temp = temp->next;
-        if (!temp || !((temp->type) < 0 || temp->type == TOKEN_WORD))
-            return (1);
+        if (!token->next)
+        {
+            puts("condi 4");
+            return (3); // e.g., ">", "<", ">>", "<<"
+        }
+        if (token->next->type != TOKEN_WORD)
+        {
+            puts("condi 4");
+            return (2); // e.g., "> |", "< )"
+        }
     }
-    if (token->type == TOKEN_WORD && next && next->type == TOKEN_PAREN_OPEN)
-        return (1);
+	
+    if (token->priority > 0 && !token->next && token->type != TOKEN_PAREN_CLOSE)
+    {
+        puts("condi 1");
+        return (1); // e.g., "cmd |" or "cmd &&"
+    }
 
-    return 0;
+    if (token->next && (token->type == TOKEN_PIPE || token->type == TOKEN_AND || token->type == TOKEN_OR) &&
+        (token->next->type == TOKEN_PIPE || token->next->type == TOKEN_AND || token->next->type == TOKEN_OR))
+    {
+        puts("condi 2");
+        return (2); // e.g., "||", "&& |"
+    }
+
+    if (token->type == TOKEN_PAREN_CLOSE && token->next && token->next->type == TOKEN_WORD)
+    {
+        puts("condi 3");
+        return (2); // e.g., ") cmd"
+    }
+
+    if (token->type == TOKEN_PAREN_OPEN && token->next &&
+        (token->next->type == TOKEN_PIPE || token->next->type == TOKEN_AND || token->next->type == TOKEN_OR))
+    {
+        puts("condi 5");
+        return (2); // e.g., "( |"
+    }
+
+    if ((token->type == TOKEN_WORD || token->type == TOKEN_PAREN_CLOSE) && token->next &&
+        token->next->type == TOKEN_PAREN_OPEN)
+    {
+        puts("condi 6");
+        return (2); // e.g., "cmd (" or ") ("
+    }
+
+    if (token->next && token->type == TOKEN_PAREN_CLOSE && token->next->type == TOKEN_PAREN_OPEN)
+    {
+        puts("condi 7");
+        return (1); // e.g., ") ("
+    }
+
+    if (token->type == TOKEN_PAREN_OPEN && !token->next)
+    {
+        puts("condi 8");
+        return (1); // e.g., "("
+    }
+
+    if (token->type == TOKEN_PAREN_OPEN && token->next && token->next->type == TOKEN_PAREN_CLOSE)
+    {
+        puts("condi 9");
+        return (1); // e.g., "()"
+    }
+            
+    return (0);
 }
 
-static int pars_err_utils(t_token *token, t_tool *tool)
+int	pars_err_utils(t_token *token, t_tool *tool)
 {
-    t_token *lst_token;
-    t_token *next;
-
-    while (token)
-    {
-        if (condition(token))
+	while (token)
+	{
+		// Check syntax errors
+        int err_code = condition(token);
+        if (err_code)
         {
-            lst_token = token;
-            write(2, "minishell$> : syntax error near unexpected token `", 50);
-            if (is_redirection(lst_token->type) && !token->next)
-                write(2, "newline", 7);
-            else
-                ft_putstr_fd(lst_token->value, 2);
+            write(2, "minishell$> : syntax error near unexpected token `", 51);
+            if (err_code == 1)
+                ft_putstr_fd(token->value, 2);
+            else if (err_code == 2 && token->next)
+                ft_putstr_fd(token->next->value, 2);
+            else if (err_code == 3)
+                ft_putstr_fd("newline", 2);
             write(2, "'\n", 2);
             tool->err = 2;
             return (1);
-        }
-        token = token->next;
-    }
-    return 0;
+        }	
+		token = token->next;
+	}
+	return (0);
 }
 
 
