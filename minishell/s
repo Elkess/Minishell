@@ -1,6 +1,0 @@
-include
-library
-makefile
-minishell
-s
-src
