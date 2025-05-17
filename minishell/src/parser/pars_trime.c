@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars_trime.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 07:38:27 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/03 16:47:52 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/17 20:06:10 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static char	*ft_strtrim(const char *s1, const char *set, t_tool *tool)
 	if (ft_strlen(s1) == 0)
 		return (check(tool));
 	if (ft_strlen(set) == 0 || !set)
-		return (ft_strdup(s1, tool));
+		return (ft_strdup_pars(s1, tool));
 	end = ft_strlen(s1) - 1;
 	start = 0;
 	while (s1[start] && ft_strchr(set, s1[start]))

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 13:35:16 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/17 19:22:30 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/17 20:21:06 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,13 +306,13 @@ char **create_cmd_array(t_token **input, t_tool *tool)
     if (!array)
         return (NULL);
     add_to_grbg(&tool->grbg, array);
-    array[i++] = ft_strdup((*input)->value, tool);
+    array[i++] = ft_strdup_pars((*input)->value, tool);
     add_to_grbg(&tool->grbg, array[i-1]);
     current = (*input)->next;
     while (i < count && current && (current->type == TOKEN_WORD || current->type == TOKEN_SINGLE_QUOTED_WORD || 
                                      current->type == TOKEN_DOUBLE_QUOTED_WORD ||  current->type == TOKEN_HAS_QUOTED))
     {
-        array[i++] = ft_strdup(current->value, tool);
+        array[i++] = ft_strdup_pars(current->value, tool);
         add_to_grbg(&tool->grbg, array[i-1]);
         current = current->next;
     }
@@ -418,7 +418,7 @@ t_tree	*ft_tree(t_token **control, t_tool *tool)
 t_tree	*parsing_input(char *line, t_tool *tool)
 {
 	t_token	*token;
-    t_redir	*redirs;
+    // t_redir	*redirs ;
     //t_tree	*tree;
     int i;
     
@@ -432,7 +432,6 @@ t_tree	*parsing_input(char *line, t_tool *tool)
         hundel_quotes_paren(tool, line[i]);                               
         i++;
     }
-	
 	token = tokens_lst(line, tool);
 	//print_token_list(token);
 
@@ -440,9 +439,9 @@ t_tree	*parsing_input(char *line, t_tool *tool)
         return (NULL);
 
     t_tree *result = ft_tree(&token, tool);
-    print_tree(result);
+    print_tree(result); 
 
-	return (NULL);
+	return (result);
 }
 
 

@@ -67,7 +67,7 @@ void init_quote_token(t_token *token)
         if (current->type == TOKEN_WORD)
         {
             val = current->value;
-            size_t len = strlen(val);
+            size_t len = ft_strlen(val);
 
             if (len >= 2 && val[0] == val[len - 1] && (val[0] == '\'' || val[0] == '"'))
             {

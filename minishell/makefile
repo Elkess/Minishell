@@ -16,7 +16,35 @@ Funs =	src/main.c \
 		src/parser/lst_helper.c  \
 		src/parser/ft_garbage_collect.c \
 		src/parser/pars_funs_help.c \
-		src/parser/pars_err.c
+		src/parser/pars_err.c \
+		src/builtins/cd.c \
+		src/builtins/echo.c \
+		src/builtins/env.c \
+		src/builtins/exit.c \
+		src/builtins/export.c \
+		src/builtins/pwd.c \
+		src/builtins/unset.c \
+		src/executor/execute_tree.c\
+		src/executor/executor.c \
+		src/executor/helper_funcs.c \
+		src/env/env.c  \
+		library/libft/ft_atoi.c       \
+		library/libft/ft_isalnum.c    \
+		library/libft/ft_itoa.c       \
+		library/libft/ft_split.c      \
+		library/libft/ft_strdup.c     \
+		library/libft/ft_strncmp.c\
+		library/libft/ft_atol.c       \
+		library/libft/ft_isalpha.c    \
+		library/libft/ft_putchar_fd.c \
+		library/libft/ft_strchr.c     \
+		library/libft/ft_strjoin.c    \
+		library/libft/ft_substr.c\
+		library/libft/ft_dstrlen.c    \
+		library/libft/ft_isdigit.c    \
+		library/libft/ft_putstr_fd.c  \
+		library/libft/ft_strcmp.c     \
+		library/libft/ft_strlen.c \
 
 OFuns = $(Funs:.c=.o)
 

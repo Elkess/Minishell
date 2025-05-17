@@ -51,11 +51,10 @@ t_env	*search_for_defaults(t_env *envh, char *key)
 	return (NULL);
 }
 
-void	handle_defaults(t_env **envh)
+int	handle_defaults(t_env **envh)
 {
 	char	*vals[4];
 	char	*keys[4];
-	t_env	*head;
 	size_t	len;
 
 	len = 0;
@@ -63,8 +62,11 @@ void	handle_defaults(t_env **envh)
 	vals[0] = NULL;
 	keys[1] =ft_strdup("PWD");
 	vals[1] = getcwd(NULL, 0);
-		if (!vals[1])
-			exit (1); //leaks
+	if (!vals[1])
+	{
+		printf("bash: cd: getcwd Failed\n");
+		return (1);
+	} //leaks
 	keys[2] = ft_strdup("SHLVL");
 	vals[2] = ft_strdup("1");
 	keys[3] = ft_strdup("PATH");
@@ -75,6 +77,30 @@ void	handle_defaults(t_env **envh)
 			*envh = append_node(*envh, keys[len], vals[len]);
 		len++;
 	}
+	return (0);
+}
+
+char	*handle_shlvl(char *val)
+{// TODO: Test it more; you are NOT fully understand how it works 
+	long long		raw_input;
+	unsigned int	wrapped;
+	int				parsed;
+
+	raw_input = atoll(val); //TODO : make ur atoll
+	if (raw_input == 999)
+		return (ft_strdup(""));
+	if (raw_input < INT_MIN || raw_input > INT_MAX)
+	{
+		wrapped = (unsigned int)raw_input;
+		parsed = wrapped +1;
+	}
+	else
+		parsed = (int)raw_input +1;
+	if (parsed < 0)
+		parsed = 0;
+	else if (parsed > 1000)
+		parsed = 1;
+	return (ft_strdup(ft_itoa(parsed)));
 }
 
 t_env	*fill_env(char **envp)
@@ -92,17 +118,13 @@ t_env	*fill_env(char **envp)
 		{
 			val = extract_data(envp[i], 1);
 			key =  extract_data(envp[i], 0);
-			// if (!ft_strcmp(key, "SHLVL"))
-			// {
-			// 	// if (ft_atoi(*val)) handle SHLVL 0 1 ""
-			// 	*val += 1; 
-			// }
+			if (!ft_strcmp(key, "SHLVL"))
+				val = handle_shlvl(val);
 			envh = append_node(envh, key, val);
 			i++;
 		}
-		handle_defaults(&envh);
 	}
-	else
-		handle_defaults(&envh);
+	if (handle_defaults(&envh))
+		return (NULL);
 	return (envh);
 }

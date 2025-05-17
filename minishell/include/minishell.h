@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/17 19:26:34 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/17 20:10:46 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ typedef struct s_tree
 {
     t_node_type      type;
     char            **cmd;        // argv if NODE_COMMAND
-    //t_redir          *redirs;   // linked list of redirs
+    t_redir          *redirs;   // linked list of redirs
     t_redir          *redirs_before; // Redirections before the command
     t_redir          *redirs_after;  // Redirections after the command
     int              is_ambiguous;
@@ -144,13 +144,13 @@ typedef enum e_priority
 /**************************************************/
 
 
-typedef struct	s_env
-{
-	char			*key;
-	char			*value;
-	struct s_env	*next;
-	struct s_env	*prev;
-}	t_env;
+// typedef struct	s_env
+// {
+// 	char			*key;
+// 	char			*value;
+// 	struct s_env	*next;
+// 	struct s_env	*prev;
+// }	t_env;
 
 // Function declarations
 
@@ -174,9 +174,8 @@ void        clear_garbcoll(t_garbcoll *head);
 
 size_t	ft_strlen(const char *s);
 int     is_space(char c);
-char	*ft_strdup(const char *s1, t_tool *tool);
+char	*ft_strdup_pars(const char *s1, t_tool *tool);
 char	*ft_strchr(const char *s, int c);
-int     ft_strcmp(char *s1, char *s2);
 char	*ft_my_strdup(const char *s1, size_t size, t_tool *tool);
 
 void	init_token(t_token **token, int priority, int type);
@@ -186,5 +185,20 @@ int	pars_err(t_token **token, t_tool *tool);
 t_tree *command_unit(t_token **input, t_tool *tool);
 t_tree *command_unit2(t_token **input, t_tool *tool, t_redir *before);
 t_tree	*ft_tree(t_token **control, t_tool *tool);
-
+//libft 
+size_t		ft_strlen(const char *s);
+size_t		ft_dstrlen(const char **s);
+char		**ft_split(char const *s, char c);
+char		*ft_strjoin(char const *s1, char const *s2);
+void		ft_putstr_fd(char *s, int fd);
+void		ft_putchar_fd(char c, int fd);
+char		*ft_substr(char const *s, unsigned int start, size_t len);
+char		*ft_strdup(const char *s1);
+int		 ft_strcmp(const char *s1, const char *s2);
+int		 ft_strncmp(const char *s1, const char *s2, size_t n);
+int		 ft_isalpha(int a);
+int		 ft_isdigit(int n);
+int		 ft_isalnum(int c);
+char		*ft_strchr(const char *s, int c);
+char	*ft_itoa(int n);
 #endif

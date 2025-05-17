@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/04/20 09:12:42 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/17 20:23:24 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,7 @@ char	**struct_to_darr(t_env *envh)
 	t_env	*tmp;
 	char	**env;
 
-	len = 0;
-	tmp = envh;
-	while (tmp)
-	{
-		len++;
-		tmp = tmp->next;
-	}
+	len = ft_envlen(envh);
 	env = malloc((len +1) * sizeof(char *));
 	if (!env)
 		exit (1);
@@ -42,42 +36,66 @@ char	**struct_to_darr(t_env *envh)
 	return (env[len] = NULL, env);
 }
 
+// void	is_dir(char **p, char *path)
+// {
+// 	struct stat	s;
+
+// 	if (!ft_strcmp(path, "."))
+// 		(ft_putstr_fd(ft_strjoin("minishell: ", ft_strjoin(path, ": command not found \n")), 2), exit(127));
+// 	if (!stat(path, &s) && S_ISDIR(s.st_mode))
+// 	{
+// 		if ((p && *p && !ft_strcmp(path, "..")) || !ft_strchr(path, '/'))
+// 			(ft_putstr_fd(ft_strjoin("minishell1: ", ft_strjoin(path, ": command not found \n")), 2),exit(127));
+// 		else
+// 			(ft_putstr_fd(ft_strjoin("minishell2: ", ft_strjoin(path, ": is a directory \n")), 2), exit(126));
+// 	}
+// }
+
+void	exec_helper(char **cmd, char **env, t_env *envh, char **path)
+{
+	size_t		i;
+
+	i = 0;
+	while (path && path[i])
+	{
+		path[i] = ft_strjoin(path[i], "/");
+		path[i] = ft_strjoin(path[i], cmd[0]);
+		if (!access(path[i], X_OK | F_OK))
+		{
+			if (execve(path[i], cmd, env) == -1)
+				(perror("Execve2 Failed:"), exit(1));
+		}
+		i++;
+	}
+}
+
 void	execute_one(t_tree *cmd, t_env *envh)
 {
-	pid_t 	fd = fork();
-	char	**env;
-	char	**path;
-	size_t	i;
+	pid_t		fd = fork();
+	char		**env;
+	char		**path;
 
-	if (cmd->redirs)
-	i = 0;
+	path = NULL;
+	if (search_for_defaults(envh, "PATH"))
+		path = ft_split(search_for_defaults(envh, "PATH")->value, ':');
 	env = struct_to_darr(envh);
 	if (fd == -1)
 		(perror("Fork Failed:"), exit(1));
 	if (fd == 0)
 	{
-		if (!access(cmd->cmd[0], X_OK))
+		// is_dir(path, cmd->cmd[0]);
+		if ((!access(cmd->cmd[0], X_OK)))
 		{
 			if (execve(cmd->cmd[0], cmd->cmd, env) == -1)
 				(perror("Execve1 Failed:"), exit(1));
 		}
-		else if (!ft_strchr(cmd->cmd[0], '/'))
-		{
-			// execute_with_path()
-			path = ft_split(search_for_defaults(envh, "PATH")->value, ':');
-			while (path && path[i])
-			{
-				path[i] = ft_strjoin(path[i], "/");
-				path[i] = ft_strjoin(path[i], cmd->cmd[0]);
-				if (!access(path[i], X_OK))
-				{
-					if (execve(path[i], cmd->cmd, env) == -1)
-						(perror("Execve2 Failed:"), exit(1));		
-				}
-				i++;
-			}
-		}
-		(printf("minishell: command not found: %s\n", cmd->cmd[0]), exit(1));
+		exec_helper(cmd->cmd, env, envh, path);
+		puts("TRUU");
+		if (!path || ft_strchr(cmd->cmd[0], '/'))
+			ft_putstr_fd(ft_strjoin("minishell3: ", ft_strjoin(cmd->cmd[0], ": No such file or directory\n")), 2);
+		else
+			ft_putstr_fd(ft_strjoin("minishell4: ", ft_strjoin(cmd->cmd[0], ": command not found\n")), 2);
+		exit(127);
 	}
 }
 
@@ -88,116 +106,282 @@ void	ft_dup(int *io, int flag)
 		io[0] = dup(0);
 		io[1] = dup(1);
 		if (io[0] == -1 || io[1] == -1)
-		{
 			(close(io[0]), close(io[1]));
-		}
 	}
 	else
 	{
 		if (dup2(io[0], 0) == -1 || dup2(io[1], 1) == -1)
-		{
 			(close(io[0]), close(io[1]));
-		}
 		(close(io[0]), close(io[1]));
 	}
 }
 
-void	ft_redir(t_tree *tree, int flag, int *fds)
+t_redir	*find_lastredir(t_redir *redirs, t_redir_type type)
 {
-	int		fd;
-	int		trunc;
-	int		create;
-	size_t	count;
-	t_redir	*red;
+	t_redir	*last;
 
-	count = 0;
-	red = tree->redirs;
-	trunc = flag * O_TRUNC;
-	create = flag * O_CREAT;
-	while (red)
+	last = NULL;
+	if (type == REDIR_OUT || type == REDIR_APPEND)
 	{
-		if (red->type == flag)
-			count++;
-		red = red->next;
-	}
-	while (tree->redirs)
-	{
-		if (tree->redirs->type != flag)
-			tree->redirs = tree->redirs->next;
-		else if (tree->redirs->type == flag && count > 1)
+		while (redirs)
 		{
-			if (flag)
-				fd = open(tree->redirs->file, create | trunc | O_RDWR);
-			else
-				fd = open(tree->redirs->file, create | trunc | O_RDWR);
-			close(fd);
-			count--;
+			if (redirs->type == REDIR_OUT || redirs->type == REDIR_APPEND)
+				last = redirs;
+			redirs = redirs->next;
 		}
-		else
-			fd = open(tree->redirs->file, create | trunc | O_RDWR);
-		tree->redirs = tree->redirs->next;
 	}
-	ft_dup(fds, 1);
-	// printf("%d\n", flag);
-	dup2(fd, flag);
+	if (type == REDIR_IN || type == REDIR_HEREDOC)
+	{
+		while (redirs)
+		{
+			if (redirs->type == REDIR_IN || redirs->type == REDIR_HEREDOC)
+				last = redirs;
+			redirs = redirs->next;
+		}
+	}
+	return (last);
 }
 
-int	executor(t_tree *tree,t_env	*envh)
+int	handle_lastredir(t_redir *redirs)
 {
-	int		status;
-	int		fds[2];
-	size_t	i = 0;
+	t_redir	*lastin;
+	t_redir	*lastout;
+	lastin = find_lastredir(redirs, REDIR_IN);
+	lastout = find_lastredir(redirs, REDIR_OUT);
 
-	if (!tree || !tree->cmd)
-		exit (999);
-	// while (tree->cmd[i])
-	// 	puts(tree->cmd[i++]);
-	// // FIXME: SHLVL
-	// if (!tree || tree->type != NODE_COMMAND)
-	// 	{printf("NO YEEEET !!!");}
+	if (lastin && lastin->type != REDIR_HEREDOC && (!lastout ||
+		(lastout && lastin->index < lastout->index)))
+	{
+		lastin->fd = open(lastin->file, O_RDONLY);
+		if (lastin->fd == -1)
+			return (ft_putstr_fd(ft_strjoin("minishell5: ", lastin->file), 2), 1);
+	}
+	if (lastout && lastout->type == REDIR_OUT)
+		lastout->fd = open(lastout->file, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	else if (lastout && lastout->type == REDIR_APPEND)
+		lastout->fd = open(lastout->file, O_CREAT | O_APPEND | O_WRONLY, 0644);
+	if (lastout && lastout->fd == -1)
+		return (ft_putstr_fd(ft_strjoin("minishell6: ", lastout->file), 2), 1);
+	if (lastin && lastin->type != REDIR_HEREDOC && lastout && lastin->index > lastout->index)
+	{
+		lastin->fd = open(lastin->file, O_RDONLY);
+		if (lastin->fd == -1)
+			return (ft_putstr_fd(ft_strjoin("minishell7: ", lastin->file), 2), 1);
+	}
+	if (lastin)
+		dup2(lastin->fd, 0);
+	if (lastout) 
+		dup2(lastout->fd, 1);
+	return (0);
+}
+
+int	ft_redir(t_tree *tree)
+{
+	t_redir	*red;
+
+	red = tree->redirs;
+	while (red)
+	{
+		// if (red != find_lastredir(tree->redirs, red->type) && red->type != REDIR_HEREDOC)
+		// {
+			if (red->type == REDIR_IN)
+				red->fd = open(red->file, O_RDONLY);
+			else if (red->type == REDIR_OUT)
+				red->fd = open(red->file, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+			else if (red->type == REDIR_APPEND)
+				red->fd = open(red->file, O_CREAT | O_APPEND | O_WRONLY, 0644);
+			if (red->fd == -1)
+			{
+				ft_putstr_fd(ft_strjoin("minishell8: ", red->file), 2);
+				return (1);
+			}
+		// }
+		if (red != find_lastredir(tree->redirs, REDIR_OUT) && // opened fd
+			red != find_lastredir(tree->redirs, REDIR_IN))
+			close(red->fd);
+		red = red->next;
+	}
+	return (handle_lastredir(tree->redirs));
+}
+
+char	*generate_file(t_redir *red)
+{
+	char	*str;
+	size_t	i;
+
+	str = NULL;
+	i = 0;
+	while (1)
+	{
+		str = ft_strjoin("/tmp/.here_doc", ft_itoa(i)); //leaks
+		if (access(str, F_OK) != 0)
+		{
+			red->fd = open(str, O_CREAT | O_RDWR | O_APPEND);
+			if (red->fd == -1)
+				(perror("Open failed in << :"), exit (1));
+			break ;
+		}
+		i++;
+	}
+	return (str);
+}
+
+// void	here_doc()
+// {
+// 	char	*line;
+// 	char	*file;
+
+// 	file = generate_file(red);
+// 	while (1)
+// 	{
+// 		line = readline("> ");
+// 		if (!line)
+// 			exit(1);
+// 		if (!ft_strcmp(line, red->file))
+// 			break ;
+// 		// if (flag == 1)
+// 		// {
+// 		// 	line = expand(line)
+// 		// }
+// 		line = ft_strjoin(line, "\n");
+// 		write(red->fd, line, ft_strlen(line)); //TODO :write all at once
+// 	}
+// 	close(red->fd);
+// 	red->fd = open(file, O_CREAT | O_RDWR | O_APPEND);
+// 	if (red->fd == -1)
+// 		(perror("Open failed in << :"), exit (1));
+// 	unlink(file);
+// }
+
+// char	*heredoc_expand(char *line)
+// {
+// 	size_t	i;
+
+// 	i = 0;
+// 	// while (1)
+// 	// {
+// 	// 	if (!ft_strchr(line, '$'))
+// 	// 		break ;
+		
+// 	// }
+// 	while (line[i])
+// 	{
+// 	}
+	
+// }
+
+void	here_docs(t_redir *red)
+{
+	char	*line;
+	char	*file;
+
+	line = NULL;
+	while (red)
+	{
+		if (red->type == REDIR_HEREDOC)
+		{
+			file = generate_file(red);
+			while (1)
+			{
+				line = readline("> ");
+				if (!line)
+					exit(1);
+				if (!ft_strcmp(line, red->file))
+					break ;
+				// if (red->flag == 1)
+				// {
+				// 	line = heredoc_expand(line);
+				// }
+				line = ft_strjoin(line, "\n");
+				write(red->fd, line, ft_strlen(line)); //TODO :write all at once
+			}
+			close(red->fd);
+			///
+			red->fd = open(file, O_CREAT | O_RDWR | O_APPEND);
+			// read it and expand each line
+			if (red->fd == -1)
+				(perror("Open failed in << :"), exit (1));
+			unlink(file);
+		}
+		red = red->next;
+	}
+}
+
+t_redir	*find_lasthd(t_redir *redirs)
+{
+	t_redir	*last;
+
+	last = NULL;
+	while (redirs)
+	{
+		if (redirs->type == REDIR_HEREDOC)
+			last = redirs;
+		redirs = redirs->next;
+	}
+	return (last);
+}
+
+int	is_builtin(t_tree *tree, char	*cmd, t_env *envh)
+{
+	static char	*pwd_backup;
+
+	if (!ft_strcmp(cmd, "echo"))
+		return(echo(tree));
+	else if (!ft_strcmp(cmd, "cd"))
+		return(cd(&envh, tree, &pwd_backup));
+	else if (!ft_strcmp(cmd, "export"))
+		return(ft_export(&envh, tree));
+	else if (!ft_strcmp(cmd, "unset"))
+		return(unset(&envh, tree->cmd));
+	else if (!ft_strcmp(cmd, "env"))
+		return(env(envh));
+	else if (!ft_strcmp(cmd, "pwd"))
+		return(pwd(&pwd_backup, 1));
+	else if (!ft_strcmp(cmd, "exit"))
+		ft_exit(tree, 0);
+	return (-1);
+}
+
+int	execute_cmd(t_tree *tree, t_env *envh, int status)
+{
+	char	*cmd;
+	if (tree && tree->cmd)
+	{
+
+		cmd = tree->cmd[0];
+		if (!cmd)
+			return (0);
+		status = is_builtin(tree, cmd, envh);
+		if (status == -1)
+		{
+			(execute_one(tree, envh), waitpid(0, &status, 0));
+			status = WEXITSTATUS(status);
+		}
+	}
+	return (status);
+}
+
+int	executor(t_tree *tree, t_env *envh)
+{
+	int		fds[2];
+	int		redir_status = 0;
+	int		status;
+	t_redir	lasthd;
+
+	status = 1;
+	if (!tree && !tree->cmd)
+		return (1);
+	ft_dup(fds, 1);
 	// if (tree->redirs)
 	// {
-	// 	if (tree->redirs->type == REDIR_IN )
-	// 		ft_redir(tree, 0, fds);
-	// 	else if (tree->redirs->type == REDIR_OUT)
-	// 		ft_redir(tree, 1, fds);
-	// 	else 
-	// 		{puts("NOT YEEEET A!"); return (1);}
+	// 	// lasthd = find_lasthd(tree->redirs);
+	// 	// TODO: 2 handle herdoc properly this is wrong
+	// 	// if (lasthd)
+	// 	// 	here_docs(tree->redirs);
+	// 	redir_status = ft_redir(tree);
 	// }
-	if (tree->cmd && !ft_strcmp(tree->cmd[0], "echo"))
-		echo(tree);
-	else if (tree->cmd && !ft_strcmp(tree->cmd[0], "env"))
-		env(envh);
-	else if (tree->cmd && !ft_strcmp(tree->cmd[0], "cd"))
-		cd(&envh, tree);
-	else if (tree->cmd && !ft_strcmp(tree->cmd[0], "export"))
-		export(&envh, tree);
-	else if (tree->cmd && !ft_strcmp(tree->cmd[0], "unset"))
-		unset(&envh, tree->cmd);
-	else if (tree->cmd && !ft_strcmp(tree->cmd[0], "exit"))
-		ft_exit(tree);
-	else if (tree->cmd && !ft_strcmp(tree->cmd[0], "pwd"))
-		pwd(1);
-	else
-	{
-		execute_one(tree, envh);
-		waitpid(0, &status, 0);	
-	}
-	// ft_dup(fds, 0);
-	// t_env *tmp;
-	// while(envh)
-	// {
-	// 	tmp = envh;
-	// 	free(tmp->key);
-	// 	free(tmp->value);
-	// 	envh = envh->next;
-	// 	free(tmp);
-	// }
-	// free(tree);
-	// while (envh)
-	// {
-	// 	printf("key: %s => %s\n", envh->key, envh->value);
-	// 	envh = envh->next;
-	// }	
-	return 0;
+	if (!redir_status && tree->type == NODE_COMMAND)
+		status = execute_cmd(tree, envh, status);
+	ft_dup(fds, 0);
+	return (status);
 }

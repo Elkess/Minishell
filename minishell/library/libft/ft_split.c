@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 11:31:10 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/23 14:19:55 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/04/21 16:20:47 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/executor.h"
+#include "../../include/parser.h"
 
 static int	ft_nbr_words(const char *s, char c)
 {
