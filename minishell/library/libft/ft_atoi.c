@@ -6,11 +6,11 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 13:35:08 by melkess           #+#    #+#             */
-/*   Updated: 2025/04/17 11:09:01 by melkess          ###   ########.fr       */
+/*   Updated: 2025/04/21 16:19:48 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/executor.h"
+#include "../../include/minishell.h"
 
 static void	ft_skip(const char *str, int *i, int *sign)
 {

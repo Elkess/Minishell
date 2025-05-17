@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 16:52:06 by melkess           #+#    #+#             */
-/*   Updated: 2025/04/20 09:14:57 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/17 15:24:22 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,7 @@ char	*filter_arg(char *s,int *sign)
 
 	args = ft_split(s, 32);
 	if (!args || !args[0] || args && args[1])
-		(printf("exit\nminishell: exit: %s: numeric Filter Range argument required\n", s),
-			exit (255));
+		(ft_putstr_fd(ft_strjoin("exit\nminishell: exit: ", ft_strjoin(s, ": numeric Filter Range argument required\n")), 2), exit(255));
 	i = 0;
 	if (args[0] && (args[0][i] == '-' || args[0][i] == '+'))
 		i++;
@@ -46,27 +45,28 @@ void	check_range(char *s, int sign)
 		if (sign == 1)
 		{
 			if (s[i] > exit_max[i])
-				(printf("exit\nminishell: exit: %s: numeric Check Range1** argument required\n", s), exit(255));
+				(ft_putstr_fd(ft_strjoin("exit\nminishell: exit: ", ft_strjoin(s, ": numeric Check Range1 argument required\n")), 2), exit(255));
 			if (s[i] < exit_max[i])
 				break ;
 		}
 		if (sign == -1)
 		{
 			if (s[i] > exit_min[i])
-			(printf("exit\nminishell: exit: %s: numeric Check Range2 argument required\n", s)
-				, exit(255));
+				(ft_putstr_fd(ft_strjoin("exit\nminishell: exit: ", ft_strjoin(s, ": numeric Check Range2 argument required\n")), 2), exit(255));
 		}
 		i++;
 	}
 }
 
-void	ft_exit(t_tree *cmd)
+void	ft_exit(t_tree *cmd, int status)
 {
 	size_t		i;
 	char		*s;
 	long long	n;
 	int			sign;
 
+	if (!cmd)
+		exit (status);
 	cmd->cmd++;
 	sign = 1;
 	i = 0;
@@ -78,11 +78,11 @@ void	ft_exit(t_tree *cmd)
 	if (sign == -1)
 		s = ft_strjoin("-", s);
 	if ((sign == -1 && ft_strlen(s) > 20) || sign == 1 && ft_strlen(s) > 19)
-		(printf("exit\nminishell: exit: %s: numeric Exit argument required\n", s)
-			, exit(255));
+		(ft_putstr_fd(ft_strjoin("exit\nminishell: exit: ", ft_strjoin(s, ": numeric Exit argument required\n")), 2), exit(255));
 	if (i > 1)
-		(printf("exit\nminishell: exit: too many arguments\n"), exit (1));
+		(ft_putstr_fd("exit\nminishell: exit: too many arguments\n", 2), exit (10));
 	if ((sign == -1 && ft_strlen(s) == 20) || (sign == 1 && ft_strlen(s) == 19))
 		check_range(s, sign);
+	puts(s);
 	exit (ft_atol(s, sign) % 256);
 }

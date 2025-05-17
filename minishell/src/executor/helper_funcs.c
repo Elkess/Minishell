@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helper_funcs.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:39:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/04/20 09:11:03 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/14 14:27:44 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ t_env	*edit_env(char *key, char *val, t_env *envh, int should_concat)
 			{
 				if (val)
 				{
-					free(tmp->value);	
+					free(tmp->value);
 					tmp->value = val; //leaks
 				}
 			}
@@ -57,20 +57,21 @@ int	is_valid_key(char *key)
 	return (1);
 }
 
-void	print_rest(char **s, int fd, int n)
+void	print_rest(char **s, int n)
 {
 	size_t	i;
-	char	**buffer;
+	char	*buffer;
 
 	buffer = NULL;
 	i = 0;
 	while (s[i])
 	{
-		// buffer = ft_strjoin(NULL, s[i]);
-		ft_putstr_fd(s[i++], fd);
+		buffer= ft_strjoin(buffer, s[i++]);
 		if (s[i])
-			ft_putchar_fd(' ', fd);
+			buffer= ft_strjoin(buffer, " "); //TODO: handle tabs
 	}
 	if (!n)
-		ft_putchar_fd('\n', fd);
+		buffer= ft_strjoin(buffer, "\n");
+	write(1, buffer, ft_strlen(buffer));
 }
+

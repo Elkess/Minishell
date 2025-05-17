@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 11:32:27 by sgmih             #+#    #+#             */
-/*   Updated: 2025/04/21 10:38:09 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/04/23 13:45:44 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,5 @@
 # define PARSER_H
 
 # include "../include/minishell.h"
-# include <unistd.h>
-# include <stdlib.h>
-
 
 #endif
