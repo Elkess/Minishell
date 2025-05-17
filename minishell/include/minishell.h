@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/17 10:38:46 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/17 14:39:30 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,8 @@ typedef enum e_node_type
     NODE_COMMAND,
     NODE_PIPE,
     NODE_AND,
-    NODE_OR
+    NODE_OR,
+    NODE_PARENTHS
 }   t_node_type;
 
 typedef struct s_tree
@@ -182,5 +183,8 @@ void	init_token(t_token **token, int priority, int type);
 int	pars_err(t_token **token, t_tool *tool);
 
 
+t_tree *command_unit(t_token **input, t_tool *tool);
+t_tree *command_unit2(t_token **input, t_tool *tool, t_redir *before);
+t_tree	*ft_tree(t_token **control, t_tool *tool);
 
 #endif
