@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 08:46:52 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/17 09:27:11 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/17 15:53:26 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,10 @@ static int condition(t_token *token)
     }
 
     if (token->next && (token->type == TOKEN_PIPE || token->type == TOKEN_AND || token->type == TOKEN_OR) &&
-        (token->next->type == TOKEN_PIPE || token->next->type == TOKEN_AND || token->next->type == TOKEN_OR))
+    (token->next->type == TOKEN_PIPE || token->next->type == TOKEN_AND || token->next->type == TOKEN_OR || token->next->type == TOKEN_PAREN_CLOSE))
     {
-        puts("condi 2");
-        return (2); // e.g., "||", "&& |"
+        puts("condi 2 extended");
+        return (2); // e.g., "||", "&& |", "| )"
     }
 
     if (token->type == TOKEN_PAREN_CLOSE && token->next && token->next->type == TOKEN_WORD)

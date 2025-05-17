@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 13:35:16 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/17 14:22:29 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/17 19:22:30 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ const char *get_node_type_str(t_node_type type) {
         case NODE_PIPE: return "PIPE";
         case NODE_OR: return "||";
         case NODE_AND: return "&&";
+        case NODE_PARENTHS: return "()";
         default: return "UNKNOWN";
     }
 }
@@ -37,7 +38,7 @@ const char *get_redir_type_str(t_redir_type type) {
     }
 }
 
-// Print command and redirection details for a node
+// Print command, parentheses, and redirection details for a node
 void print_node_details(t_tree *node, char *prefix, int is_last, int level) {
     if (node->type == NODE_COMMAND) {
         // Print command node header
@@ -84,12 +85,46 @@ void print_node_details(t_tree *node, char *prefix, int is_last, int level) {
         } else {
             printf("(none)\n");
         }
+    } else if (node->type == NODE_PARENTHS) {
+        // Print parentheses node header
+        printf("%s%s Operator Node: %s\n", prefix, is_last ? "└──" : "├──", get_node_type_str(node->type));
+
+        // Print redirections before
+        printf("%s%s  Redirs Before: ", prefix, is_last ? "    " : "│   ");
+        if (node->redirs_before) {
+            printf("\n");
+            t_redir *curr = node->redirs_before;
+            while (curr) {
+                printf("%s%s    Index     : %zu\n", prefix, is_last ? "    " : "│   ", curr->index);
+                printf("%s%s    Type      : %s\n", prefix, is_last ? "    " : "│   ", get_redir_type_str(curr->type));
+                printf("%s%s    File      : %s\n", prefix, is_last ? "    " : "│   ", curr->file ? curr->file : "(null)");
+                printf("%s%s    FD        : %d\n", prefix, is_last ? "    " : "│   ", curr->fd);
+                curr = curr->next;
+            }
+        } else {
+            printf("(none)\n");
+        }
+
+        // Print redirections after
+        printf("%s%s  Redirs After: ", prefix, is_last ? "    " : "│   ");
+        if (node->redirs_after) {
+            printf("\n");
+            t_redir *curr = node->redirs_after;
+            while (curr) {
+                printf("%s%s    Index     : %zu\n", prefix, is_last ? "    " : "│   ", curr->index);
+                printf("%s%s    Type      : %s\n", prefix, is_last ? "    " : "│   ", get_redir_type_str(curr->type));
+                printf("%s%s    File      : %s\n", prefix, is_last ? "    " : "│   ", curr->file ? curr->file : "(null)");
+                printf("%s%s    FD        : %d\n", prefix, is_last ? "    " : "│   ", curr->fd);
+                curr = curr->next;
+            }
+        } else {
+            printf("(none)\n");
+        }
     } else {
-        // Print operator node
+        // Print other operator nodes
         printf("%s%s Operator Node: %s\n", prefix, is_last ? "└──" : "├──", get_node_type_str(node->type));
     }
 }
-
 // Get annotation for a node
 void get_node_annotation(t_tree *node, t_tree *parent, int is_left, char *buffer, size_t buf_size) {
     char node_str[256];
@@ -154,6 +189,7 @@ t_tree *create_operator_node(t_node_type type, t_tree *left, t_tree *right) {
     node->right = right;
     return node;
 }
+
 
 /******************************************** end print tokens *********************************************/
 
@@ -308,17 +344,19 @@ t_tree *command_unit(t_token **input, t_tool *tool)
     t_redir *before;
     t_tree *node;
 
-    if ((*input)->type == TOKEN_PAREN_OPEN)
+    before = redir(input, tool);
+    
+    if (*input && (*input)->type == TOKEN_PAREN_OPEN)
     {
         *input = (*input)->next; // Skip '('
-        node = ft_tree(input, tool);
-        if (!node)
-            return (NULL);
-        *input = (*input)->next; // Skip ')'
-        node->redirs_after = redir(input, tool); // Handle any redirections after
+        node = create_tree_node(NODE_PARENTHS, tool);
+        node->redirs_before = before;
+        node->left = ft_tree(input, tool);
+        if (*input && (*input)->type == TOKEN_PAREN_CLOSE)
+            *input = (*input)->next; // Skip ')'
+        node->redirs_after = redir(input, tool);
         return (node);
     }
-    before = redir(input, tool);
     if (!*input || (*input)->type != TOKEN_WORD)
     {
         // Create a command node with just before redirections (no command)

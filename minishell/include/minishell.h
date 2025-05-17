@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/17 14:39:30 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/17 19:26:34 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ typedef struct s_tree
 {
     t_node_type      type;
     char            **cmd;        // argv if NODE_COMMAND
-    ///t_redir          *redirs;     // linked list of redirs
+    //t_redir          *redirs;   // linked list of redirs
     t_redir          *redirs_before; // Redirections before the command
     t_redir          *redirs_after;  // Redirections after the command
     int              is_ambiguous;
