@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 08:57:56 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/13 15:33:17 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/14 14:50:32 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,7 @@ void	hundel_quotes_paren(t_tool *tool, char cmd)
 
 int	is_delimter(char c, char d)
 {
-	if (c == '|' || c == '&' || c == '>' || c == '<' || c == '(' || c == ')' ||
-    	 c == '$' || c == '*')
+	if (c == '|' || c == '&' || c == '>' || c == '<' || c == '(' || c == ')') // c == '$' || c == '*'
 	{
 		if (c == '>')
 		{
@@ -79,10 +78,10 @@ int	is_delimter(char c, char d)
 			return (TOKEN_PAREN_OPEN);
 		else if (c == ')')
 			return (TOKEN_PAREN_CLOSE);
-        else if (c == '$')
-            return (TOKEN_DOLLAR);
-        else if (c == '*')
-            return (TOKEN_WILDCARD);
+        // else if (c == '$')
+        //     return (TOKEN_DOLLAR);
+        // else if (c == '*')
+        //     return (TOKEN_WILDCARD);
 	}
 	return (0); // if just char
 }

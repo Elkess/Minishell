@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/13 18:11:27 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/17 08:40:17 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,53 @@ typedef struct s_token
     char           *value;
     int				priority;
     t_token_type    type;
+    struct s_token	*right;
+	struct s_token	*left;
     struct s_token *next;
 } t_token;
+
+typedef enum e_redir_type
+{
+    REDIR_IN,        // <
+    REDIR_OUT,       // >
+    REDIR_APPEND,    // >>
+    REDIR_HEREDOC,    // <<
+    REDIR_NONE       // Invalid or no redirection
+}   t_redir_type;
+
+typedef struct s_redir
+{
+    size_t            index;
+    t_redir_type      type;
+    char             *file;
+    int               fd;
+    int               flag;
+    struct s_redir   *next;
+}   t_redir;
+
+
+typedef enum e_node_type
+{
+    NODE_COMMAND,
+    NODE_PIPE,
+    NODE_AND,
+    NODE_OR
+}   t_node_type;
+
+typedef struct s_tree
+{
+    t_node_type      type;
+    char            **cmd;        // argv if NODE_COMMAND
+    ///t_redir          *redirs;     // linked list of redirs
+    t_redir          *redirs_before; // Redirections before the command
+    t_redir          *redirs_after;  // Redirections after the command
+    int              is_ambiguous;
+
+    struct s_tree    *left;       // left command (for pipe)
+    struct s_tree    *right;      // right command (for pipe)
+}   t_tree;
+
+
 
 /**************************************************/
 
@@ -92,45 +137,6 @@ typedef enum e_priority
 
 
 
-
-
-typedef enum e_node_type
-{
-    NODE_COMMAND,
-    NODE_PIPE,
-    NODE_AND,
-    NODE_OR
-}   t_node_type;
-
-typedef enum e_redir_type
-{
-    REDIR_IN,        // <
-    REDIR_OUT,       // >
-    REDIR_APPEND,    // >>
-    REDIR_HEREDOC,    // <<
-    REDIR_NONE       // Invalid or no redirection
-}   t_redir_type;
-
-typedef struct s_redir
-{
-    size_t            index;
-    t_redir_type      type;
-    char             *file;
-    int               fd;
-    int               flag;
-    struct s_redir   *next;
-}   t_redir;
-
-typedef struct s_tree
-{
-    t_node_type      type;
-    char            **cmd;        // argv if NODE_COMMAND
-    t_redir          *redirs;     // linked list of redirs
-    int              is_ambiguous;
-
-    struct s_tree    *left;       // left command (for pipe)
-    struct s_tree    *right;      // right command (for pipe)
-}   t_tree;
 
 
 

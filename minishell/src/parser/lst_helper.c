@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:23:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/10 09:22:40 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/17 08:44:09 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ t_token	*lst_new(void *str, t_tool *tool)
 	add_to_grbg(&tool->grbg, token);
 	token->value = str;
 	init_type(&token);
+	token->right = NULL;
+    token->left = NULL;
 	token->next = NULL;
 	return (token);
 }
