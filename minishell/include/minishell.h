@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/17 08:40:17 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/17 10:38:46 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,6 @@ typedef struct s_token
     char           *value;
     int				priority;
     t_token_type    type;
-    struct s_token	*right;
-	struct s_token	*left;
     struct s_token *next;
 } t_token;
 

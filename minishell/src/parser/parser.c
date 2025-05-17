@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 13:35:16 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/17 09:37:47 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/17 11:53:29 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,214 +14,213 @@
 
 /******************************************** start print tokens *********************************************/
 
-// Helper function to convert token type to string for readable output
-static const char *get_token_type_name(t_token_type type)
-{
-    switch (type)
-    {
-        case TOKEN_WORD: return "WORD";
-        case TOKEN_PIPE: return "PIPE";
-        case TOKEN_AND: return "AND";
-        case TOKEN_OR: return "OR";
-        case TOKEN_SPACE: return "SPACE";
-        case TOKEN_REDIR_IN: return "REDIR_IN";
-        case TOKEN_REDIR_OUT: return "REDIR_OUT";
-        case TOKEN_REDIR_APPEND: return "REDIR_APPEND";
-        case TOKEN_REDIR_HEREDOC: return "REDIR_HEREDOC";
-        case TOKEN_PAREN_OPEN: return "PAREN_OPEN";
-        case TOKEN_PAREN_CLOSE: return "PAREN_CLOSE";
-        case TOKEN_SINGL_AND: return "SINGL_AND";
-        case TOKEN_SINGLE_QUOTE: return "SINGLE_QUOTE";
-        case TOKEN_DOUBLE_QUOTE: return "DOUBLE_QUOTE";
-        case TOKEN_DOLLAR: return "DOLLAR";
-        case TOKEN_WILDCARD: return "WILDCARD";
-        case TOKEN_SINGLE_QUOTED_WORD: return "SINGLE_QUOTED_WORD";
-        case TOKEN_DOUBLE_QUOTED_WORD: return "DOUBLE_QUOTED_WORD";
-        case TOKEN_HAS_QUOTED: return "TOKEN_HAS_QUOTED";
-        case TOKEN_FILERED_OUT: return "FILERED_OUT";
-        case TOKEN_FILERED_IN: return "FILERED_IN";
-        case TOKEN_FILERED_APPEND: return "FILERED_APPEND";
-        case TOKEN_FILERED_HEREDOC: return "FILERED_HEREDOC";
+
+// Get node type string
+const char *get_node_type_str(t_node_type type) {
+    switch (type) {
+        case NODE_COMMAND: return "CMD";
+        case NODE_PIPE: return "PIPE";
+        case NODE_OR: return "||";
+        case NODE_AND: return "&&";
         default: return "UNKNOWN";
     }
 }
 
-// Function to print all tokens in the list, with spaces made visible as underscores
-static void print_token_list(t_token *head)
-{
-    int i = 0;
-    while (head)
-    {
-        printf("Token %d:", i++);
-        printf("  Value   : ");
-        if (head->value)
-        {
-            for (int j = 0; head->value[j]; j++)
-            {
-                if (head->value[j] == ' ')
-                    printf("_");  // Replace space with underscore for visibility
-                else
-                    printf("%c", head->value[j]);
-            }
-        }
-        else
-            printf("NULL");
-        printf("  Type    : %s", get_token_type_name(head->type));
-        printf("  Priority: %d\n", head->priority);
-        head = head->next;
-    }
-}
-
-const char *node_type_to_str(t_node_type type)
-{
-    if (type == NODE_COMMAND) return "NODE_COMMAND";
-    if (type == NODE_PIPE)    return "NODE_PIPE";
-    if (type == NODE_AND)     return "NODE_AND";
-    if (type == NODE_OR)      return "NODE_OR";
-    return "UNKNOWN_NODE_TYPE";
-}
-
-const char *redir_type_to_str(t_redir_type type)
-{
-    if (type == REDIR_IN)     return "< (REDIR_IN)";
-    if (type == REDIR_OUT)    return "> (REDIR_OUT)";
-    if (type == REDIR_APPEND) return ">> (REDIR_APPEND)";
-    if (type == REDIR_HEREDOC)return "<< (REDIR_HEREDOC)";
-    return "NONE (REDIR_NONE)";
-}
-
-void print_redir(t_redir *redir)
-{
-    if (!redir)
-    {
-        printf("  No redirections.\n");
+// Format node details into a string
+void format_node_details(t_tree *node, char *buffer, size_t buf_size) {
+    buffer[0] = '\0'; // Clear buffer
+    if (node->type != NODE_COMMAND) {
+        snprintf(buffer, buf_size, "%s", get_node_type_str(node->type));
         return;
     }
 
-    while (redir)
-    {
-        printf("  Redirection:\n");
-        printf("    Index     : %zu\n", redir->index);
-        printf("    Type      : %s\n", redir_type_to_str(redir->type));
-        printf("    File      : %s\n", redir->file ? redir->file : "(null)");
-        printf("    FD        : %d\n", redir->fd);
-        printf("    Flag      : %d\n", redir->flag);
-        redir = redir->next;
+    // Handle command
+    if (node->cmd && node->cmd[0]) {
+        int offset = 0;
+        for (int i = 0; node->cmd[i]; i++) {
+            offset += snprintf(buffer + offset, buf_size - offset, "%s ", node->cmd[i]);
+        }
+        // Remove trailing space
+        if (offset > 0 && buffer[offset - 1] == ' ')
+            buffer[offset - 1] = '\0';
+    } else {
+        snprintf(buffer, buf_size, "(empty command)");
     }
 }
 
+// Get annotation for a node
+void get_node_annotation(t_tree *node, t_tree *parent, int is_left, char *buffer, size_t buf_size) {
+    char node_str[256];
+    format_node_details(node, node_str, sizeof(node_str));
+    
+    if (!parent) {
+        snprintf(buffer, buf_size, "// Root");
+    } else {
+        char parent_str[256];
+        format_node_details(parent, parent_str, sizeof(parent_str));
+        snprintf(buffer, buf_size, "// %s subtree of %s", is_left ? "Left" : "Right", parent_str);
+    }
+}
 
-void print_tree(t_tree *tree, int level)
-{
-    if (!tree)
+// Recursive function to print tree
+void print_tree_recursive(t_tree *node, char *prefix, int is_last, t_tree *parent, int is_left) {
+    if (!node) return;
+
+    // Print current node
+    printf("%s", prefix);
+    printf("%s ", is_last ? "└──" : "├──");
+    char buffer[512];
+    format_node_details(node, buffer, sizeof(buffer));
+    printf("%s ", buffer);
+    char annotation[512];
+    get_node_annotation(node, parent, is_left, annotation, sizeof(annotation));
+    printf("%s\n", annotation);
+
+    // Prepare prefix for children
+    char new_prefix[256];
+    snprintf(new_prefix, sizeof(new_prefix), "%s%s", prefix, is_last ? "    " : "│   ");
+
+    // Recursively print children
+    if (node->left || node->right) {
+        if (node->left)
+            print_tree_recursive(node->left, new_prefix, node->right == NULL, node, 1);
+        if (node->right)
+            print_tree_recursive(node->right, new_prefix, 1, node, 0);
+    }
+}
+
+// Main function to print tree
+void print_tree(t_tree *node) {
+    if (!node) {
+        printf("Empty tree\n");
         return;
-
-    // Indentation for readability
-    for (int i = 0; i < level; i++)
-        printf("  ");
-
-    if (tree->type == NODE_COMMAND)
-    {
-        printf("Command Node: %u\n", tree->type);
-
-        // Print command
-        for (int i = 0; i < level; i++)
-            printf("  ");
-        printf("  Cmd: ");
-        if (tree->cmd)
-        {
-            for (int i = 0; tree->cmd[i]; i++)
-                printf("%s ", tree->cmd[i]);
-            printf("\n");
-        }
-        else
-            printf("(none)\n");
-
-        // Print before redirections
-        for (int i = 0; i < level; i++)
-            printf("  ");
-        printf("  Redirs Before: ");
-        if (tree->redirs_before)
-        {
-            printf("\n");
-            t_redir *curr = tree->redirs_before;
-            while (curr)
-            {
-                for (int i = 0; i < level + 1; i++)
-                    printf("  ");
-                printf("Index     : %zu\n", curr->index);
-                for (int i = 0; i < level + 1; i++)
-                    printf("  ");
-                printf("Type      : ");
-                if (curr->type == REDIR_IN)
-                    printf("< (REDIR_IN)\n");
-                else if (curr->type == REDIR_OUT)
-                    printf("> (REDIR_OUT)\n");
-                else if (curr->type == REDIR_APPEND)
-                    printf(">> (REDIR_APPEND)\n");
-                else if (curr->type == REDIR_HEREDOC)
-                    printf("<< (REDIR_HEREDOC)\n");
-                else
-                    printf("Unknown (REDIR_NONE)\n");
-                for (int i = 0; i < level + 1; i++)
-                    printf("  ");
-                printf("File      : %s\n", curr->file ? curr->file : "(null)");
-                for (int i = 0; i < level + 1; i++)
-                    printf("  ");
-                printf("FD        : %d\n", curr->fd);
-                curr = curr->next;
-            }
-        }
-        else
-            printf("(none)\n");
-
-        // Print after redirections
-        for (int i = 0; i < level; i++)
-            printf("  ");
-        printf("  Redirs After: ");
-        if (tree->redirs_after)
-        {
-            printf("\n");
-            t_redir *curr = tree->redirs_after;
-            while (curr)
-            {
-                for (int i = 0; i < level + 1; i++)
-                    printf("  ");
-                printf("Index     : %zu\n", curr->index);
-                for (int i = 0; i < level + 1; i++)
-                    printf("  ");
-                printf("Type      : ");
-                if (curr->type == REDIR_IN)
-                    printf("< (REDIR_IN)\n");
-                else if (curr->type == REDIR_OUT)
-                    printf("> (REDIR_OUT)\n");
-                else if (curr->type == REDIR_APPEND)
-                    printf(">> (REDIR_APPEND)\n");
-                else if (curr->type == REDIR_HEREDOC)
-                    printf("<< (REDIR_HEREDOC)\n");
-                else
-                    printf("Unknown (REDIR_NONE)\n");
-                for (int i = 0; i < level + 1; i++)
-                    printf("  ");
-                printf("File      : %s\n", curr->file ? curr->file : "(null)");
-                for (int i = 0; i < level + 1; i++)
-                    printf("  ");
-                printf("FD        : %d\n", curr->fd);
-                curr = curr->next;
-            }
-        }
-        else
-            printf("(none)\n");
     }
-    else
-    {
-        printf("Operator Node: %d\n", tree->type);
-    }
-
-    // Recursively print left and right subtrees
-    print_tree(tree->left, level + 1);
-    print_tree(tree->right, level + 1);
+    print_tree_recursive(node, "", 1, NULL, 0);
 }
+
+// Helper to create a command node
+t_tree *create_command_node(char **cmd) {
+    t_tree *node = calloc(1, sizeof(t_tree));
+    node->type = NODE_COMMAND;
+    node->cmd = cmd;
+    return node;
+}
+
+// Helper to create an operator node
+t_tree *create_operator_node(t_node_type type, t_tree *left, t_tree *right) {
+    t_tree *node = calloc(1, sizeof(t_tree));
+    node->type = type;
+    node->left = left;
+    node->right = right;
+    return node;
+}
+
+
+// void print_tree(t_tree *tree, int level)
+// {
+//     if (!tree)
+//         return;
+//     // Indentation for readability
+//     for (int i = 0; i < level; i++)
+//         printf("  ");
+//     if (tree->type == NODE_COMMAND)
+//     {
+//         printf("Command Node: %u\n", tree->type);
+//         // Print command
+//         for (int i = 0; i < level; i++)
+//             printf("  ");
+//         printf("  Cmd: ");
+//         if (tree->cmd)
+//         {
+//             for (int i = 0; tree->cmd[i]; i++)
+//                 printf("%s ", tree->cmd[i]);
+//             printf("\n");
+//         }
+//         else
+//             printf("(none)\n");
+//         // Print before redirections
+//         for (int i = 0; i < level; i++)
+//             printf("  ");
+//         printf("  Redirs Before: ");
+//         if (tree->redirs_before)
+//         {
+//             printf("\n");
+//             t_redir *curr = tree->redirs_before;
+//             while (curr)
+//             {
+//                 for (int i = 0; i < level + 1; i++)
+//                     printf("  ");
+//                 printf("Index     : %zu\n", curr->index);
+//                 for (int i = 0; i < level + 1; i++)
+//                     printf("  ");
+//                 printf("Type      : ");
+//                 if (curr->type == REDIR_IN)
+//                     printf("< (REDIR_IN)\n");
+//                 else if (curr->type == REDIR_OUT)
+//                     printf("> (REDIR_OUT)\n");
+//                 else if (curr->type == REDIR_APPEND)
+//                     printf(">> (REDIR_APPEND)\n");
+//                 else if (curr->type == REDIR_HEREDOC)
+//                     printf("<< (REDIR_HEREDOC)\n");
+//                 else
+//                     printf("Unknown (REDIR_NONE)\n");
+//                 for (int i = 0; i < level + 1; i++)
+//                     printf("  ");
+//                 printf("File      : %s\n", curr->file ? curr->file : "(null)");
+//                 for (int i = 0; i < level + 1; i++)
+//                     printf("  ");
+//                 printf("FD        : %d\n", curr->fd);
+//                 curr = curr->next;
+//             }
+//         }
+//         else
+//             printf("(none)\n");
+//         // Print after redirections
+//         for (int i = 0; i < level; i++)
+//             printf("  ");
+//         printf("  Redirs After: ");
+//         if (tree->redirs_after)
+//         {
+//             printf("\n");
+//             t_redir *curr = tree->redirs_after;
+//             while (curr)
+//             {
+//                 for (int i = 0; i < level + 1; i++)
+//                     printf("  ");
+//                 printf("Index     : %zu\n", curr->index);
+//                 for (int i = 0; i < level + 1; i++)
+//                     printf("  ");
+//                 printf("Type      : ");
+//                 if (curr->type == REDIR_IN)
+//                     printf("< (REDIR_IN)\n");
+//                 else if (curr->type == REDIR_OUT)
+//                     printf("> (REDIR_OUT)\n");
+//                 else if (curr->type == REDIR_APPEND)
+//                     printf(">> (REDIR_APPEND)\n");
+//                 else if (curr->type == REDIR_HEREDOC)
+//                     printf("<< (REDIR_HEREDOC)\n");
+//                 else
+//                     printf("Unknown (REDIR_NONE)\n");
+//                 for (int i = 0; i < level + 1; i++)
+//                     printf("  ");
+//                 printf("File      : %s\n", curr->file ? curr->file : "(null)");
+//                 for (int i = 0; i < level + 1; i++)
+//                     printf("  ");
+//                 printf("FD        : %d\n", curr->fd);
+//                 curr = curr->next;
+//             }
+//         }
+//         else
+//             printf("(none)\n");
+//     }
+//     else
+//     {
+//         printf("Operator Node: %d\n", tree->type);
+//     }
+//     // Recursively print left and right subtrees
+//     print_tree(tree->left, level + 1);
+//     print_tree(tree->right, level + 1);
+// }
 
 /******************************************** end print tokens *********************************************/
 
@@ -390,7 +389,57 @@ t_tree *command_unit(t_token **input, t_tool *tool)
     return (command_unit2(input, tool, before));
 }
 
+t_tree	*pipe_unit(t_token **input, t_tool *tool)
+{
+    t_tree	*left;
+	t_tree	*right;
+	t_tree	*pipe;
 
+    pipe = NULL;
+	left = command_unit(input, tool);
+
+    while (*input && (*input)->type == TOKEN_PIPE)
+    {
+        pipe = create_tree_node(NODE_PIPE, tool);
+        *input = (*input)->next;
+		right = pipe_unit(input, tool);
+        pipe->left = left;
+		pipe->right = right;
+        left = pipe;
+    }
+    if (pipe)
+		return (pipe);
+    return (left);
+}
+
+t_tree	*ft_tree(t_token **control, t_tool *tool)
+{
+    t_tree	*left;
+	t_tree	*right;
+	t_tree	*op;
+
+    op = NULL;
+	left = pipe_unit(control, tool);
+    	while (*control && ((*control)->type == TOKEN_AND || (*control)->type == TOKEN_OR))
+	{
+        t_node_type node_type;
+        if ((*control)->type == TOKEN_AND)
+            node_type = NODE_AND;
+        else
+            node_type = NODE_OR;
+        op = create_tree_node(node_type, tool);
+        
+		//op = token_clone(*control, tool);
+		*control = (*control)->next;
+		right = pipe_unit(control, tool);
+		op->right = right;
+		op->left = left;
+		left = op;
+	}
+	if (op)
+		return (op);
+	return (left);
+}
 t_tree	*parsing_input(char *line, t_tool *tool)
 {
 	t_token	*token;
@@ -415,9 +464,9 @@ t_tree	*parsing_input(char *line, t_tool *tool)
     if (pars_err(&token, tool))
         return (NULL);
 
-    puts("\n");
-    t_tree *result = command_unit(&token, tool);
-    print_tree(result, 1);
+    t_tree *result = ft_tree(&token, tool);
+    print_tree(result);
+
 	return (NULL);
 }
 
