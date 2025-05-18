@@ -3,68 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/17 20:10:46 by melkess          ###   ########.fr       */
+/*   Updated: 2025/05/18 08:33:37 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
-# define MINISHELL_H
+#define MINISHELL_H
 
-# include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-# include <signal.h>
-# include <readline/readline.h>
-# include <readline/history.h>
+#include <signal.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 #include <stdbool.h>
-# include <fcntl.h>
+#include <fcntl.h>
+#include <limits.h>
+#include <string.h>
+#include <dirent.h>
 
-typedef enum e_token_type
-{
-    TOKEN_WORD,
-    TOKEN_PIPE,
-    TOKEN_AND,
-    TOKEN_OR,
-    TOKEN_SPACE,
-    TOKEN_REDIR_IN,
-    TOKEN_REDIR_OUT,
-    TOKEN_REDIR_APPEND,
-    TOKEN_REDIR_HEREDOC,
-    TOKEN_PAREN_OPEN,
-    TOKEN_PAREN_CLOSE,
-    TOKEN_SINGL_AND = 11,
-    TOKEN_SINGLE_QUOTE = 12, // represent the quote characters as delimiters.
-    TOKEN_DOUBLE_QUOTE = 13,
-    TOKEN_DOLLAR = 14,
-    TOKEN_WILDCARD = 15,
-    TOKEN_SINGLE_QUOTED_WORD = 16, // Single-quoted string, e.g., 'hello'
-    TOKEN_DOUBLE_QUOTED_WORD = 17, // Double-quoted string, e.g., "world $USER"
-    TOKEN_HAS_QUOTED = 18, // Has quotes
-    TOKEN_FILERED_OUT = -2,   // File after >
-    TOKEN_FILERED_IN = -3,    // File after <
-    TOKEN_FILERED_APPEND = -5,// File after >>
-    TOKEN_FILERED_HEREDOC = -4 // Delimiter after <<
-} t_token_type;
-
-typedef struct s_token
-{
-    char           *value;
-    int				priority;
-    t_token_type    type;
-    struct s_token *next;
-} t_token;
 
 typedef enum e_redir_type
 {
     REDIR_IN,        // <
     REDIR_OUT,       // >
     REDIR_APPEND,    // >>
-    REDIR_HEREDOC,    // <<
+    REDIR_HEREDOC,   // <<
     REDIR_NONE       // Invalid or no redirection
-}   t_redir_type;
+} t_redir_type;
 
 typedef struct s_redir
 {
@@ -74,8 +43,7 @@ typedef struct s_redir
     int               fd;
     int               flag;
     struct s_redir   *next;
-}   t_redir;
-
+} t_redir;
 
 typedef enum e_node_type
 {
@@ -84,121 +52,28 @@ typedef enum e_node_type
     NODE_AND,
     NODE_OR,
     NODE_PARENTHS
-}   t_node_type;
+} t_node_type;
 
 typedef struct s_tree
 {
     t_node_type      type;
     char            **cmd;        // argv if NODE_COMMAND
-    t_redir          *redirs;   // linked list of redirs
+    t_redir          *redirs;    // linked list of redirs
     t_redir          *redirs_before; // Redirections before the command
     t_redir          *redirs_after;  // Redirections after the command
     int              is_ambiguous;
-
     struct s_tree    *left;       // left command (for pipe)
     struct s_tree    *right;      // right command (for pipe)
-}   t_tree;
+} t_tree;
+
+/* Libft functions used both us */
+size_t  ft_strlen(const char *s);
+void    ft_putstr_fd(char *s, int fd);
+char    *ft_strchr(const char *s, int c);
+int     ft_strcmp(const char *s1, const char *s2);
 
 
+#include "executor.h"
+#include "parser.h"
 
-/**************************************************/
-
-typedef struct s_garbcoll
-{
-	void				*ptr;
-	struct s_garbcoll	*next;
-}	t_garbcoll;
-
-typedef struct s_tool
-{
-    int         paren; // 0 for null , 1 for ()
-	int			quoted; // 0 for null , 1 for singl , 2 for duble 
-	int			anderr; // is singl &
-    int			err;
-    t_garbcoll	*grbg; // for garbage collect
-}	t_tool;
-
-typedef enum e_priority
-{
-	prio_pipe = 1,
-	prio_and = 2,
-	prio_or = 3,
-	prio_redir_in = 4,
-	prio_redir_out = 5,
-	prio_appand = 6,
-	prio_here_doc = 7,
-	prio_open_par = 8,
-	prio_close_par = 9,
-}   t_priority;
-
-/**************************************************/
-
-
-
-
-
-
-
-
-
-/**************************************************/
-
-
-// typedef struct	s_env
-// {
-// 	char			*key;
-// 	char			*value;
-// 	struct s_env	*next;
-// 	struct s_env	*prev;
-// }	t_env;
-
-// Function declarations
-
-t_tree	*parsing_input(char *line, t_tool *tool);
-t_token	*tokens_lst(char *cmd, t_tool *tool);
-// t_token	*check_token(t_token **token, t_tool *tool);
-
-void init_quote_token(t_token *token);
-t_token *update_token(t_token **token, t_tool *tool);
-int	pars_err_utils(t_token *token, t_tool *tool);
-
-t_token		*lst_new(void *str, t_tool *tool);
-t_token     *lastone(t_token *head);
-void		lst_add_back(t_token **head, t_token *token);
-void        hundel_quotes_paren(t_tool *tool, char cmd);
-int         is_delimter(char c, char d);
-void init_redir_file_tokens(t_token *token);
-
-void        add_to_grbg(t_garbcoll **head, void *value);
-void        clear_garbcoll(t_garbcoll *head);
-
-size_t	ft_strlen(const char *s);
-int     is_space(char c);
-char	*ft_strdup_pars(const char *s1, t_tool *tool);
-char	*ft_strchr(const char *s, int c);
-char	*ft_my_strdup(const char *s1, size_t size, t_tool *tool);
-
-void	init_token(t_token **token, int priority, int type);
-int	pars_err(t_token **token, t_tool *tool);
-
-
-t_tree *command_unit(t_token **input, t_tool *tool);
-t_tree *command_unit2(t_token **input, t_tool *tool, t_redir *before);
-t_tree	*ft_tree(t_token **control, t_tool *tool);
-//libft 
-size_t		ft_strlen(const char *s);
-size_t		ft_dstrlen(const char **s);
-char		**ft_split(char const *s, char c);
-char		*ft_strjoin(char const *s1, char const *s2);
-void		ft_putstr_fd(char *s, int fd);
-void		ft_putchar_fd(char c, int fd);
-char		*ft_substr(char const *s, unsigned int start, size_t len);
-char		*ft_strdup(const char *s1);
-int		 ft_strcmp(const char *s1, const char *s2);
-int		 ft_strncmp(const char *s1, const char *s2, size_t n);
-int		 ft_isalpha(int a);
-int		 ft_isdigit(int n);
-int		 ft_isalnum(int c);
-char		*ft_strchr(const char *s, int c);
-char	*ft_itoa(int n);
 #endif

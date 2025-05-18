@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_dstrlen.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 10:22:18 by melkess           #+#    #+#             */
-/*   Updated: 2025/04/18 14:26:57 by melkess          ###   ########.fr       */
+/*   Updated: 2025/05/18 08:41:16 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/executor.h"
+#include "../../include/minishell.h"
 
 size_t	ft_dstrlen(const char **s)
 {

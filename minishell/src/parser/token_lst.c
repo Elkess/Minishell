@@ -6,11 +6,11 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:13:04 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/13 16:45:30 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/18 08:44:16 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/parser.h"
+#include "../../include/minishell.h"
 
 static int create_delim_token(char *cmd, int i, t_token **token, t_tool *tool)
 {
@@ -107,8 +107,8 @@ t_token	*tokens_lst(char *cmd, t_tool *tool)
 			i = create_delim_token(cmd, i, &token, tool);
 		else
 			i = create_cmd_token(&token, cmd, i, tool);
-		token = update_token(&token, tool);
-		if (token && token->type == TOKEN_WORD || is_delimter(cmd[i], cmd[i + 1]) == 0)
+		token = update_token(&token);
+		if ((token && token->type == TOKEN_WORD) || is_delimter(cmd[i], cmd[i + 1]) == 0)
     		init_redir_file_tokens(token);
 		init_quote_token(token);
 	}

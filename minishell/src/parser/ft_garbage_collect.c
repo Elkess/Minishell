@@ -6,11 +6,11 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:29:32 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/10 09:16:06 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/18 08:35:57 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/parser.h"
+#include "../../include/minishell.h"
 
 t_garbcoll	*new_garbcoll(void *value)
 {

@@ -3,26 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   pars_err.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 08:46:52 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/17 20:11:13 by melkess          ###   ########.fr       */
+/*   Updated: 2025/05/18 08:36:11 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/parser.h"
-
-// static void	ft_putstr_fd(char *s, int fd)
-// {
-// 	unsigned int	i;
-
-// 	i = 0;
-// 	if (!s)
-// 		return ;
-// 	while (s[i])
-// 		i++;
-// 	write(fd, s, i);
-// }
+#include "../../include/minishell.h"
 
 static int is_redirection(int type)
 {

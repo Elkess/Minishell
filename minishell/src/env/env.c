@@ -1,6 +1,6 @@
 
 
-#include "../../include/executor.h"
+#include "../../include/minishell.h"
 
 char	*extract_data(char *line, int flag)
 {

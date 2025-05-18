@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/parser.h"
+#include "../../include/minishell.h"
 
-t_token *update_token(t_token **token, t_tool *tool)
+t_token *update_token(t_token **token)
 {
     t_token *current = *token;
     t_token *prev = NULL;
