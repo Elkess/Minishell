@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:23:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/18 08:35:48 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/18 09:24:00 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,4 +89,16 @@ void	lst_add_back(t_token **head, t_token *token)
 		token->next = NULL;
 		return ;
 	}
+}
+
+t_redir *last_node(t_redir *redirs)
+{
+    t_redir *curr;
+
+    curr = redirs;
+    if (!curr)
+        return (NULL);
+    while (curr->next)
+        curr = curr->next;
+    return (curr);
 }

@@ -17,6 +17,8 @@ Funs =	src/main.c \
 		src/parser/ft_garbage_collect.c \
 		src/parser/pars_funs_help.c \
 		src/parser/pars_err.c \
+		src/parser/build_tree_utils.c \
+		src/parser/build_tree.c \
 		src/builtins/cd.c \
 		src/builtins/echo.c \
 		src/builtins/env.c \

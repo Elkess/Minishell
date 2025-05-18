@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 13:46:06 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/18 08:36:16 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/18 09:24:43 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,21 @@ char	*ft_my_strdup(const char *s1, size_t size, t_tool *tool)
 	}
 	dup[i] = '\0';
 	return (dup);
+}
+
+void    add_redir(t_redir **redirs, t_redir *new_redir)
+{
+    t_redir *last_redir;
+
+    if (!new_redir)
+        return ;
+    if (!*redirs)
+    {
+        *redirs = new_redir;
+    }
+    else
+    {
+        last_redir = last_node(*redirs);
+        last_redir->next = new_redir;
+    }
 }

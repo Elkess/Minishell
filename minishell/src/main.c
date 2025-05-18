@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/18 08:20:55 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/18 09:18:09 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void	handle_herdocs(t_tree *tree)
 int	main(int ac, char **av, char **env)
 {
 	//atexit(f);
-//TODO:  ls | lss do it many times 
 	char	*line;
 	t_tree	*tree;
 	t_tool	tool;
@@ -51,9 +50,9 @@ int	main(int ac, char **av, char **env)
 	{
 		line = ft_get_prompt();
 		tree = parsing_input(line, &tool);
-		handle_herdocs(tree);
-		if (line && *line)
-			printf("exit status: %d\n", execute_tree(tree, envh));
+		// handle_herdocs(tree);
+		// if (line && *line)
+		// 	printf("exit status: %d\n", execute_tree(tree, envh));
 		free(line);
 	}
 	return (0);

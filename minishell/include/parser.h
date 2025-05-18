@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 11:32:27 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/18 08:44:10 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/18 09:28:36 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,9 +96,15 @@ void    init_redir_file_tokens(t_token *token);
 void    add_to_grbg(t_garbcoll **head, void *value);
 void    clear_garbcoll(t_garbcoll *head);
 int     pars_err(t_token **token, t_tool *tool);
-t_tree  *command_unit(t_token **input, t_tool *tool);
-t_tree  *command_unit2(t_token **input, t_tool *tool, t_redir *before);
+t_tree  *node_command(t_token **input, t_tool *tool);
+t_tree  *node_command_utils(t_token **input, t_tool *tool, t_redir *before);
 t_tree  *ft_tree(t_token **control, t_tool *tool);
+
+t_redir *last_node(t_redir *redirs);
+void    add_redir(t_redir **redirs, t_redir *new_redir);
+t_redir *redir(t_token **input, t_tool *tool);
+t_tree  *create_tree_node(t_node_type type, t_tool *tool);
+t_redir *concat_redirs(t_redir *before, t_redir *after, t_tool *tool);
 
 // Parser-specific libft functions
 size_t  ft_strlen(const char *s);
@@ -107,5 +113,6 @@ char    *ft_strdup_pars(const char *s1, t_tool *tool);
 char    *ft_strchr(const char *s, int c);
 char    *ft_my_strdup(const char *s1, size_t size, t_tool *tool);
 void    init_token(t_token **token, int priority, int type);
+char **create_cmd_array(t_token **input, t_tool *tool);
 
 #endif
