@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/18 10:37:46 by melkess          ###   ########.fr       */
+/*   Updated: 2025/05/18 10:58:35 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -382,6 +382,8 @@ int	executor(t_tree *tree, t_env *envh)
 	}
 	if (!redir_status && tree->type == NODE_COMMAND)
 		status = execute_cmd(tree, envh, status);
+	else if (!redir_status && tree->type == NODE_PARENTHS)
+		status = execute_tree(tree->left, envh);
 	ft_dup(fds, 0);
 	return (status);
 }
