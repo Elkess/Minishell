@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 10:01:34 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/18 08:37:11 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/18 11:52:30 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,9 @@ int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup)
 		cd_helper(envh, cmd->cmd[0], pwd_backup, dir);
 	else
 	{
-		ft_putstr_fd(ft_strjoin("minishell: cd: ",
-			ft_strjoin(cmd->cmd[0], ": No such file or directory\n")), 2);
+		perror(ft_strjoin("minishell: cd: ", cmd->cmd[0]));
+		// ft_putstr_fd(ft_strjoin("minishell: cd: ",
+		// 	ft_strjoin(cmd->cmd[0], ": No such file or directory\n")), 2);
 		return (1);
 	}
 	*envh = edit_env("PWD", *pwd_backup, *envh, 0);

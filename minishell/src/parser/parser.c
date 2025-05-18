@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 13:35:16 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/18 10:44:34 by melkess          ###   ########.fr       */
+/*   Updated: 2025/05/18 11:18:52 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ t_tree	*parsing_input(char *line, t_tool *tool)
         return (NULL);
 
     tree = ft_tree(&token, tool);
-    print_tree_redirs(tree, 0);
+    // print_tree_redirs(tree, 0);
     //print_tree(tree); 
 
 	return (tree);

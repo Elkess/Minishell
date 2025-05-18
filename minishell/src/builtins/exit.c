@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 16:52:06 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/18 08:38:29 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/18 13:14:03 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	ft_exit(t_tree *cmd, int status)
 	char		*s;
 	long long	n;
 	int			sign;
-
+//TODO: write exit when no args 
 	if (!cmd)
 		exit (status);
 	cmd->cmd++;
@@ -83,6 +83,5 @@ void	ft_exit(t_tree *cmd, int status)
 		(ft_putstr_fd("exit\nminishell: exit: too many arguments\n", 2), exit (10));
 	if ((sign == -1 && ft_strlen(s) == 20) || (sign == 1 && ft_strlen(s) == 19))
 		check_range(s, sign);
-	puts(s);
 	exit (ft_atol(s, sign) % 256);
 }

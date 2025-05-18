@@ -2,6 +2,7 @@
 #define EXECUTOR_H
 
 #include <stdlib.h>
+#include <dirent.h>
 
 typedef struct s_tree t_tree;
 typedef struct s_redir t_redir;

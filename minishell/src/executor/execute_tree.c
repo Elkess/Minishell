@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 08:39:55 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/18 10:57:38 by melkess          ###   ########.fr       */
+/*   Updated: 2025/05/18 13:32:06 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,9 @@ int	execute_tree(t_tree *tree, t_env *envh)
 	status = 1;
 	if (!tree)
 		return (status);
-	if (tree->type == NODE_PARENTHS)
-		return (executor(tree, envh));
 	if (tree->type == NODE_COMMAND)
+		return (executor(tree, envh));
+	if (tree->type == NODE_PARENTHS)
 		return (executor(tree, envh));
 	if (tree->type == NODE_PIPE)
 		return (execute_pipes(tree, envh));

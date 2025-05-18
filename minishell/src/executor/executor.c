@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/18 10:58:35 by melkess          ###   ########.fr       */
+/*   Updated: 2025/05/18 13:28:42 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,20 +36,20 @@ char	**struct_to_darr(t_env *envh)
 	return (env[len] = NULL, env);
 }
 
-// void	is_dir(char **p, char *path)
-// {
-// 	struct stat	s;
+void	is_dir(char **p, char *path)
+{
+	struct stat	s;
 
-// 	if (!ft_strcmp(path, "."))
-// 		(ft_putstr_fd(ft_strjoin("minishell: ", ft_strjoin(path, ": command not found \n")), 2), exit(127));
-// 	if (!stat(path, &s) && S_ISDIR(s.st_mode))
-// 	{
-// 		if ((p && *p && !ft_strcmp(path, "..")) || !ft_strchr(path, '/'))
-// 			(ft_putstr_fd(ft_strjoin("minishell1: ", ft_strjoin(path, ": command not found \n")), 2),exit(127));
-// 		else
-// 			(ft_putstr_fd(ft_strjoin("minishell2: ", ft_strjoin(path, ": is a directory \n")), 2), exit(126));
-// 	}
-// }
+	if (!ft_strcmp(path, "."))
+		(ft_putstr_fd(ft_strjoin("minishell: ", ft_strjoin(path, ": command not found \n")), 2), exit(127));
+	if (!stat(path, &s) && S_ISDIR(s.st_mode))
+	{
+		if ((p && *p && !ft_strcmp(path, "..")) || !ft_strchr(path, '/'))
+			(ft_putstr_fd(ft_strjoin("minishell1: ", ft_strjoin(path, ": command not found \n")), 2),exit(127));
+		else
+			(ft_putstr_fd(ft_strjoin("minishell2: ", ft_strjoin(path, ": is a directory \n")), 2), exit(126));
+	}
+}
 
 void	exec_helper(char **cmd, char **env, t_env *envh, char **path)
 {
@@ -80,17 +80,16 @@ void	execute_one(t_tree *cmd, t_env *envh)
 		path = ft_split(search_for_defaults(envh, "PATH")->value, ':');
 	env = struct_to_darr(envh);
 	if (fd == -1)
-		(perror("Fork Failed:"), exit(1));
+		(perror("Fork1 Failed"), exit(1));
 	if (fd == 0)
 	{
-		// is_dir(path, cmd->cmd[0]);
+		is_dir(path, cmd->cmd[0]);
 		if ((!access(cmd->cmd[0], X_OK)))
 		{
 			if (execve(cmd->cmd[0], cmd->cmd, env) == -1)
 				(perror("Execve1 Failed:"), exit(1));
 		}
 		exec_helper(cmd->cmd, env, envh, path);
-		puts("TRUU");
 		if (!path || ft_strchr(cmd->cmd[0], '/'))
 			ft_putstr_fd(ft_strjoin("minishell3: ", ft_strjoin(cmd->cmd[0], ": No such file or directory\n")), 2);
 		else
@@ -324,7 +323,6 @@ t_redir	*find_lasthd(t_redir *redirs)
 int	is_builtin(t_tree *tree, char	*cmd, t_env *envh)
 {
 	static char	*pwd_backup;
-
 	if (!ft_strcmp(cmd, "echo"))
 		return(echo(tree));
 	else if (!ft_strcmp(cmd, "cd"))
@@ -363,6 +361,7 @@ int	execute_cmd(t_tree *tree, t_env *envh, int status)
 
 int	executor(t_tree *tree, t_env *envh)
 {
+	// TODO: handle tty && signals 
 	int		fds[2];
 	int		redir_status = 0;
 	int		status;
