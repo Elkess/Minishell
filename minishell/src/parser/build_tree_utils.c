@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_tree_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 09:22:22 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/18 09:26:04 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/18 10:35:53 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,39 +77,32 @@ t_tree  *create_tree_node(t_node_type type, t_tool *tool)
     node->right = NULL;
     return (node);
 }
+void	add_to_index(t_redir *after, int index)
+{
+	while(after)
+	{
+		after->index = index +1;
+		index++;
+		after = after->next;
+	}
+}
 
 t_redir *concat_redirs(t_redir *before, t_redir *after, t_tool *tool)
 {
     t_redir *new_list = NULL;
-    t_redir *new_redir;
     t_redir *curr;
 
-    curr = before;
-    while (curr)
-    {
-        new_redir = (t_redir *)malloc(sizeof(t_redir));
-        if (!new_redir)
-            return (NULL);
-        add_to_grbg(&tool->grbg, new_redir);
-        *new_redir = *curr;
-        new_redir->next = NULL;
-        add_redir(&new_list, new_redir);
-        curr = curr->next;
-    }
-
-    curr = after;
-    while (curr)
-    {
-        new_redir = (t_redir *)malloc(sizeof(t_redir));
-        if (!new_redir)
-            return (NULL);
-        add_to_grbg(&tool->grbg, new_redir);
-        *new_redir = *curr;
-        new_redir->next = NULL;
-        add_redir(&new_list, new_redir);
-        curr = curr->next;
-    }
-
+	curr = before;
+    while (before && before->next)
+		before = before->next;
+	if (before)
+	{
+		add_to_index(after, before->index);
+		before->next = after;
+		new_list = curr;
+	}
+	else
+		new_list = after;
     return (new_list);
 }
 

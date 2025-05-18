@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/18 08:39:12 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/18 10:37:46 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -369,17 +369,17 @@ int	executor(t_tree *tree, t_env *envh)
 	t_redir	lasthd;
 
 	status = 1;
-	if (!tree && !tree->cmd)
+	if (!tree && tree->type != NODE_COMMAND && tree->type != NODE_PARENTHS)
 		return (1);
 	ft_dup(fds, 1);
-	// if (tree->redirs)
-	// {
-	// 	// lasthd = find_lasthd(tree->redirs);
-	// 	// TODO: 2 handle herdoc properly this is wrong
-	// 	// if (lasthd)
-	// 	// 	here_docs(tree->redirs);
-	// 	redir_status = ft_redir(tree);
-	// }
+	if (tree->redirs)
+	{
+		// lasthd = find_lasthd(tree->redirs);
+		// TODO: 2 handle herdoc properly this is wrong
+		// if (lasthd)
+		// 	here_docs(tree->redirs);
+		redir_status = ft_redir(tree);
+	}
 	if (!redir_status && tree->type == NODE_COMMAND)
 		status = execute_cmd(tree, envh, status);
 	ft_dup(fds, 0);

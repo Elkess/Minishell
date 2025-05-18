@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_tree.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 08:39:55 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/18 08:39:09 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/18 10:36:46 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ int	execute_tree(t_tree *tree, t_env *envh)
 	status = 1;
 	if (!tree)
 		return (status);
+	if (tree->type == NODE_PARENTHS)
+		return (execute_tree(tree->left, envh));
 	if (tree->type == NODE_COMMAND)
 		return (executor(tree, envh));
 	if (tree->type == NODE_PIPE)

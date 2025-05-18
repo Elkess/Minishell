@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/18 09:18:09 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/18 10:34:57 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void	handle_herdocs(t_tree *tree)
 	handle_herdocs(tree->left);
 	handle_herdocs(tree->right);
 }
+
 int	main(int ac, char **av, char **env)
 {
 	//atexit(f);
@@ -49,10 +50,11 @@ int	main(int ac, char **av, char **env)
 	while (1)
 	{
 		line = ft_get_prompt();
+		// TODO: give new prompt if line full of spaces 
 		tree = parsing_input(line, &tool);
-		// handle_herdocs(tree);
-		// if (line && *line)
-		// 	printf("exit status: %d\n", execute_tree(tree, envh));
+		handle_herdocs(tree);
+		if (line && *line)
+			printf("exit status: %d\n", execute_tree(tree, envh));
 		free(line);
 	}
 	return (0);
