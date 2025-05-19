@@ -43,7 +43,6 @@ int	main(int ac, char **av, char **env)
 	t_tool	tool;
 	t_env	*envh;
 
-	
 	if (!isatty(0))
 	{
 		ft_putstr_fd("Error\n", 2);
