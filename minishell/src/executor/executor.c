@@ -67,7 +67,7 @@ void	exec_helper(char **cmd, char **env, t_env *envh, char **path)
 		}
 		if (access(path[i], X_OK) && !access(path[i], F_OK) && ft_strchr(path[i], '/'))
 		{
-			perror("minishell10: ");
+			perror(ft_strjoin("minishell10: ", path[i]));
 			exit(126);
 		}
 		i++;
@@ -96,14 +96,14 @@ void	execute_one(t_tree *cmd, t_env *envh)
 		}
 		if (access(cmd->cmd[0], X_OK) && !access(cmd->cmd[0], F_OK) && ft_strchr(cmd->cmd[0], '/'))
 		{
-			perror("minishell10: ");
+			perror(ft_strjoin("minishell10: ", cmd->cmd[0]));
 			exit(126);
 		}
 		if (!ft_strchr(cmd->cmd[0], '/'))
 			exec_helper(cmd->cmd, env, envh, path);
 		if (!path || ft_strchr(cmd->cmd[0], '/'))
 			ft_putstr_fd(ft_strjoin("minishell3: ", ft_strjoin(cmd->cmd[0], ": No such file or directory\n")), 2);
-		else
+		else		
 			ft_putstr_fd(ft_strjoin("minishell4: ", ft_strjoin(cmd->cmd[0], ": command not found\n")), 2);
 		exit(127);
 	}
