@@ -93,8 +93,8 @@ void	execute_one(t_tree *cmd, t_env *envh)
 				(perror("Execve1 Failed:"), exit(1));
 		}
 		exec_helper(cmd->cmd, env, envh, path);
-		if (errno == 20 || errno == 13 || errno == 2)
-			(perror(ft_strjoin("minishell3: ", cmd->cmd[0])), exit (126));
+		if (((errno == 20 || errno == 13 || errno == 2) && ft_strchr(cmd->cmd[0], '/')) || !path)
+			(perror(ft_strjoin("minishell3: ", cmd->cmd[0])), exit (126 * (errno != 2) + 127 * (errno == 2)));
 		ft_putstr_fd(ft_strjoin("minishell4: ", ft_strjoin(cmd->cmd[0], ": command not found\n")), 2);
 		exit(127);
 	}

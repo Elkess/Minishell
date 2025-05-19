@@ -27,8 +27,7 @@ long long	ft_atol(const char *str, int sign)
 		i++;
 	}
 	if (i != ft_strlen(str))
-		(ft_putstr_fd(ft_strjoin("exit\nminishell: exit: ", ft_strjoin(str, ": numeric Atol argument required\n")), 2)
+		(ft_putstr_fd(ft_strjoin("minishell: exit: ", ft_strjoin(str, ": Atol numeric  argument required\n")), 2)
 			, exit(255));
-	printf("{%lld}\n", result);
 	return (result * sign);
 }
