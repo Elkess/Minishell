@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/18 13:18:27 by melkess          ###   ########.fr       */
+/*   Updated: 2025/05/18 08:33:37 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,9 @@
 #include <fcntl.h>
 #include <limits.h>
 #include <string.h>
-#include <dirent.h>
+// #include <dirent.h>
 #include <sys/stat.h>
+#include <errno.h>
 
 
 typedef enum e_redir_type

@@ -74,4 +74,3 @@ void	print_rest(char **s, int n)
 		buffer= ft_strjoin(buffer, "\n");
 	write(1, buffer, ft_strlen(buffer));
 }
-

@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/18 14:24:05 by melkess          ###   ########.fr       */
+/*   Updated: 2025/05/18 10:34:57 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,8 @@ int	main(int ac, char **av, char **env)
 	t_tool	tool;
 	t_env	*envh;
 
-	if (!isatty(0))
-	{
-		ft_putstr_fd("Error\n", 2);
-		exit(1);
-	}
 	envh = fill_env(env);
-	// search_for_defaults(envh, "PWD");
+	
 	(void)ac;
 	(void)av;
 	while (1)
