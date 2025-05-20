@@ -3,16 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/18 10:34:57 by melkess          ###   ########.fr       */
+/*   Updated: 2025/05/20 10:15:50 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-char	*ft_get_prompt(void)
+int	g_signal = 0;
+
+void	ft_handle_signals(int sig)
+{
+	if (sig == SIGINT)
+	{
+		g_signal = 1;
+		printf("\n");
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
+	}
+}
+
+void	setup_signals(void)
+{
+	signal(SIGINT, ft_handle_signals);
+	signal(SIGQUIT, SIG_IGN);
+	rl_catch_signals = 0;
+}
+
+char	*ft_get_prompt(int exit_status)
 {
 	char	*prompt;
 
@@ -22,7 +43,7 @@ char	*ft_get_prompt(void)
 	if (!prompt)
 	{
 		printf("exit\n");
-		exit(0);
+		exit(exit_status);
 	}
 	return (prompt);
 }
@@ -47,15 +68,17 @@ int	main(int ac, char **av, char **env)
 	
 	(void)ac;
 	(void)av;
+	setup_signals();
 	while (1)
 	{
-		line = ft_get_prompt();
+		line = ft_get_prompt(0);
 		// TODO: give new prompt if line full of spaces 
 		tree = parsing_input(line, &tool);
 		handle_herdocs(tree);
 		if (line && *line)
 			printf("exit status: %d\n", execute_tree(tree, envh));
 		free(line);
+		g_signal = 0;
 	}
 	return (0);
 }

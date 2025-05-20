@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/18 10:37:46 by melkess          ###   ########.fr       */
+/*   Updated: 2025/05/20 09:52:15 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,7 +285,7 @@ void	here_docs(t_redir *red)
 			{
 				line = readline("> ");
 				if (!line)
-					exit(1);
+					break ;
 				if (!ft_strcmp(line, red->file))
 					break ;
 				// if (red->flag == 1)
