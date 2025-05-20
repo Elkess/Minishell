@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/20 10:30:11 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/20 10:34:57 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -383,6 +383,8 @@ int	executor(t_tree *tree, t_env *envh)
 	}
 	if (!redir_status && tree->type == NODE_COMMAND)
 		status = execute_cmd(tree, envh, status);
+	else if (!redir_status && tree->type == NODE_PARENTHS)
+		status = execute_tree(tree->left, envh);
 	ft_dup(fds, 0);
 	return (status);
 }
