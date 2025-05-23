@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 10:01:34 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/18 11:52:30 by melkess          ###   ########.fr       */
+/*   Updated: 2025/05/21 21:30:38 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,16 @@ void	cd_helper(t_env **envh, char *cmd, char	**pwd_backup, char *dir)
 {
 	*envh = edit_env("OLDPWD", ft_strdup(*pwd_backup), *envh, 0);
 	if (dir)
+	{
+		free(*pwd_backup);
 		*pwd_backup = getcwd(0, 0);
+	}
 	else
 	{
 		if (*pwd_backup && (*pwd_backup)[ft_strlen(*pwd_backup) -1] != '/')
-			*pwd_backup = ft_strjoin(*pwd_backup, ft_strjoin("/", cmd));
+			*pwd_backup = ft_strjoin(*pwd_backup, ft_strjoin("/", cmd, 0), 3); // leaks "/" and old pwd_backups
 		else
-			*pwd_backup = ft_strjoin(*pwd_backup, cmd);
+			*pwd_backup = ft_strjoin(*pwd_backup, cmd, 1); // leaks old pwd_backups
 		ft_putstr_fd("cd: error retrieving current directory: getcwd:"
 		" cannot access parent directories: No such file or directory\n", 2);
 	}
@@ -58,16 +61,14 @@ int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup)
 	}
 	dir = getcwd(0, 0);
 	if (dir)
+	{
+		free(*pwd_backup);
 		*pwd_backup = dir;
+	}
 	if (!chdir(cmd->cmd[0]))
 		cd_helper(envh, cmd->cmd[0], pwd_backup, dir);
 	else
-	{
-		perror(ft_strjoin("minishell: cd: ", cmd->cmd[0]));
-		// ft_putstr_fd(ft_strjoin("minishell: cd: ",
-		// 	ft_strjoin(cmd->cmd[0], ": No such file or directory\n")), 2);
-		return (1);
-	}
-	*envh = edit_env("PWD", *pwd_backup, *envh, 0);
+		return (print_err("cd: ", cmd->cmd[0], strerror(errno)), 1);
+	*envh = edit_env("PWD", ft_strdup(*pwd_backup), *envh, 0);
 	return (0);
 }

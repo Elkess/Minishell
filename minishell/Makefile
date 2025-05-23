@@ -1,7 +1,7 @@
 NAME = minishell
 
 C_Compiler = cc
-CFLAGS = -Iinclude #-Wall -Wextra -Werror 
+CFLAGS = -Iinclude #-g3 -fsanitize=address #-Wall -Wextra -Werror 
 
 READLINEFLAG = -lreadline
 
@@ -28,8 +28,14 @@ Funs =	src/main.c \
 		src/builtins/unset.c \
 		src/executor/execute_tree.c\
 		src/executor/executor.c \
+		src/executor/garbage_collector.c \
 		src/executor/helper_funcs.c \
 		src/env/env.c  \
+		src/env/ft_strdup_env.c  \
+		src/env/ft_substr_env.c  \
+		src/env/ft_itoa_env.c \
+		src/env/ft_strjoin_env.c \
+		src/env/env_utils.c \
 		library/libft/ft_atoi.c       \
 		library/libft/ft_isalnum.c    \
 		library/libft/ft_itoa.c       \
@@ -47,6 +53,7 @@ Funs =	src/main.c \
 		library/libft/ft_putstr_fd.c  \
 		library/libft/ft_strcmp.c     \
 		library/libft/ft_strlen.c \
+		src/here_docs/here_docs.c \
 
 OFuns = $(Funs:.c=.o)
 

@@ -6,17 +6,17 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 08:57:56 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/18 08:36:21 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/23 07:58:21 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int is_space(char c)
+int	is_space(char c)
 {
-    if ((c >= 9 && c <= 13) || c == 32)
-        return (1);
-    return (0);
+	if ((c >= 9 && c <= 13) || c == 32)
+		return (1);
+	return (0);
 }
 
 void	hundel_quotes_paren(t_tool *tool, char cmd)
@@ -29,8 +29,6 @@ void	hundel_quotes_paren(t_tool *tool, char cmd)
 		tool->quoted = 2;
 	else if (cmd == '"' && tool->quoted == 2)
 		tool->quoted = 0;
-	
-	// hundel parenthes (only when not in quotes)
 	if (tool->quoted == 0)
 	{
 		if (cmd == '(')
@@ -44,7 +42,7 @@ void	hundel_quotes_paren(t_tool *tool, char cmd)
 
 int	is_delimter(char c, char d)
 {
-	if (c == '|' || c == '&' || c == '>' || c == '<' || c == '(' || c == ')') // c == '$' || c == '*'
+	if (c == '|' || c == '&' || c == '>' || c == '<' || c == '(' || c == ')')
 	{
 		if (c == '>')
 		{
@@ -72,18 +70,14 @@ int	is_delimter(char c, char d)
 			if (d == '&')
 				return (TOKEN_AND);
 			else
-				return (TOKEN_SINGL_AND); 
+				return (TOKEN_SINGL_AND);
 		}
 		else if (c == '(')
 			return (TOKEN_PAREN_OPEN);
 		else if (c == ')')
 			return (TOKEN_PAREN_CLOSE);
-        // else if (c == '$')
-        //     return (TOKEN_DOLLAR);
-        // else if (c == '*')
-        //     return (TOKEN_WILDCARD);
 	}
-	return (0); // if just char
+	return (0);
 }
 
 void	init_token(t_token **token, int priority, int type)
@@ -92,27 +86,28 @@ void	init_token(t_token **token, int priority, int type)
 	(*token)->type = type;
 }
 
-void init_redir_file_tokens(t_token *token) {
-    t_token *current;
-    
-    current = token;
-    while (current && current->next)
-    {
-        if (current->type == TOKEN_REDIR_OUT || current->type == TOKEN_REDIR_IN ||
-            current->type == TOKEN_REDIR_APPEND || current->type == TOKEN_REDIR_HEREDOC)
-        {
-            if (current->next && current->next->type == TOKEN_WORD)
-            {
-                if (current->type == TOKEN_REDIR_OUT)
-                    init_token(&current->next, 0, TOKEN_FILERED_OUT);
-                else if (current->type == TOKEN_REDIR_IN)
-                    init_token(&current->next, 0, TOKEN_FILERED_IN);
-                else if (current->type == TOKEN_REDIR_APPEND)
-                    init_token(&current->next, 0, TOKEN_FILERED_APPEND);
-                else if (current->type == TOKEN_REDIR_HEREDOC)
-                    init_token(&current->next, 0, TOKEN_FILERED_HEREDOC);
-            }
-        }
-        current = current->next;
-    }
+void	init_redir_file_tokens(t_token *token)
+{
+	t_token	*current;
+
+	current = token;
+	while (current && current->next)
+	{
+		if (current->type == 6 || current->type == 5
+			|| current->type == 7 || current->type == 8)
+		{
+			if (current->next && current->next->type == 0)
+			{
+				if (current->type == 6)
+					init_token(&current->next, 0, -2);
+				else if (current->type == 5)
+					init_token(&current->next, 0, -3);
+				else if (current->type == 7)
+					init_token(&current->next, 0, -5);
+				else if (current->type == 8)
+					init_token(&current->next, 0, -4);
+			}
+		}
+		current = current->next;
+	}
 }

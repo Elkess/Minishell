@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:29:32 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/18 08:35:57 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/23 08:12:25 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,29 +61,10 @@ void	clear_garbcoll(t_garbcoll *head)
 	token = head;
 	while (head)
 	{
-		head = head ->next;
-		free(token->ptr);
+		head = head->next;
+		if (token)
+			free(token->ptr);
 		free(token);
 		token = head;
 	}
 }
-
-// test by amine hhhh 
-
-// void clear_garbcoll(t_garbcoll **head)
-// {
-//     t_garbcoll *token;
-//     t_garbcoll *next;
-//     if (!head || !*head)
-//         return;
-//     token = *head;
-//     while (token)
-//     {
-//         next = token->next;
-//         if (token->ptr)
-//             free(token->ptr);
-//         free(token);
-//         token = next;
-//     }
-//     *head = NULL;
-// }

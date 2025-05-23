@@ -1,25 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   here_docs.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/10 13:23:47 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/21 20:29:55 by melkess          ###   ########.fr       */
+/*   Created: 2025/05/22 18:17:26 by sgmih             #+#    #+#             */
+/*   Updated: 2025/05/22 18:17:43 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../include/minishell.h"
 
-int	pwd(char **pwd_backup)
+void	handle_herdocs(t_tree *tree, t_env *envh)
 {
-	char	*pwd;
-
-	pwd = getcwd(NULL, 0);
-	if (!pwd)
-		pwd = ft_strdup(*pwd_backup);
-	printf("%s\n", pwd);
-	free(pwd);
-	return (0);
+	if (!tree)
+		return ;
+	here_docs(tree->redirs, envh);
+	handle_herdocs(tree->left, envh);
+	handle_herdocs(tree->right, envh);
 }

@@ -1,27 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcmp.c                                        :+:      :+:    :+:   */
+/*   garbage_collector.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/15 11:05:48 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/20 15:36:16 by melkess          ###   ########.fr       */
+/*   Created: 2025/02/18 10:14:10 by melkess           #+#    #+#             */
+/*   Updated: 2025/05/21 14:18:39 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	ft_strcmp(const char *s1, const char *s2)
+void	ft_free(void *ptr, int flag)
 {
-	size_t	i;
+	static void	*lst[INT_MAX];
+	static int	i;
+	int			j;
 
-	i = 0;
-	if (!s1 && !s2)
-		return (i);
-	if (!s1 || !s2)
-		return (1);
-	while ((s1[i] || s2[i]) && s1[i] == s2[i])
-		i++;
-	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+	if (flag && *lst)
+	{
+		j = 0;
+		while (lst[j])
+			free(lst[j++]);
+		*lst = NULL;
+	}
+	else
+		lst[i++] = ptr;
+}
+
+void	ft_exits(int n)
+{
+	ft_free(NULL, 1);
+	exit(n);
+}
+
+void	*ft_malloc(size_t n)
+{
+	void	*ptr;
+
+	ptr = malloc(n);
+	if (!ptr)
+		ft_exits(1);
+	ft_free(ptr, 0);
+	return (ptr);
 }

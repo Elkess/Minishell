@@ -3,43 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   helper_funcs.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:39:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/18 08:39:14 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/21 19:04:33 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-t_env	*edit_env(char *key, char *val, t_env *envh, int should_concat)
-{
-	t_env	*newnode;
-	t_env	*tmp;
-	int		exist;
 
-	exist = 0;
-	tmp = envh; //leaks
-	while (tmp)
-	{
-		if (!ft_strcmp(tmp->key, key))
-		{
-			if (should_concat)
-				tmp->value = ft_strjoin(tmp->value, val);
-			else
-			{
-				if (val)
-				{
-					free(tmp->value);
-					tmp->value = val; //leaks
-				}
-			}
-			return (envh);
-		}
-		tmp = tmp->next;
-	}
-	return (append_node(envh, key, val));
-}
 
 int	is_valid_key(char *key)
 {
@@ -66,11 +39,22 @@ void	print_rest(char **s, int n)
 	i = 0;
 	while (s[i])
 	{
-		buffer= ft_strjoin(buffer, s[i++]);
+		buffer = ft_strjoin(buffer, s[i++], 1); // leaks
 		if (s[i])
-			buffer= ft_strjoin(buffer, " "); //TODO: handle tabs
+			buffer= ft_strjoin(buffer, " ", 1); //TODO: handle tabs // leaks
 	}
 	if (!n)
-		buffer= ft_strjoin(buffer, "\n");
+		buffer= ft_strjoin(buffer, "\n", 1); // leaks
 	write(1, buffer, ft_strlen(buffer));
+	free(buffer);
+}
+
+void	free_twod(char **s)
+{
+	size_t	i;
+
+	i = 0;
+	while (s[i])
+		free(s[i++]);
+	free(s);
 }

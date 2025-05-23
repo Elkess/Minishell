@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/20 10:15:50 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/23 07:55:15 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,39 +47,45 @@ char	*ft_get_prompt(int exit_status)
 	}
 	return (prompt);
 }
-void	handle_herdocs(t_tree *tree)
+
+void	fun_help(void)
 {
-	if (!tree)
-		return ;
-	here_docs(tree->redirs);
-	handle_herdocs(tree->left);
-	handle_herdocs(tree->right);
+	char	*line;
+
+	line = getcwd(0, 0);
+	if (!isatty(0) || !line)
+	{
+		ft_putstr_fd("ERROR\n", 2);
+		if (line)
+			(free(line), line = NULL);
+		exit(1);
+	}
+	if (line)
+		(free(line), line = NULL);
 }
 
 int	main(int ac, char **av, char **env)
-{
-	//atexit(f);
+{   // TODO: Export with args cd in erros
 	char	*line;
 	t_tree	*tree;
 	t_tool	tool;
 	t_env	*envh;
 
+	line = NULL;
+	fun_help();
 	envh = fill_env(env);
-	
 	(void)ac;
 	(void)av;
 	setup_signals();
 	while (1)
 	{
-		line = ft_get_prompt(0);
-		// TODO: give new prompt if line full of spaces 
+		line = ft_get_prompt(0); // TO DO: give new prompt if line full of spaces 
 		tree = parsing_input(line, &tool);
-		handle_herdocs(tree);
+		handle_herdocs(tree, envh);
 		if (line && *line)
 			printf("exit status: %d\n", execute_tree(tree, envh));
 		free(line);
+		clear_garbcoll(tool.grbg); // TO DO: if we use clear_garbcoll(tool.grbg); we got segfault
 		g_signal = 0;
 	}
-	return (0);
 }
-

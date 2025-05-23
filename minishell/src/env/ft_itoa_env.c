@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_itoa.c                                          :+:      :+:    :+:   */
+/*   ft_itoa_env.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 07:51:00 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/21 14:14:07 by melkess          ###   ########.fr       */
+/*   Updated: 2025/05/20 13:37:08 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static int	ft_counter(int n, int *isnegative)
 	return (i);
 }
 
-char	*ft_itoa(int n)
+char	*ft_itoa_env(int n)
 {
 	char	*str;
 	int		len;

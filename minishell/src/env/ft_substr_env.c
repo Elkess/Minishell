@@ -1,27 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcmp.c                                        :+:      :+:    :+:   */
+/*   ft_substr_env.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/15 11:05:48 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/20 15:36:16 by melkess          ###   ########.fr       */
+/*   Created: 2025/04/12 10:18:42 by melkess           #+#    #+#             */
+/*   Updated: 2025/05/20 13:49:41 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	ft_strcmp(const char *s1, const char *s2)
+char	*ft_substr_env(char const *s, unsigned int start, size_t len)
 {
+	char	*substr;
 	size_t	i;
+	size_t	lenfromstart;
 
+	if (!s)
+		return (NULL);
+	if (start > ft_strlen(s))
+		return (ft_strdup_env("", 0));
+	lenfromstart = ft_strlen(s + start);
+	if (len > lenfromstart)
+		len = lenfromstart;
+	substr = malloc(len +1);
+	if (!substr)
+		return (NULL);
 	i = 0;
-	if (!s1 && !s2)
-		return (i);
-	if (!s1 || !s2)
-		return (1);
-	while ((s1[i] || s2[i]) && s1[i] == s2[i])
+	while (i < len)
+	{
+		substr[i] = s[start + i];
 		i++;
-	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+	}
+	substr[i] = '\0';
+	return (substr);
 }

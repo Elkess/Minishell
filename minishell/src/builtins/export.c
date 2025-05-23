@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:34:29 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/18 08:38:33 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/21 22:09:50 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,14 +56,19 @@ char	**filling_str(t_env *envh)
 	size_t	i;
 	char	**str;
 
-	str = malloc((ft_envlen(envh) +1) * sizeof(char *)); // leaks
+	str = malloc((ft_envlen(envh) +1) * sizeof(char *));
 	i = 0;
 	while (envh)
 	{
-		str[i] = ft_strjoin((envh)->key, "="); // leaks
-		str[i] = ft_strjoin(str[i], (envh)->value); // leaks
+		if (envh->value)
+		{
+			str[i] = ft_strjoin(envh->key, "=", 0);
+			str[i] = ft_strjoin(str[i], envh->value, 1);
+		}
+		else
+			str[i] = ft_strdup(envh->key);
 		i++;
-		envh = (envh)->next;
+		envh = envh->next;
 	}
 	str[i] = NULL;
 	return (str);
@@ -73,31 +78,21 @@ void	print_export(t_env *envh)
 {
 	size_t	i;
 	char	**str;
-	char	*buffer;
 	t_env	*holder;
 
 	i = 0;
-	buffer = NULL;
-	holder = envh; //TODO: NO need for buffering 
-	str = sorting_str(filling_str(envh)); //leaks
+	holder = envh;
+	str = sorting_str(filling_str(envh));
 	while (str[i])
 	{
 		while (envh)
 		{
-			if (!ft_strncmp(str[i], envh->key, ft_strlen(envh->key))
-				&& str[i][ft_strlen(envh->key)] == '=')
+			if (!ft_strncmp(str[i], envh->key, ft_strlen(envh->key)) && str[i][ft_strlen(envh->key)] == '=')
 			{
 				if (!envh->value)
-				{
-					// buffer = ft_strjoin(buffer, ft_strjoin("declare -x ", ft_strjoin(envh->key, "\n")));
 					printf("declare -x %s\n", envh->key);
-				}
 				else
-				{
-					// buffer = ft_strjoin(buffer, ft_strjoin("declare -x ",
-					// 	ft_strjoin(envh->key, ft_strjoin("=\"", ft_strjoin(envh->value, "\"\n")))));
 					printf("declare -x %s=\"%s\"\n", envh->key, envh->value);
-				}
 				break ;
 			}
 			envh = envh->next;
@@ -105,13 +100,13 @@ void	print_export(t_env *envh)
 		envh = holder;
 		i++;
 	}
-	// ft_putstr_fd(buffer, 1);
+	free_twod(str);
 }
 
 int	manipulate_export(t_env **envh, t_tree *cmd1, char *key, char *val)
 {
 	size_t	i;
-
+	char	*tmp;
 	i = 0;
 	while (cmd1->cmd[i])
 	{
@@ -119,22 +114,26 @@ int	manipulate_export(t_env **envh, t_tree *cmd1, char *key, char *val)
 		val = extract_data(cmd1->cmd[i], 1); //leaks
 		if (key[ft_strlen(key) -1] == '+' )
 		{
-			key = ft_substr(key, 0, ft_strlen(key) -1);
+			tmp = key;
+			key = ft_substr(key, 0, ft_strlen(key) -1);//free old key
+			free(tmp);
 			if (is_valid_key(key))
-				*envh = edit_env(key, val, *envh, 1);
-			else
 			{
-				ft_putstr_fd(ft_strjoin("minishell10: export: `", ft_strjoin(cmd1->cmd[i], "': not a valid identifier\n")), 2);
-				return (1);
+				*envh = edit_env(key, val, *envh, 1);
+				free(key);
 			}
+			else
+				return (print_err("export: `", cmd1->cmd[i],
+					"': not a valid identifier"), free(key), 1); // free attrs
 		}
 		else if (is_valid_key(key))
-			*envh = edit_env(key, val, *envh, 0);
-		else
 		{
-			ft_putstr_fd(ft_strjoin("minishell11: export: `", ft_strjoin(cmd1->cmd[i], "': not a valid identifier\n")), 2);
-			return (1);
+			*envh = edit_env(ft_strdup(key), val, *envh, 0);
+			free(key);
 		}
+		else
+			return(print_err("export: `", cmd1->cmd[i],
+				"': not a valid identifier"), free(key), 1);
 		i++;
 	}
 	return (0);
