@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   executor.c                                         :+:      :+:    :+:   */
+/*   save.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/25 16:25:47 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/25 15:43:38 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -362,7 +362,7 @@ typedef struct s_expand {
     int noting_before_quote;
     int found_another_char;
     char *buff_exp;
-    t_token *head;
+    t_token *head; // Added for storing expanded tokens
 } t_expand;
 
 size_t	ft_strlen2(const char *s)
@@ -448,6 +448,7 @@ t_token	*new_lst(void *content)
 	return (new_node);
 }
 
+// Helper function to free token list
 void free_token_list(t_token *head)
 {
 	t_token *current = head;
@@ -499,19 +500,29 @@ char **create_cmd_array_2(t_token *head)
 
 static void expand_quote(t_expand *expand, char *str, int status)
 {
+    printf(" Entering expand_quote, str[%d] = '%c', quote = '%c', noting_before_quote = %d\n",
+           expand->j, str[expand->j], expand->flg ? expand->flg : '0', expand->noting_before_quote);
+
+	puts("Qoutes");
     if (expand->flg == 0)
     {
         if (expand->j == 0 || is_space(str[expand->j - 1]))
             expand->noting_before_quote = 1;
         expand->flg = str[expand->j];
+        printf("\033[35m Opening quote '%c', noting_before_quote set to %d \033[0m \n",
+               expand->flg, expand->noting_before_quote);
     }
     else if (expand->flg == str[expand->j])
     {
         if (expand->noting_before_quote && str[expand->j - 1] == expand->flg
             && (str[expand->j + 1] == '\0' || is_space(str[expand->j + 1])))
-			lst_add_back(&expand->head, new_lst(ft_strdup2("")));
+        {
+            printf(" Empty quoted string detected, adding empty string to list\n");
+            lst_add_back(&expand->head, new_lst(ft_strdup2("")));
+        }
         else if (expand->found_another_char && expand->buff_exp)
         {
+            printf(" Non-empty quoted string, adding '%s' to list\n", expand->buff_exp);
             lst_add_back(&expand->head, new_lst(ft_strdup2(expand->buff_exp)));
 			free(expand->buff_exp);
             expand->buff_exp = NULL;
@@ -519,12 +530,18 @@ static void expand_quote(t_expand *expand, char *str, int status)
         expand->flg = 0;
         expand->noting_before_quote = 0;
 		expand->found_another_char = 0; 
+        printf("\033[35m Closing quote, quote reset to 0, noting_before_quote reset to 0 \033[0m\n");
     }
     else
     {
         expand->buff_exp = strjoin_char(expand->buff_exp, str[expand->j]);
         expand->found_another_char = 1;
+        printf(" Inside quote, appending '%c' to buff_exp, buff_exp = '%s', found_another_char = %d\n",
+               str[expand->j], expand->buff_exp ? expand->buff_exp : "(null)", expand->found_another_char);
     }
+
+    printf(" Exiting expand_quote, quote = '%c', buff_exp = '%s', head = %p\n",
+           expand->flg ? expand->flg : '0', expand->buff_exp ? expand->buff_exp : "(null)", expand->head);
 }
 
 static void expand_to_buff(t_expand *expand, char *str)
@@ -651,11 +668,11 @@ static void expand_dollar(t_expand *expand, t_env *env, char *str, int status)
 
 	if (expand->buff_exp)
 	{
-		env_node = search_for_defaults(env, expand->buff_exp);
+		env_node = search_for_defaults(env, expand->buff_exp);  // Get the t_env node
 		printf("expand_dollar: env_node=%p for buff_exp='%s'\n",
                env_node, expand->buff_exp);
 
-		if (env_node && env_node->value)
+		if (env_node && env_node->value)  // Check if node exists and has a value
         {
 			printf("expand_dollar: Found env value='%s'\n", env_node->value);
             lst_add_back(&expand->head, new_lst(ft_strdup2(env_node->value)));
@@ -694,6 +711,7 @@ char	**handel_expand(t_tree *tree, t_env *env, int exit_status)
 		
 	while (tree->cmd[expand.i])
 	{
+		//printf("\033[32m Expand cmd \033[0m [%d] : %s\n", expand.i, tree->cmd[expand.i]);
 		expand.j = 0;
 		expand.found_another_char = 0;
 
@@ -708,18 +726,17 @@ char	**handel_expand(t_tree *tree, t_env *env, int exit_status)
 			if (tree->cmd[expand.i][expand.j] == '"' || tree->cmd[expand.i ][expand.j] == '\'')
 			{
 				expand_quote(&expand, tree->cmd[expand.i], exit_status);
-				//printf("\033[33m Executing qourtes [%d][%d] : %c \033[0m\n", expand.i , expand.j, tree->cmd[expand.i][expand.j]);
-				expand.j++;
+				printf("\033[33m Executing qourtes [%d][%d] : %c \033[0m\n", expand.i , expand.j, tree->cmd[expand.i][expand.j]);
 			}
 			else if (tree->cmd[expand.i][expand.j] == '$' && expand.flg != '\'')
 			{
 				expand_dollar(&expand, env, tree->cmd[expand.i], exit_status);
-				//printf("\033[33m expand_dollar [%d][%d] : %c \033[0m\n", expand.i , expand.j, tree->cmd[expand.i][expand.j]);
+				printf("\033[33m expand_dollar [%d][%d] : %c \033[0m\n", expand.i , expand.j, tree->cmd[expand.i][expand.j]);
 			}
 			else
 			{
 				expand_to_buff(&expand, tree->cmd[expand.i]);
-				//printf("\033[33m cmd_rest [%d][%d] : %c \033[0m\n", expand.i , expand.j, tree->cmd[expand.i][expand.j]);
+				printf("\033[33m cmd_rest [%d][%d] : %c \033[0m\n", expand.i , expand.j, tree->cmd[expand.i][expand.j]);
 				expand.j++; 
 			}
 		}
