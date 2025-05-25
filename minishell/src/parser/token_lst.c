@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:13:04 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/23 08:00:54 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/24 10:26:45 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,22 +87,25 @@ t_token	*tokens_lst(char *cmd, t_tool *tool)
 {
 	t_token	*token;
 	int		i;
+	int		len;
 
 	i = 0;
 	token = NULL;
+	len = strlen(cmd);
 	while (cmd[i] && is_space(cmd[i]))
 		i++;
 	while (cmd && cmd[i])
 	{
 		if (is_space(cmd[i]))
 			i = create_space_token(&token, cmd, i, tool);
-		else if (cmd[i]
+		else if (cmd[i] && (i + 1 < len)
 			&& (is_delimter(cmd[i], cmd[i + 1]) > 0) && tool->quoted == 0)
 			i = create_delim_token(cmd, i, &token, tool);
 		else
 			i = create_cmd_token(&token, cmd, i, tool);
-		token = update_token(&token);
-		if ((token && token->type == 0) || is_delimter(cmd[i], cmd[i + 1]) == 0)
+		token = update_token(&token);	
+		if ((token && token->type == 0) || 
+			(i + 1 < len && is_delimter(cmd[i], cmd[i + 1]) == 0))
 			init_redir_file_tokens(token);
 		init_quote_token(token);
 	}

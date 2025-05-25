@@ -1,0 +1,196 @@
+{
+	"tldrawFileFormatVersion": 1,
+	"schema": {
+		"schemaVersion": 2,
+		"sequences": {
+			"com.tldraw.store": 4,
+			"com.tldraw.asset": 1,
+			"com.tldraw.camera": 1,
+			"com.tldraw.document": 2,
+			"com.tldraw.instance": 25,
+			"com.tldraw.instance_page_state": 5,
+			"com.tldraw.page": 1,
+			"com.tldraw.instance_presence": 6,
+			"com.tldraw.pointer": 1,
+			"com.tldraw.shape": 4,
+			"com.tldraw.asset.bookmark": 2,
+			"com.tldraw.asset.image": 5,
+			"com.tldraw.asset.video": 5,
+			"com.tldraw.shape.group": 0,
+			"com.tldraw.shape.text": 2,
+			"com.tldraw.shape.bookmark": 2,
+			"com.tldraw.shape.draw": 2,
+			"com.tldraw.shape.geo": 9,
+			"com.tldraw.shape.note": 8,
+			"com.tldraw.shape.line": 5,
+			"com.tldraw.shape.frame": 0,
+			"com.tldraw.shape.arrow": 5,
+			"com.tldraw.shape.highlight": 1,
+			"com.tldraw.shape.embed": 4,
+			"com.tldraw.shape.image": 4,
+			"com.tldraw.shape.video": 2,
+			"com.tldraw.binding.arrow": 0
+		}
+	},
+	"records": [
+		{
+			"gridSize": 10,
+			"name": "",
+			"meta": {},
+			"id": "document:document",
+			"typeName": "document"
+		},
+		{
+			"meta": {},
+			"id": "page:page",
+			"name": "Page 1",
+			"index": "a1",
+			"typeName": "page"
+		},
+		{
+			"id": "pointer:pointer",
+			"typeName": "pointer",
+			"x": 5336.054933994619,
+			"y": 7243.576191886537,
+			"lastActivityTimestamp": 1748098569441,
+			"meta": {}
+		},
+		{
+			"followingUserId": null,
+			"opacityForNextShape": 1,
+			"stylesForNextShape": {
+				"tldraw:font": "mono"
+			},
+			"brush": null,
+			"scribbles": [],
+			"cursor": {
+				"type": "default",
+				"rotation": 0
+			},
+			"isFocusMode": false,
+			"exportBackground": true,
+			"isDebugMode": false,
+			"isToolLocked": false,
+			"screenBounds": {
+				"x": 0,
+				"y": 0,
+				"w": 1342,
+				"h": 884
+			},
+			"insets": [
+				false,
+				false,
+				true,
+				false
+			],
+			"zoomBrush": null,
+			"isGridMode": false,
+			"isPenMode": false,
+			"chatMessage": "",
+			"isChatting": false,
+			"highlightedUserIds": [],
+			"isFocused": true,
+			"devicePixelRatio": 2,
+			"isCoarsePointer": false,
+			"isHoveringCanvas": true,
+			"openMenus": [],
+			"isChangingStyle": false,
+			"isReadonly": false,
+			"meta": {},
+			"duplicateProps": null,
+			"id": "instance:instance",
+			"currentPageId": "page:page",
+			"typeName": "instance"
+		},
+		{
+			"editingShapeId": null,
+			"croppingShapeId": null,
+			"selectedShapeIds": [],
+			"hoveredShapeId": null,
+			"erasingShapeIds": [],
+			"hintingShapeIds": [],
+			"focusedGroupId": null,
+			"meta": {},
+			"id": "instance_page_state:page:page",
+			"pageId": "page:page",
+			"typeName": "instance_page_state"
+		},
+		{
+			"x": -2662.3803269338073,
+			"y": -5480.783279791899,
+			"z": 0.35346076145701505,
+			"meta": {},
+			"id": "camera:page:page",
+			"typeName": "camera"
+		},
+		{
+			"x": 2642.233991562112,
+			"y": 3585.47314929285,
+			"rotation": 0,
+			"isLocked": false,
+			"opacity": 1,
+			"meta": {},
+			"id": "shape:Ik7-cAIBv8O9dMlRvMZPR",
+			"type": "text",
+			"props": {
+				"color": "black",
+				"size": "m",
+				"w": 1644.8767934010873,
+				"text": "Examples\nBelow are examples to demonstrate how ft_expand processes various inputs, assuming an environment with variables HOME=/home/user and USER=user, and an exit status of 42. The current directory contains files file1.txt, file2.txt, and data.c.\n\nExample 1: Simple Variable Expansion\nInput: echo $HOME\n\nProcess:\ncmd = \"echo $HOME\", but ft_expand processes $HOME.\nEncounters $, calls ft_expand_dollar.\nCollects HOME into buff_env.\nFinds HOME=/home/user in the environment.\nSince not in quotes, ft_add_to_expand_buffer appends /home/user to buff_exp.\nft_expand_cut adds /home/user to the list.\nConverts list to char **.\nOutput: [\"/home/user\"]\nExample 2: Exit Status\nInput: echo $?\n\nProcess:\nEncounters $, calls ft_expand_dollar.\nSees ?, appends exit status 42 to buff_exp via ft_itoa2.\nft_expand_cut adds 42 to the list.\nOutput: [\"42\"]\nExample 3: Wildcard Expansion\nInput: ls *.txt\n\nProcess:\ncmd = \"*.txt\".\nProcesses *, sets found_star = 1.\nAppends .txt to buff_exp, sets found_another_char = 1.\nft_expand_cut calls ft_get_matching to find files matching *.txt.\nMatches file1.txt and file2.txt.\nAdds them to the list.\nOutput: [\"file1.txt\", \"file2.txt\"]\nExample 4: Quoted String\nInput: echo \"hello $USER\"\n\nProcess:\nEncounters \", sets quote = '\"'.\nAppends hello to buff_exp.\nEncounters $, calls ft_expand_dollar.\nCollects USER, finds user in the environment.\nSince in quotes, appends user to buff_exp.\nEncounters \", closes quote.\nft_expand_cut adds hello user to the list.\nOutput: [\"hello user\"]\nExample 5: Empty Quotes\nInput: echo \"\"\n\nProcess:\nEncounters \", sets quote = '\"', noting_before_quote = 1.\nEncounters \", closes quote, adds empty string to list.\nOutput: [\"\"]\nExample 6: Invalid Variable\nInput: echo $INVALID\n\nProcess:\nEncounters $, collects INVALID into buff_env.\nft_env_search returns NULL (variable not found).\nSince not in quotes, buff_exp remains unchanged.\nft_help appends $ to buff_exp if needed.\nft_expand_cut adds $INVALID or nothing (depending on context).\nOutput: [] or [\"$INVALID\"] (depends on implementation details of ft_help).\nExample 7: Mixed Input\nInput: echo $HOME/*.txt \"hello $USER\"\n\nProcess:\nProcesses $HOME → /home/user.\nProcesses *.txt → file1.txt, file2.txt.\nProcesses \"hello $USER\" → hello user.\nCombines all tokens.\nOutput: [\"/home/user\", \"file1.txt\", \"file2.txt\", \"hello user\"]",
+				"font": "mono",
+				"textAlign": "start",
+				"autoSize": false,
+				"scale": 1
+			},
+			"parentId": "page:page",
+			"index": "a1",
+			"typeName": "shape"
+		},
+		{
+			"x": 3320.066641325852,
+			"y": 6403.937956193226,
+			"rotation": 0,
+			"isLocked": false,
+			"opacity": 1,
+			"meta": {},
+			"id": "shape:SQ8UzgwewIIhT0htJFEdv",
+			"type": "text",
+			"props": {
+				"color": "black",
+				"size": "m",
+				"w": 1152.1484375,
+				"text": "DEBUG: Entering ft_expand_quote, cmd[0] = '\"', quote = '0', noting_before_quote = 0\nDEBUG: Opening quote '\"', noting_before_quote set to 1\nDEBUG: Exiting ft_expand_quote, quote = '\"', buff_exp = '(null)', head = (nil)\n\nDEBUG: Entering ft_expand_quote, cmd[1] = 'h', quote = '\"', noting_before_quote = 1\nDEBUG: Inside quote, appending 'h' to buff_exp, buff_exp = 'h', found_another_char = 1\nDEBUG: Exiting ft_expand_quote, quote = '\"', buff_exp = 'h', head = (nil)\n\nDEBUG: Entering ft_expand_quote, cmd[2] = 'e', quote = '\"', noting_before_quote = 1\nDEBUG: Inside quote, appending 'e' to buff_exp, buff_exp = 'he', found_another_char = 1\nDEBUG: Exiting ft_expand_quote, quote = '\"', buff_exp = 'he', head = (nil)\n\nDEBUG: Entering ft_expand_quote, cmd[3] = 'l', quote = '\"', noting_before_quote = 1\nDEBUG: Inside quote, appending 'l' to buff_exp, buff_exp = 'hel', found_another_char = 1\nDEBUG: Exiting ft_expand_quote, quote = '\"', buff_exp = 'hel', head = (nil)\n\nDEBUG: Entering ft_expand_quote, cmd[4] = 'l', quote = '\"', noting_before_quote = 1\nDEBUG: Inside quote, appending 'l' to buff_exp, buff_exp = 'hell', found_another_char = 1\nDEBUG: Exiting ft_expand_quote, quote = '\"', buff_exp = 'hell', head = (nil)\n\nDEBUG: Entering ft_expand_quote, cmd[5] = 'o', quote = '\"', noting_before_quote = 1\nDEBUG: Inside quote, appending 'o' to buff_exp, buff_exp = 'hello', found_another_char = 1\nDEBUG: Exiting ft_expand_quote, quote = '\"', buff_exp = 'hello', head = (nil)\n\nDEBUG: Entering ft_expand_quote, cmd[6] = '\"', quote = '\"', noting_before_quote = 1\nDEBUG: Closing quote, quote reset to 0, noting_before_quote reset to 0\nDEBUG: Exiting ft_expand_quote, quote = '0', buff_exp = 'hello', head = (nil)\n\n[ft_expand_cut called, adds \"hello\" to list]\n\nDEBUG: Entering ft_expand_quote, cmd[8] = ''', quote = '0', noting_before_quote = 0\nDEBUG: Opening quote ''', noting_before_quote set to 1\nDEBUG: Exiting ft_expand_quote, quote = ''', buff_exp = '(null)', head = [contains \"hello\"]\n\nDEBUG: Entering ft_expand_quote, cmd[9] = ''', quote = ''', noting_before_quote = 1\nDEBUG: Empty quoted string detected, adding empty string to list\nDEBUG: Closing quote, quote reset to 0, noting_before_quote reset to 0\nDEBUG: Exiting ft_expand_quote, quote = '0', buff_exp = '(null)', head = [contains \"hello\", \"\"]",
+				"font": "mono",
+				"textAlign": "start",
+				"autoSize": true,
+				"scale": 1
+			},
+			"parentId": "page:page",
+			"index": "a20ks",
+			"typeName": "shape"
+		},
+		{
+			"x": 4759.601105687985,
+			"y": 5619.2526417421905,
+			"rotation": 0,
+			"isLocked": false,
+			"opacity": 1,
+			"meta": {},
+			"id": "shape:8BP-Cv_pHtwz7DRxsu4TU",
+			"type": "text",
+			"props": {
+				"color": "black",
+				"size": "m",
+				"w": 1359.9453125,
+				"text": "#include <stdio.h> // For printf debugging\n\nstatic void ft_expand_quote(t_expand *exp, char *cmd)\n{\n    printf(\"DEBUG: Entering ft_expand_quote, cmd[%d] = '%c', quote = '%c', noting_before_quote = %d\\n\",\n           exp->i, cmd[exp->i], exp->quote ? exp->quote : '0', exp->noting_before_quote);\n\n    if (exp->quote == 0)\n    {\n        if (exp->i == 0 || ft_isspace(cmd[exp->i - 1]))\n            exp->noting_before_quote = 1;\n        exp->quote = cmd[exp->i];\n        printf(\"DEBUG: Opening quote '%c', noting_before_quote set to %d\\n\",\n               exp->quote, exp->noting_before_quote);\n    }\n    else if (exp->quote == cmd[exp->i])\n    {\n        if (exp->noting_before_quote && cmd[exp->i - 1] == exp->quote\n            && (!cmd[exp->i + 1] || ft_isspace(cmd[exp->i + 1])))\n        {\n            printf(\"DEBUG: Empty quoted string detected, adding empty string to list\\n\");\n            ft_lstadd_back(&(exp->head), ft_lstnew(ft_strdup2(\"\")));\n        }\n        exp->quote = 0;\n        exp->noting_before_quote = 0;\n        printf(\"DEBUG: Closing quote, quote reset to 0, noting_before_quote reset to 0\\n\");\n    }\n    else\n    {\n        exp->buff_exp = ft_strjoin2(exp->buff_exp, ft_char_to_str(cmd[exp->i]));\n        exp->found_another_char = 1;\n        printf(\"DEBUG: Inside quote, appending '%c' to buff_exp, buff_exp = '%s', found_another_char = %d\\n\",\n               cmd[exp->i], exp->buff_exp ? exp->buff_exp : \"(null)\", exp->found_another_char);\n    }\n\n    printf(\"DEBUG: Exiting ft_expand_quote, quote = '%c', buff_exp = '%s', head = %p\\n\",\n           exp->quote ? exp->quote : '0', exp->buff_exp ? exp->buff_exp : \"(null)\", exp->head);\n}",
+				"font": "mono",
+				"textAlign": "start",
+				"autoSize": true,
+				"scale": 1
+			},
+			"parentId": "page:page",
+			"index": "a37p8",
+			"typeName": "shape"
+		}
+	]
+}
