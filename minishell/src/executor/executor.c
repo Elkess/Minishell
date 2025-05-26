@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/25 16:25:47 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/26 09:28:52 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -355,14 +355,14 @@ int	execute_cmd(t_tree *tree, t_env *envh, int status)
 /**********************************************************************************************************************************************************************/
 
 typedef struct s_expand {
-    int flg;
-	int i;
-	int j;
-	int		found_star;
-    int noting_before_quote;
-    int found_another_char;
-    char *buff_exp;
-    t_token *head;
+    int		flg;
+	int		i;
+	int		j;
+	int		is_wildcard;
+    int		before_qoute;
+    int		is_char;
+    char	*buff_exp;
+    t_token	*token;
 } t_expand;
 
 size_t	ft_strlen2(const char *s)
@@ -433,7 +433,6 @@ char	*strjoin_char(char *str, char c)
 	return (new_str);
 }
 
-
 t_token	*new_lst(void *content)
 {
 	t_token	*new_node;
@@ -448,9 +447,9 @@ t_token	*new_lst(void *content)
 	return (new_node);
 }
 
-void free_token_list(t_token *head)
+void free_token_list(t_token *token)
 {
-	t_token *current = head;
+	t_token *current = token;
 	t_token *next;
 	
 	while (current)
@@ -463,18 +462,17 @@ void free_token_list(t_token *head)
 	}
 }
 
-
-char **create_cmd_array_2(t_token *head)
+char **create_cmd_array_2(t_token *token)
 {
     t_token *current;
     char **result;
     int count;
     int i;
 
-	if (!head)
+	if (!token)
         return (NULL);
     count = 0;
-    current = head;
+    current = token;
     while (current)
     {
         count++;
@@ -484,7 +482,7 @@ char **create_cmd_array_2(t_token *head)
     result = malloc(sizeof(char *) * (count + 1));
     if (!result)
         return (NULL);
-    current = head;
+    current = token;
     i = 0;
     while (current && i < count)
     {
@@ -502,28 +500,28 @@ static void expand_quote(t_expand *expand, char *str, int status)
     if (expand->flg == 0)
     {
         if (expand->j == 0 || is_space(str[expand->j - 1]))
-            expand->noting_before_quote = 1;
+            expand->before_qoute = 1;
         expand->flg = str[expand->j];
     }
     else if (expand->flg == str[expand->j])
     {
-        if (expand->noting_before_quote && str[expand->j - 1] == expand->flg
+        if (expand->before_qoute && str[expand->j - 1] == expand->flg
             && (str[expand->j + 1] == '\0' || is_space(str[expand->j + 1])))
-			lst_add_back(&expand->head, new_lst(ft_strdup2("")));
-        else if (expand->found_another_char && expand->buff_exp)
+			lst_add_back(&expand->token, new_lst(ft_strdup2("")));
+        else if (expand->is_char && expand->buff_exp)
         {
-            lst_add_back(&expand->head, new_lst(ft_strdup2(expand->buff_exp)));
+            lst_add_back(&expand->token, new_lst(ft_strdup2(expand->buff_exp)));
 			free(expand->buff_exp);
             expand->buff_exp = NULL;
         }
         expand->flg = 0;
-        expand->noting_before_quote = 0;
-		expand->found_another_char = 0; 
+        expand->before_qoute = 0;
+		expand->is_char = 0; 
     }
     else
     {
         expand->buff_exp = strjoin_char(expand->buff_exp, str[expand->j]);
-        expand->found_another_char = 1;
+        expand->is_char = 1;
     }
 }
 
@@ -531,12 +529,12 @@ static void expand_to_buff(t_expand *expand, char *str)
 {
 	expand->buff_exp = strjoin_char(expand->buff_exp, str[expand->j]);
 	// if (str[expand->j] != '*' || expand->flg != '\'')
-	// 	expand->found_another_char = 1;
+	// 	expand->is_char = 1;
 	// else
-	// 	expand->found_star = 1;
-	expand->found_another_char = 1;
-	printf("\033[34m expand_to_buff, quote = '%c', buff_exp = '%s', head = %p \033[0m\n",
-        expand->flg ? expand->flg : '0', expand->buff_exp ? expand->buff_exp : "(null)", expand->head);
+	// 	expand->is_wildcard = 1;
+	expand->is_char = 1;
+	printf("\033[34m expand_to_buff, quote = '%c', buff_exp = '%s', token = %p \033[0m\n",
+        expand->flg ? expand->flg : '0', expand->buff_exp ? expand->buff_exp : "(null)", expand->token);
 }
 
 static int	valid_char(char c)
@@ -614,11 +612,10 @@ static void expand_dollar(t_expand *expand, t_env *env, char *str, int status)
 	
 	if (str[expand->j] == '?')
     {
-        printf("expand_dollar: Handling $?\n");
         temp_buff = ft_itoa2(status);
         if (temp_buff)
         {
-            lst_add_back(&expand->head, new_lst(ft_strdup2(temp_buff)));
+            lst_add_back(&expand->token, new_lst(ft_strdup2(temp_buff)));
             free(temp_buff);
         }
         expand->j++;
@@ -626,16 +623,14 @@ static void expand_dollar(t_expand *expand, t_env *env, char *str, int status)
     }
 	else if (str[expand->j] == '$')
     {
-        printf("expand_dollar: Handling $$ \n");
 		expand->buff_exp = strjoin_char(expand->buff_exp, '$');
-        expand->found_another_char = 1;
+        expand->is_char = 1;
 		expand->j++;
         return ;
     }
 	else if (str[expand->j] == '0')
     {
-        printf("expand_dollar: Handling $0 \n");
-        lst_add_back(&expand->head, new_lst(ft_strdup2("minishell")));
+        lst_add_back(&expand->token, new_lst(ft_strdup2("minishell")));
         expand->j++;
         return ;
     }
@@ -644,7 +639,6 @@ static void expand_dollar(t_expand *expand, t_env *env, char *str, int status)
 	expand->buff_exp = NULL;
 	while (str[expand->j] && valid_char(str[expand->j]))
 	{
-		printf("expand_dollar: Building var name, j=%d, char='%c'\n", expand->j, str[expand->j]);
 		expand->buff_exp = strjoin_char(expand->buff_exp, str[expand->j]);
 		expand->j++;
 	}
@@ -652,29 +646,20 @@ static void expand_dollar(t_expand *expand, t_env *env, char *str, int status)
 	if (expand->buff_exp)
 	{
 		env_node = search_for_defaults(env, expand->buff_exp);
-		printf("expand_dollar: env_node=%p for buff_exp='%s'\n",
-               env_node, expand->buff_exp);
 
 		if (env_node && env_node->value)
         {
-			printf("expand_dollar: Found env value='%s'\n", env_node->value);
-            lst_add_back(&expand->head, new_lst(ft_strdup2(env_node->value)));
-            expand->found_another_char = 1;
+            lst_add_back(&expand->token, new_lst(ft_strdup2(env_node->value)));
+            expand->is_char = 1;
         }
         else
         {
-            printf("expand_dollar: Variable not found, adding empty string\n");
-            lst_add_back(&expand->head, new_lst(ft_strdup2("")));
+            lst_add_back(&expand->token, new_lst(ft_strdup2("")));
         }
 		free(expand->buff_exp);
         expand->buff_exp = NULL;
 	}
-
-	printf("exiting expand_dollar: j=%d, buff_exp='%s', head=%p\n",
-           expand->j, expand->buff_exp ? expand->buff_exp : "(null)", expand->head);
 }
-
-
 
 
 char	**handel_expand(t_tree *tree, t_env *env, int exit_status)
@@ -687,15 +672,15 @@ char	**handel_expand(t_tree *tree, t_env *env, int exit_status)
 	expand.i = 0;
 	expand.j = 0;
 	expand.flg = 0;
-	expand.noting_before_quote = 0;
-	expand.found_another_char = 0;
-	expand.head = NULL;
+	expand.before_qoute = 0;
+	expand.is_char = 0;
+	expand.token = NULL;
 	expand.buff_exp = NULL;
 		
 	while (tree->cmd[expand.i])
 	{
 		expand.j = 0;
-		expand.found_another_char = 0;
+		expand.is_char = 0;
 
 		if (!tree->cmd[expand.i])
 		{
@@ -725,17 +710,17 @@ char	**handel_expand(t_tree *tree, t_env *env, int exit_status)
 		}
 		// TODO: Save expand.buff_exp into a result array here if needed
 
-		if (expand.buff_exp && expand.found_another_char)
+		if (expand.buff_exp && expand.is_char)
         {
-            lst_add_back(&expand.head, new_lst(ft_strdup2(expand.buff_exp)));
+            lst_add_back(&expand.token, new_lst(ft_strdup2(expand.buff_exp)));
 			free(expand.buff_exp);
             expand.buff_exp = NULL;
-            expand.found_another_char = 0;
+            expand.is_char = 0;
         }
 		expand.i++;
 	}
 
-	char **result = create_cmd_array_2(expand.head);
+	char **result = create_cmd_array_2(expand.token);
 	// printf("DEBUG: Created result array: %p\n", result);
     // if (result)
     // {
