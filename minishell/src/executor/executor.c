@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/26 09:28:52 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/26 12:05:48 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -528,13 +528,13 @@ static void expand_quote(t_expand *expand, char *str, int status)
 static void expand_to_buff(t_expand *expand, char *str)
 {
 	expand->buff_exp = strjoin_char(expand->buff_exp, str[expand->j]);
-	// if (str[expand->j] != '*' || expand->flg != '\'')
+	// if (str[expand->j] != '*')
 	// 	expand->is_char = 1;
 	// else
 	// 	expand->is_wildcard = 1;
 	expand->is_char = 1;
-	printf("\033[34m expand_to_buff, quote = '%c', buff_exp = '%s', token = %p \033[0m\n",
-        expand->flg ? expand->flg : '0', expand->buff_exp ? expand->buff_exp : "(null)", expand->token);
+	// printf("\033[34m expand_to_buff, quote = '%c', buff_exp = '%s', token = %p \033[0m\n",
+    //     expand->flg ? expand->flg : '0', expand->buff_exp ? expand->buff_exp : "(null)", expand->token);
 }
 
 static int	valid_char(char c)
@@ -601,64 +601,91 @@ char	*ft_itoa2(int n)
 
 /************************************************** function itoa ***********************************/
 
+char *strjoin_2(char *s1, char *s2)
+{
+    size_t len1 = ft_strlen2(s1);
+    size_t len2 = ft_strlen2(s2);
+    char *result = malloc(len1 + len2 + 1);
+    size_t i = 0;
+
+    if (!result)
+        return (NULL);
+    if (s1)
+    {
+        while (i < len1)
+        {
+            result[i] = s1[i];
+            i++;
+        }
+    }
+    if (s2)
+    {
+        while (i < len1 + len2)
+        {
+            result[i] = s2[i - len1];
+            i++;
+        }
+    }
+    result[i] = '\0';
+    return (result);
+}
+
 static void expand_dollar(t_expand *expand, t_env *env, char *str, int status)
 {
-	t_env *env_node = NULL;
-	char *temp_buff = NULL;
-	
+    char *expanded_value = NULL;
+    char *var_name = NULL;
+    t_env *env_node = NULL;
+	char *temp;
 
-	puts("Entering expand_dollar");
-	expand->j++; // skip the '$'
-	
-	if (str[expand->j] == '?')
+    expand->j++; // Skip the '$'
+
+    if (str[expand->j] == '?')
     {
-        temp_buff = ft_itoa2(status);
-        if (temp_buff)
+        expanded_value = ft_itoa2(status);
+        expand->j++;
+    }
+    else if (str[expand->j] == '$')
+    {
+        expanded_value = ft_strdup2("$");
+        expand->j++;
+    }
+    else if (str[expand->j] == '0')
+    {
+        expanded_value = ft_strdup2("minishell");
+        expand->j++;
+    }
+    else
+    {
+        // Collect variable name into a separate buffer
+        while (str[expand->j] && valid_char(str[expand->j]))
         {
-            lst_add_back(&expand->token, new_lst(ft_strdup2(temp_buff)));
-            free(temp_buff);
+            var_name = strjoin_char(var_name, str[expand->j]);
+            expand->j++;
         }
-        expand->j++;
-        return ;
-    }
-	else if (str[expand->j] == '$')
-    {
-		expand->buff_exp = strjoin_char(expand->buff_exp, '$');
-        expand->is_char = 1;
-		expand->j++;
-        return ;
-    }
-	else if (str[expand->j] == '0')
-    {
-        lst_add_back(&expand->token, new_lst(ft_strdup2("minishell")));
-        expand->j++;
-        return ;
-    }
-
-	free(expand->buff_exp);
-	expand->buff_exp = NULL;
-	while (str[expand->j] && valid_char(str[expand->j]))
-	{
-		expand->buff_exp = strjoin_char(expand->buff_exp, str[expand->j]);
-		expand->j++;
-	}
-
-	if (expand->buff_exp)
-	{
-		env_node = search_for_defaults(env, expand->buff_exp);
-
-		if (env_node && env_node->value)
+        if (var_name)
         {
-            lst_add_back(&expand->token, new_lst(ft_strdup2(env_node->value)));
+            env_node = search_for_defaults(env, var_name);
+			if (env_node && env_node->value)
+                expanded_value = ft_strdup2(env_node->value);
+            else
+                expanded_value = ft_strdup2("");
+            free(var_name);
+        }
+    }
+
+    if (expanded_value)
+    {
+        if (expand->flg == '"')
+        {
+            temp = expand->buff_exp;
+            expand->buff_exp = strjoin_2(temp, expanded_value); 
+            free(temp);
             expand->is_char = 1;
         }
         else
-        {
-            lst_add_back(&expand->token, new_lst(ft_strdup2("")));
-        }
-		free(expand->buff_exp);
-        expand->buff_exp = NULL;
-	}
+            lst_add_back(&expand->token, new_lst(ft_strdup2(expanded_value)));
+        free(expanded_value);
+    }
 }
 
 
@@ -762,31 +789,27 @@ int	executor(t_tree *tree, t_env *envh)
             printf("\033[32m executor: expanded_cmd[%d] = '%s' \033[0m\n", i, expanded_cmd[i]);
     }
 
-
 	// if (expanded_cmd)  // tree->cmd double-free 
     //     tree->cmd = expanded_cmd;
 
-	printf("search for defaults: %s\n", search_for_defaults(envh, "USER")->value);
-
-
-	exit(1);
-	if (!tree || tree->type != NODE_COMMAND && tree->type != NODE_PARENTHS)
-		return (1);
-	ft_dup(fds, 1);
-	if (tree->redirs)
-	{
-		// lasthd = find_lasthd(tree->redirs);
-		// TODO: 2 handle herdoc properly this is wrong
-		// if (lasthd)
-		// 	here_docs(tree->redirs);
-		redir_status = ft_redir(tree);
-	}
-	if (!redir_status && tree->type == NODE_COMMAND)
-		status = execute_cmd(tree, envh, status);
-	else if (!redir_status && tree->type == NODE_PARENTHS)
-		status = execute_tree(tree->left, envh);
-	ft_dup(fds, 0);
-	if (!tree->cmd)
-		return (redir_status);
+	// //exit(1);
+	// if (!tree || tree->type != NODE_COMMAND && tree->type != NODE_PARENTHS)
+	// 	return (1);
+	// ft_dup(fds, 1);
+	// if (tree->redirs)
+	// {
+	// 	// lasthd = find_lasthd(tree->redirs);
+	// 	// TODO: 2 handle herdoc properly this is wrong
+	// 	// if (lasthd)
+	// 	// 	here_docs(tree->redirs);
+	// 	redir_status = ft_redir(tree);
+	// }
+	// if (!redir_status && tree->type == NODE_COMMAND)
+	// 	status = execute_cmd(tree, envh, status);
+	// else if (!redir_status && tree->type == NODE_PARENTHS)
+	// 	status = execute_tree(tree->left, envh);
+	// ft_dup(fds, 0);
+	// if (!tree->cmd)
+	// 	return (redir_status);
 	return (status);
 }
