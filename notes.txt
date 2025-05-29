@@ -1,0 +1,10 @@
+export x="ls -la"
+
+if the variable not quoted like that : $x -> it will expanded splitted by space
+so it will executed as ls -la
+
+
+
+if it quoted like that : "$x" -> it will expanded as a normal string without splitting
+bash: ls -la: command not found
+

@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 09:20:22 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/25 09:26:00 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/26 13:30:09 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,8 @@ t_tree	*node_command(t_token **input, t_tool *tool)
 				node->redirs_after, tool);
 		return (node);
 	}
-	if (!*input || ((*input)->type != 17 &&
-                (*input)->type != 16 &&
-                (*input)->type != 0))
+	if (!*input || ((*input)->type != 17 && (*input)->type != 18 &&
+                (*input)->type != 16 && (*input)->type != 0))
 	{
 		node = create_tree_node(0, tool);
 		if (!node)
