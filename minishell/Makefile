@@ -1,7 +1,7 @@
 NAME = minishell
 
 C_Compiler = cc
-CFLAGS = -Iinclude -g3 -fsanitize=address #-Wall -Wextra -Werror 
+CFLAGS = -Iinclude #-g3 -fsanitize=address #-Wall -Wextra -Werror 
 
 READLINEFLAG = -lreadline
 
@@ -89,8 +89,7 @@ print_header:
 	@echo "\033[38;2;0;0;0m╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝"
 	@echo "\033[0m"
 	@echo ""
-	@echo "                by: soukaina and mohamed amin                   "
+	@echo "                    \033[38;2;255;0;0mBy : \033[0mSgmih && Melkess                    "
 	@echo ""
-
 
 .PHONY: clean
