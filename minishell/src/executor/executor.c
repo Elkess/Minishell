@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/29 10:04:28 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/29 11:00:10 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -671,8 +671,8 @@ static void expand_dollar(t_expand *expand, t_env *env, char *str, int status)
 
 			if (env_node && env_node->value)
 			{
-				printf("expand->flg: %d\n", expand->flg);
-				printf("\033[33m expand_dollar: env_node->value = '%s', expand->buff_exp = '%s' \033[0m\n", env_node->value, expand->buff_exp);
+				// printf("expand->flg: %d\n", expand->flg);
+				// printf("\033[33m expand_dollar: env_node->value = '%s', expand->buff_exp = '%s' \033[0m\n", env_node->value, expand->buff_exp);
 				if (expand->flg != '"' && has_space(env_node->value))
 				{
 					// split env_node->value by space and add each part to the token list
@@ -963,7 +963,7 @@ static char **expand_wildcard(char *buff_exp)
 	int		match_count = 0;
 	int i;
 	
-	printf("\033[33m Expanding wildcard: '%s' \033[0m\n", buff_exp);
+	//printf("\033[33m Expanding wildcard: '%s' \033[0m\n", buff_exp);
 
 
     if (one_wildcard(buff_exp))
@@ -1053,21 +1053,21 @@ char	**handel_expand(t_tree *tree, t_env *env, int exit_status)
 			}
 		}
 
-		printf("\033[38m expand.buff_exp before check: '%s' \033[0m\n", expand.buff_exp);
-		printf("\033[38m is_wildcard: %d, is_char: %d \033[0m\n", expand.is_wildcard, expand.is_char);
+		// printf("\033[38m expand.buff_exp before check: '%s' \033[0m\n", expand.buff_exp);
+		// printf("\033[38m is_wildcard: %d, is_char: %d \033[0m\n", expand.is_wildcard, expand.is_char);
 
 		if (expand.buff_exp)
         {
 			if (expand.is_wildcard)
 			{
-				printf("iside wildcard\n");
-				printf("\033[32m => Expanding wildcard: '%s'\033[0m\n", expand.buff_exp);
+				// printf("iside wildcard\n");
+				// printf("\033[32m => Expanding wildcard: '%s'\033[0m\n", expand.buff_exp);
 				list_wld = expand_wildcard(expand.buff_exp);
 				int k = 0;
 				while (list_wld && list_wld[k])
 				{
 					lst_add_back(&expand.token, new_lst(ft_strdup2(list_wld[k])));
-					printf("\033[31mAdded wildcard match: '%s'\n", list_wld[k]);
+					//printf("\033[31mAdded wildcard match: '%s'\n", list_wld[k]);
 					k++;
 				}
 				free_list_wld(list_wld);
@@ -1075,7 +1075,7 @@ char	**handel_expand(t_tree *tree, t_env *env, int exit_status)
 			else
 			{
             	lst_add_back(&expand.token, new_lst(ft_strdup2(expand.buff_exp)));
-				printf("No matches for wildcard, added original: '%s'\n", expand.buff_exp);
+				//printf("No matches for wildcard, added original: '%s'\n", expand.buff_exp);
 			}
 			free(expand.buff_exp);
             expand.buff_exp = NULL;
@@ -1093,7 +1093,7 @@ char	**handel_expand(t_tree *tree, t_env *env, int exit_status)
 
 /******************************************************************************************/
 
-int	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     executor(t_tree *tree, t_env *envh)
+int	executor(t_tree *tree, t_env *envh)
 {
 	// TODO: handle tty && signals 
 	int		fds[2];
@@ -1104,22 +1104,22 @@ int	                                                                            
 
 	status = 0;
 
-    if (tree && tree->cmd)
-    {
-        for (int i = 0; tree->cmd[i]; i++)
-            printf("\033[32m executor: Initial tree->cmd[%d] = '%s' \033[0m\n", i, tree->cmd[i]);
-    }
-    else
-        printf("\033[32m executor: tree->cmd is NULL or tree is NULL \033[0m\n");
+    // if (tree && tree->cmd)
+    // {
+    //     for (int i = 0; tree->cmd[i]; i++)
+    //         printf("\033[32m executor: Initial tree->cmd[%d] = '%s' \033[0m\n", i, tree->cmd[i]);
+    // }
+    // else
+    //     printf("\033[32m executor: tree->cmd is NULL or tree is NULL \033[0m\n");
 		
 		 
 	expanded_cmd = handel_expand(tree, envh, status);
 	
-    if (expanded_cmd)
-    {
-        for (int i = 0; expanded_cmd[i]; i++)
-            printf("\033[32m executor: expanded_cmd[%d] = '%s' \033[0m\n", i, expanded_cmd[i]);
-    }
+    // if (expanded_cmd)
+    // {
+    //     for (int i = 0; expanded_cmd[i]; i++)
+    //         printf("\033[32m executor: expanded_cmd[%d] = '%s' \033[0m\n", i, expanded_cmd[i]);
+    // }
 
 	if (expanded_cmd)  // tree->cmd double-free 
         tree->cmd = expanded_cmd;
