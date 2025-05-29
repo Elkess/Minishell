@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:34:29 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/21 22:09:50 by melkess          ###   ########.fr       */
+/*   Updated: 2025/05/29 11:52:37 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,13 +60,8 @@ char	**filling_str(t_env *envh)
 	i = 0;
 	while (envh)
 	{
-		if (envh->value)
-		{
 			str[i] = ft_strjoin(envh->key, "=", 0);
 			str[i] = ft_strjoin(str[i], envh->value, 1);
-		}
-		else
-			str[i] = ft_strdup(envh->key);
 		i++;
 		envh = envh->next;
 	}
@@ -112,14 +107,14 @@ int	manipulate_export(t_env **envh, t_tree *cmd1, char *key, char *val)
 	{
 		key = extract_data(cmd1->cmd[i], 0); //leaks
 		val = extract_data(cmd1->cmd[i], 1); //leaks
-		if (key[ft_strlen(key) -1] == '+' )
+		if (key && *key && key[ft_strlen(key) -1] == '+' )
 		{
 			tmp = key;
 			key = ft_substr(key, 0, ft_strlen(key) -1);//free old key
 			free(tmp);
 			if (is_valid_key(key))
 			{
-				*envh = edit_env(key, val, *envh, 1);
+				*envh = edit_env(ft_strdup(key), val, *envh, 1);
 				free(key);
 			}
 			else

@@ -6,13 +6,13 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 08:39:55 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/21 14:18:18 by melkess          ###   ########.fr       */
+/*   Updated: 2025/05/29 12:43:56 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	execute_pipes(t_tree *tree, t_env *envh)
+int	execute_pipes(t_tree *tree, t_env *envh, t_tool	*tool)
 {
 	int		pipefd[2];
 	pid_t	pids[2];
@@ -28,45 +28,46 @@ int	execute_pipes(t_tree *tree, t_env *envh)
 	if (pids[0] == 0)
 	{
 		(close(pipefd[0]), dup2(pipefd[1], 1));
-		(close(pipefd[1]), exit(execute_tree(tree->left, envh))); // SHoud it be exit and free_ evnh ???
+		(close(pipefd[1]), exit(execute_tree(tree->left, envh, tool))); // SHoud it be exit and free_ evnh ???
 	}
 	pids[1] = fork();
 	if (pids[1] == -1){perror("Fork failed");return (-1);}
 	if (pids[1] == 0)
 	{
 		(close(pipefd[1]), dup2(pipefd[0], 0));
-		(close(pipefd[0]), exit(execute_tree(tree->right, envh))); // SHoud it be exit and free_ evnh
+		(close(pipefd[0]), exit(execute_tree(tree->right, envh, tool))); // SHoud it be exit and free_ evnh
 	}
 	(close(pipefd[0]), close(pipefd[1]));
 	(waitpid(pids[0], NULL, 0), waitpid(pids[1], &status, 0));
 	return (WEXITSTATUS(status));
 }
 
-int	execute_tree(t_tree *tree, t_env *envh)
+int	execute_tree(t_tree *tree, t_env *envh, t_tool	*tool)
 {
 	int	status;
 
 	status = 1;
 	if (!tree)
 		return (status);
+	handle_herdocs(tree, envh);
 	if (tree->type == NODE_COMMAND)
-		return (executor(tree, envh));
+		return (executor(tree, envh, tool));
 	if (tree->type == NODE_PARENTHS)
-		return (executor(tree, envh));
+		return (executor(tree, envh, tool));
 	if (tree->type == NODE_PIPE)
-		return (execute_pipes(tree, envh));
+		return (execute_pipes(tree, envh, tool));
 	if (tree->type == NODE_AND)
 	{
-		status = execute_tree(tree->left, envh);
+		status = execute_tree(tree->left, envh, tool);
 		if (status == 0)
-			return (execute_tree(tree->right, envh));
+			return (execute_tree(tree->right, envh, tool));
 		return (status);
 	}
 	if (tree->type == NODE_OR)
 	{
-		status = execute_tree(tree->left, envh);
+		status = execute_tree(tree->left, envh, tool);
 		if (status != 0)
-			return (execute_tree(tree->right, envh));
+			return (execute_tree(tree->right, envh, tool));
 		return (status);
 	}
 	return (status);

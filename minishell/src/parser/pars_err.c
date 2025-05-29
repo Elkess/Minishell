@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars_err.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 08:46:52 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/23 08:05:57 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/29 12:39:48 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ int	pars_err_utils(t_token *token, t_tool *tool)
 			else if (err_code == 3)
 				ft_putstr_fd("newline", 2);
 			write(2, "'\n", 2);
-			tool->err = 2;
+			tool->err = 258;
 			return (1);
 		}
 		token = token->next;
@@ -139,7 +139,7 @@ int	pars_err(t_token **token, t_tool *tool)
 		write(2, "minishell$> : syntax error near unexpected token `", 50);
 		ft_putstr_fd(tmp->value, 2);
 		write(2, "'\n", 2);
-		return (tool->err = 2, 1);
+		return (tool->err = 258, 1);
 	}
 	if (tool->paren || tool->quoted || tool->anderr == 1)
 	{
@@ -151,7 +151,7 @@ int	pars_err(t_token **token, t_tool *tool)
 				"minishell$> : syntax error near unexpected token `&'\n", 53);
 		else
 			write(2, "minishell$> : syntax error quotes\n", 35);
-		return (tool->err = 2, 1);
+		return (tool->err = 258, 1);
 	}
 	if (pars_err_utils(tmp, tool))
 		return (1);
