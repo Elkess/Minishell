@@ -64,7 +64,7 @@ $(NAME): $(OFuns)
 	$(C_Compiler) $(CFLAGS)  $^ -o $@ -L $(READLINE_L) $(READLINEFLAG)
 	@echo "\\033[0;32m ${NAME} created \\033[0m"
 
-%.o: %.c include/minishell.h include/parser.h include/executor.h
+%.o: %.c include/minishell.h
 	$(C_Compiler) $(CFLAGS) -I $(READLINE_I) -c $< -o $@
 
 clean:
