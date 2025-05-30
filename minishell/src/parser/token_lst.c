@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:13:04 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/24 10:26:45 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/29 14:02:54 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ t_token	*tokens_lst(char *cmd, t_tool *tool)
 	{
 		if (is_space(cmd[i]))
 			i = create_space_token(&token, cmd, i, tool);
-		else if (cmd[i] && (i + 1 < len)
+		else if (cmd[i] && (i < len)
 			&& (is_delimter(cmd[i], cmd[i + 1]) > 0) && tool->quoted == 0)
 			i = create_delim_token(cmd, i, &token, tool);
 		else
