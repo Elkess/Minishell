@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   helper_funcs.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:39:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/21 19:04:33 by melkess          ###   ########.fr       */
+/*   Updated: 2025/05/30 08:07:09 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-
-
 int	is_valid_key(char *key)
 {
 	size_t	i;
 
+	if (!key || !*key)
+		return (1);
 	i = 0;
 	if (!ft_isalpha(key[i]) && key[i] != '_')
 		return (0);
@@ -54,7 +54,7 @@ void	free_twod(char **s)
 	size_t	i;
 
 	i = 0;
-	while (s[i])
+	while (s && s[i])
 		free(s[i++]);
 	free(s);
 }

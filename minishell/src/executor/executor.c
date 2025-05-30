@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/29 11:00:10 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/30 08:13:55 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1093,7 +1093,7 @@ char	**handel_expand(t_tree *tree, t_env *env, int exit_status)
 
 /******************************************************************************************/
 
-int	executor(t_tree *tree, t_env *envh)
+int	executor(t_tree *tree, t_env *envh, t_tool	*tool)
 {
 	// TODO: handle tty && signals 
 	int		fds[2];
@@ -1102,7 +1102,7 @@ int	executor(t_tree *tree, t_env *envh)
 	t_redir	lasthd;
 	char **expanded_cmd;
 
-	status = 0;
+	status = tool->err;
 
     // if (tree && tree->cmd)
     // {
@@ -1139,7 +1139,7 @@ int	executor(t_tree *tree, t_env *envh)
 	if (!redir_status && tree->type == NODE_COMMAND)
 		status = execute_cmd(tree, envh, status);
 	else if (!redir_status && tree->type == NODE_PARENTHS)
-		status = execute_tree(tree->left, envh);
+		status = execute_tree(tree->left, envh, tool);
 	ft_dup(fds, 0);
 	if (!tree->cmd)
 		return (redir_status);

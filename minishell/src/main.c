@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/23 07:55:15 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/30 08:07:45 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,9 +81,8 @@ int	main(int ac, char **av, char **env)
 	{
 		line = ft_get_prompt(0); // TO DO: give new prompt if line full of spaces 
 		tree = parsing_input(line, &tool);
-		handle_herdocs(tree, envh);
-		if (line && *line)
-			printf("exit status: %d\n", execute_tree(tree, envh));
+		if (tree && line && *line)
+			tool.err = execute_tree(tree, envh, &tool);
 		free(line);
 		clear_garbcoll(tool.grbg); // TO DO: if we use clear_garbcoll(tool.grbg); we got segfault
 		g_signal = 0;

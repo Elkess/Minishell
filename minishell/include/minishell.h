@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/30 07:56:41 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/30 08:15:53 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <string.h>
 # include <sys/stat.h>
 # include <errno.h>
+# include <dirent.h>
 
 
 //  /*********** Parser struct ***********/  //
@@ -186,8 +187,8 @@ void		free_envh(t_env *envh);
 void		free_twod(char **s);
 
 // Executor functions 
-int			execute_tree(t_tree *tree, t_env *envh);
-int			executor(t_tree *tree, t_env *envh);
+int			execute_tree(t_tree *tree, t_env *envh, t_tool	*tool);
+int			executor(t_tree *tree, t_env *envh, t_tool	*tool);
 
 // Built-in commands 
 int			echo(t_tree *cmd1);

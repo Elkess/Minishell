@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 13:35:16 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/29 10:40:02 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/30 08:09:34 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,6 @@ t_tree	*parsing_input(char *line, t_tool *tool)
 	tool->quoted = 0;
 	tool->anderr = 0;
 	tool->paren = 0;
-	tool->err = 0;
 	tool->grbg = NULL;
 	i = 0;
 	while (line && line[i])
