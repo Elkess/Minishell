@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/29 12:43:21 by melkess          ###   ########.fr       */
+/*   Updated: 2025/05/29 17:49:53 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -273,10 +273,6 @@ void	here_docs(t_redir *red, t_env *envh)
 					free(line);
 					break ;
 				}
-				// if (red->flag == 1)
-				// {
-				// 	line = heredoc_expand(line);
-				// }
 				line = ft_strjoin(line, "\n", 1);
 				write(red->fd, line, ft_strlen(line));
 				free(line);
@@ -329,14 +325,11 @@ int	is_builtin(t_tree *tree, char	*cmd, t_env *envh)
 	return (-1);
 }
 
-
-
 int	execute_cmd(t_tree *tree, t_env *envh, int status)
 {
 	char	*cmd;
 	if (tree && tree->cmd)
 	{
-
 		cmd = tree->cmd[0];
 		if (!cmd)
 			return (0);
@@ -350,10 +343,6 @@ int	execute_cmd(t_tree *tree, t_env *envh, int status)
 	return (status);
 }
 
-
-
-
-
 /**********************************************************************************************************************************************************************/
 
 typedef struct s_expand {
@@ -366,40 +355,6 @@ typedef struct s_expand {
     char	*buff_exp;
     t_token	*token;
 } t_expand;
-
-size_t	ft_strlen2(const char *s)
-{
-	size_t	len;
-
-	if (!s)
-		return (0);
-	len = 0;
-	while (s[len])
-		len++;
-	return (len);
-}
-
-char	*ft_strdup2(const char *s1)
-{
-	size_t	len;
-	size_t	i;
-	char	*ptr;
-
-	if (!s1)
-		return (NULL);
-	len = ft_strlen2(s1);
-	ptr = malloc(sizeof(char) * (len + 1));
-	if (ptr == NULL)
-		return (NULL);
-	i = 0;
-	while (i < len)
-	{
-		ptr[i] = s1[i];
-		i++;
-	}
-	ptr[i] = '\0';
-	return (ptr);
-}
 
 char	*strjoin_char(char *str, char c)
 {
@@ -417,7 +372,7 @@ char	*strjoin_char(char *str, char c)
 		new_str[1] = '\0';
 		return (new_str);
 	}
-	len = ft_strlen2(str);
+	len = ft_strlen(str);
 	new_str = malloc(sizeof(char) * (len + 2));
 	if (!new_str)
 		return (NULL);
@@ -509,7 +464,7 @@ static void expand_quote(t_expand *expand, char *str, int status)
     {
         if (expand->before_qoute && str[expand->j - 1] == expand->flg
             && (!str[expand->j + 1] || is_space(str[expand->j + 1])))
-			lst_add_back(&expand->token, new_lst(ft_strdup2("")));
+			lst_add_back(&expand->token, new_lst(ft_strdup("")));
 		expand->flg = 0;
 		expand->before_qoute = 0;
     }
@@ -584,42 +539,13 @@ char	*ft_itoa2(int n)
 
 /************************************************** function itoa ***********************************/
 
-char *strjoin_2(char *s1, char *s2)
-{
-    size_t len1 = ft_strlen2(s1);
-    size_t len2 = ft_strlen2(s2);
-    char *result = malloc(len1 + len2 + 1);
-    size_t i = 0;
-
-    if (!result)
-        return (NULL);
-    if (s1)
-    {
-        while (i < len1)
-        {
-            result[i] = s1[i];
-            i++;
-        }
-    }
-    if (s2)
-    {
-        while (i < len1 + len2)
-        {
-            result[i] = s2[i - len1];
-            i++;
-        }
-    }
-    result[i] = '\0';
-    return (result);
-}
-
 static int has_space(const char *str)
 {
     if (!str)
         return (0);
     while (*str)
     {
-        if (*str == ' ')
+        if (*str == 32)
             return (1);
         str++;
     }
@@ -638,7 +564,7 @@ static void expand_dollar(t_expand *expand, t_env *env, char *str, int status)
 		var_name = ft_itoa2(status);
 		if (var_name)
 		{
-			lst_add_back(&expand->token, new_lst(ft_strdup2(var_name)));
+			lst_add_back(&expand->token, new_lst(ft_strdup(var_name)));
 			free(var_name);
 		}
 		expand->j++;
@@ -653,14 +579,14 @@ static void expand_dollar(t_expand *expand, t_env *env, char *str, int status)
 	}
 	else if (str[expand->j] == '0')
     {
-        lst_add_back(&expand->token, new_lst(ft_strdup2("minishell")));
+        lst_add_back(&expand->token, new_lst(ft_strdup("minishell")));
         expand->j++;
         return ;
     }
 	else
 	{
 	
-		while (str[expand->j] && valid_char(str[expand->j]))
+		while (str[expand->j] && valid_char(str[expand->j]))   
 		{
 			var_name = strjoin_char(var_name, str[expand->j]);
 			expand->j++;
@@ -668,9 +594,12 @@ static void expand_dollar(t_expand *expand, t_env *env, char *str, int status)
 		if (var_name)
 		{
 			env_node = search_for_defaults(env, var_name);
+			
+			
 
 			if (env_node && env_node->value)
 			{
+				
 				// printf("expand->flg: %d\n", expand->flg);
 				// printf("\033[33m expand_dollar: env_node->value = '%s', expand->buff_exp = '%s' \033[0m\n", env_node->value, expand->buff_exp);
 				if (expand->flg != '"' && has_space(env_node->value))
@@ -682,58 +611,25 @@ static void expand_dollar(t_expand *expand, t_env *env, char *str, int status)
 						int i = 0;
 						while (word[i])
 						{
-							lst_add_back(&expand->token, new_lst(ft_strdup2(word[i])));
+							lst_add_back(&expand->token, new_lst(ft_strdup(word[i])));
 							i++;
 						}
 						//free_word(word);
 					}
 				}
 				else
-					expand->buff_exp = strjoin_2(expand->buff_exp, env_node->value);
+					expand->buff_exp = ft_strjoin_env(expand->buff_exp, env_node->value);
 				expand->is_char = 1;	
 			}
 			else
 			{
-				expand->buff_exp = strjoin_2(expand->buff_exp, "");
+				expand->buff_exp = ft_strjoin_env(expand->buff_exp, "");
 				expand->is_char = 1;
 			}
 			free(var_name);
 		}
 	}
 }
-
-// static void expand_wildcard(t_expand *expand, char *str, t_env *env, int exit_status)
-// {
-// 	char *var_name = NULL;
-// 	printf("star count: %d\n", star_count(str, expand->j));
-// 	if (star_count(str, expand->j) > 1)
-// 	{
-// 		while (str[expand->j]) // Copy rest of string
-// 		{
-// 			expand->buff_exp = strjoin_char(expand->buff_exp, str[expand->j]);
-// 			expand->j++;
-// 		}
-// 		expand->is_char = 1;
-// 		return;
-// 	}
-// 	if (star_count(str, expand->j) == 1)
-// 	{
-// 		while (str[expand->j])
-// 		{
-// 			var_name = strjoin_char(var_name, str[expand->j]);
-// 			expand->j++;
-// 		}
-//         printf("\033[33m expand_wildcard: var_name = '%s' \033[0m\n", var_name);
-//         free(var_name); // Free var_name to prevent memory leak
-//         return;	
-// 	}
-// 	if (str[expand->j])
-// 	{
-// 		expand->buff_exp = strjoin_char(expand->buff_exp, str[expand->j]);
-// 		expand->j++;
-// 		expand->is_char = 1;
-//     }
-// }
 
 /************************************************** function expand_wildcard ***********************************/
 
@@ -821,7 +717,7 @@ void list_one_wildcard(t_token **list_matches)
     while (entry_name != NULL)
     {
         if (entry_name->d_name[0] != '.')
-            lst_add_back(list_matches, new_lst(ft_strdup2(entry_name->d_name)));
+            lst_add_back(list_matches, new_lst(ft_strdup(entry_name->d_name)));
         entry_name = readdir(dir);
     }
     if (closedir(dir) != 0)
@@ -869,8 +765,8 @@ int get_list_match(char *str, char *wildcard) // "*abc"
     int i;
     int j;
 
-    str_len = ft_strlen2(str);
-    wildcard_len = ft_strlen2(wildcard);
+    str_len = ft_strlen(str);
+    wildcard_len = ft_strlen(wildcard);
     
     tab = creat_table(str_len + 1, wildcard_len + 1);
     if (!tab)
@@ -929,7 +825,7 @@ int get_list(t_token **list_matches, char *wildcard)
     {
         if (entry_name->d_name[0] != '.' && get_list_match(entry_name->d_name, wildcard))
         {
-            lst_add_back(list_matches, new_lst(ft_strdup2(entry_name->d_name)));
+            lst_add_back(list_matches, new_lst(ft_strdup(entry_name->d_name)));
             found_match = 1;
         }
         entry_name = readdir(dir);
@@ -971,7 +867,7 @@ static char **expand_wildcard(char *buff_exp)
 	else
     {
         if (!get_list(&list_matches, buff_exp))
-            lst_add_back(&list_matches, new_lst(ft_strdup2(buff_exp)));
+            lst_add_back(&list_matches, new_lst(ft_strdup(buff_exp)));
     }
 	// Count the number of matches
     current = list_matches;
@@ -991,7 +887,7 @@ static char **expand_wildcard(char *buff_exp)
     i = 0;
     while (current)
     {
-        list_wld[i] = ft_strdup2(current->value);
+        list_wld[i] = ft_strdup(current->value);
         i++;
         current = current->next;
     }
@@ -1026,11 +922,11 @@ char	**handel_expand(t_tree *tree, t_env *env, int exit_status)
 		expand.is_char = 0;
 		expand.is_wildcard = 0;
 
-		if (!tree->cmd[expand.i])
-		{
-			expand.i++;
-			continue;
-		}
+		// if (!tree->cmd[expand.i])
+		// {
+		// 	expand.i++;
+		// 	continue;
+		// }
 		
 		while (tree->cmd[expand.i][expand.j])
 		{
@@ -1056,7 +952,7 @@ char	**handel_expand(t_tree *tree, t_env *env, int exit_status)
 		// printf("\033[38m expand.buff_exp before check: '%s' \033[0m\n", expand.buff_exp);
 		// printf("\033[38m is_wildcard: %d, is_char: %d \033[0m\n", expand.is_wildcard, expand.is_char);
 
-		if (expand.buff_exp)
+		if (expand.buff_exp && expand.buff_exp[0] != '\0')
         {
 			if (expand.is_wildcard)
 			{
@@ -1066,16 +962,16 @@ char	**handel_expand(t_tree *tree, t_env *env, int exit_status)
 				int k = 0;
 				while (list_wld && list_wld[k])
 				{
-					lst_add_back(&expand.token, new_lst(ft_strdup2(list_wld[k])));
-					//printf("\033[31mAdded wildcard match: '%s'\n", list_wld[k]);
+					lst_add_back(&expand.token, new_lst(ft_strdup(list_wld[k])));
+					// printf("\033[31mAdded wildcard match: '%s'\n", list_wld[k]);
 					k++;
 				}
 				free_list_wld(list_wld);
 			}
 			else
 			{
-            	lst_add_back(&expand.token, new_lst(ft_strdup2(expand.buff_exp)));
-				//printf("No matches for wildcard, added original: '%s'\n", expand.buff_exp);
+            	lst_add_back(&expand.token, new_lst(ft_strdup(expand.buff_exp)));
+				// printf("No matches for wildcard, added original: '%s'\n", expand.buff_exp);
 			}
 			free(expand.buff_exp);
             expand.buff_exp = NULL;
@@ -1111,20 +1007,17 @@ int	executor(t_tree *tree, t_env *envh, t_tool	*tool)
     // }
     // else
     //     printf("\033[32m executor: tree->cmd is NULL or tree is NULL \033[0m\n");
-		
-		 
-	expanded_cmd = handel_expand(tree, envh, status);
 	
+	expanded_cmd = handel_expand(tree, envh, status);
+	// if (search_for_defaults(envh, "x"))
+	// 	printf("X => %s\n", search_for_defaults(envh, "x")->value);
     // if (expanded_cmd)
     // {
     //     for (int i = 0; expanded_cmd[i]; i++)
     //         printf("\033[32m executor: expanded_cmd[%d] = '%s' \033[0m\n", i, expanded_cmd[i]);
     // }
+    tree->cmd = expanded_cmd;
 
-	if (expanded_cmd)  // tree->cmd double-free 
-        tree->cmd = expanded_cmd;
-
-	//exit(1);
 	if (!tree || tree->type != NODE_COMMAND && tree->type != NODE_PARENTHS)
 		return (1);
 	ft_dup(fds, 1);
@@ -1141,7 +1034,7 @@ int	executor(t_tree *tree, t_env *envh, t_tool	*tool)
 	else if (!redir_status && tree->type == NODE_PARENTHS)
 		status = execute_tree(tree->left, envh, tool);
 	ft_dup(fds, 0);
-	if (!tree->cmd)
+	if (!tree->cmd && tree->type == NODE_COMMAND)
 		return (redir_status);
 	return (status);
 }
