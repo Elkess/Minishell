@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/29 12:36:00 by melkess          ###   ########.fr       */
+/*   Updated: 2025/05/31 12:19:52 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,10 @@
 # include <fcntl.h>
 # include <limits.h>
 # include <string.h>
-# include <dirent.h>
 # include <sys/stat.h>
 # include <errno.h>
+#include <termios.h> 
+#include <dirent.h> 
 
 typedef enum e_token_type
 {
@@ -74,6 +75,7 @@ typedef struct s_tool
 	int			quoted;
 	int			anderr;
 	int			err;
+	int			herdoc_err;
 	t_garbcoll	*grbg;
 }	t_tool;
 
@@ -138,6 +140,10 @@ typedef struct s_tree
 	struct s_tree	*right;
 }	t_tree;
 
+//signals
+void	setup_signals(void);
+void	disable_echoctl(struct termios *orig_termios);
+void	restore_terminal(struct termios *orig_termios);
 
 // Parser functions
 t_tree	*parsing_input(char *line, t_tool *tool);
@@ -211,8 +217,8 @@ t_env		*edit_env(char *key, char *val, t_env *envh, int should_concat);
 void		print_rest(char **s, int n);
 size_t		ft_envlen(t_env *envh);
 char		**struct_to_darr(t_env *envh);
-void		here_docs(t_redir *redirs, t_env *envh);
-void		handle_herdocs(t_tree *tree, t_env *envh);
+void		here_docs(t_redir *redirs, t_env *envh, t_tool *tool);
+void		handle_herdocs(t_tree *tree, t_env *envh, t_tool *tool);
 
 // Libft functions for executor 
 int			ft_atoi(const char *str);

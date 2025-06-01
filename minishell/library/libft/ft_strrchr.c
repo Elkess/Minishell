@@ -1,24 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   here_docs.c                                        :+:      :+:    :+:   */
+/*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/22 18:17:26 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/31 12:11:58 by melkess          ###   ########.fr       */
+/*   Created: 2024/10/24 15:44:35 by melkess           #+#    #+#             */
+/*   Updated: 2025/05/30 11:20:47 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
-void	handle_herdocs(t_tree *tree, t_env *envh, t_tool *tool)
+char	*ft_strrchr(const char *s, int c)
 {
-	if (!tree)
-		return ;
-	if (tool->herdoc_err == 130)
-		return ;
-	here_docs(tree->redirs, envh, tool);
-	handle_herdocs(tree->left, envh, tool);
-	handle_herdocs(tree->right, envh, tool);
+	int	i;
+
+	i = ft_strlen(s);
+	while (i >= 0)
+	{
+		if (s[i] == (char)c)
+			return ((char *)(s + i));
+		i--;
+	}
+	if ((char) c == '\0')
+		return ((char *)(s + i));
+	return (NULL);
 }

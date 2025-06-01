@@ -6,12 +6,16 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 08:39:55 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/29 14:28:48 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/01 12:17:21 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
+void static handle_ctrbackslash(int sig)
+{
+	write(1, "^\\Quit: 3\n", 11);
+	exit(131);
+}
 int	execute_pipes(t_tree *tree, t_env *envh, t_tool	*tool)
 {
 	int		pipefd[2];
@@ -22,18 +26,28 @@ int	execute_pipes(t_tree *tree, t_env *envh, t_tool	*tool)
 		return (-1);
 	if (pipe(pipefd) == -1)
 		return (perror("Pipe failed"), -1);
+	// signal(SIGINT, SIG_IGN);
+	// signal(SIGQUIT, SIG_IGN);
 	pids[0] = fork();
 	if (pids[0] == -1)
 		return (perror("Fork failed"), -1);
 	if (pids[0] == 0)
 	{
+		// signal(SIGINT, SIG_IGN);
+	// signal(SIGQUIT, SIG_IGN);
+
+		// signal(SIGQUIT, handle_ctrbackslash);
 		(close(pipefd[0]), dup2(pipefd[1], 1));
 		(close(pipefd[1]), exit(execute_tree(tree->left, envh, tool))); // SHoud it be exit and free_ evnh ???
 	}
 	pids[1] = fork();
 	if (pids[1] == -1){perror("Fork failed");return (-1);}
 	if (pids[1] == 0)
-	{
+	{			
+		// signal(SIGINT, SIG_IGN);
+	// signal(SIGQUIT, SIG_IGN);
+		// signal(SIGINT, SIG_DFL);
+	// signal(SIGQUIT, SIG_DFL);
 		(close(pipefd[1]), dup2(pipefd[0], 0));
 		(close(pipefd[0]), exit(execute_tree(tree->right, envh, tool))); // SHoud it be exit and free_ evnh
 	}
@@ -49,7 +63,12 @@ int	execute_tree(t_tree *tree, t_env *envh, t_tool	*tool)
 	status = 1;
 	if (!tree)
 		return (status);
-	handle_herdocs(tree, envh);
+	handle_herdocs(tree, envh, tool);
+	if (tool->herdoc_err == 130)
+	{
+		tool->herdoc_err = 0;
+		return (1);
+	}
 	if (tree->type == NODE_COMMAND)
 		return (executor(tree, envh, tool));
 	if (tree->type == NODE_PARENTHS)

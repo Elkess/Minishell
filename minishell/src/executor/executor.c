@@ -6,13 +6,11 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/29 17:49:53 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/01 14:48:25 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-#include <dirent.h>
 
 void print_err(char *msg1, char *arg, char *msg2)
 {
@@ -91,6 +89,16 @@ void	exec_helper(char **cmd, char **env, t_env *envh, char **path)
 		}
 	}
 }
+void handle_ctrc(int sig)
+{
+	// if (waitpid(-1, &sig, WNOHANG) == 0)
+	// 	return ;
+	write(1, "\n", 3);
+}
+void handle_ctrbackslash(int sig)
+{
+	ft_putstr_fd("Quit: 3\n", 1);
+}
 
 void	execute_one(t_tree *cmd, t_env *envh)
 {
@@ -100,6 +108,8 @@ void	execute_one(t_tree *cmd, t_env *envh)
 
 	path = NULL;
 	env = NULL;
+	// signal(SIGINT, SIG_DFL);
+	// signal(SIGQUIT, SIG_DFL);
 	if (search_for_defaults(envh, "PATH"))
 		path = ft_split(search_for_defaults(envh, "PATH")->value, ':');
 	env = struct_to_darr(envh);
@@ -107,6 +117,8 @@ void	execute_one(t_tree *cmd, t_env *envh)
 		(perror("Fork1 Failed"), exit(1)); // SHoud it be exit and free_ evnh ??? exit
 	if (fd == 0)
 	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		is_dir(path, cmd->cmd[0]);
 		if ((!access(cmd->cmd[0], X_OK)))
 		{
@@ -132,8 +144,8 @@ void	ft_dup(int *io, int flag)
 	}
 	else
 	{
-		if (dup2(io[0], 0) == -1 || dup2(io[1], 1) == -1)
-			(close(io[0]), close(io[1]));
+		dup2(io[0], 0);
+		dup2(io[1], 1);
 		(close(io[0]), close(io[1]));
 	}
 }
@@ -190,6 +202,7 @@ int	handle_lastredir(t_redir *redirs)
 		if (lastin->fd == -1)
 			return (print_err(NULL, lastin->file, strerror(errno)), 1);
 	}
+
 	if (lastin)
 		dup2(lastin->fd, 0);
 	if (lastout) 
@@ -215,7 +228,7 @@ int	ft_redir(t_tree *tree)
 				red->fd = open(red->file, O_CREAT | O_TRUNC | O_WRONLY, 0644);
 			else if (red->type == REDIR_APPEND)
 				red->fd = open(red->file, O_CREAT | O_APPEND | O_WRONLY, 0644);
-			if (red->fd == -1)
+			if (red->fd == -1 && red->type != REDIR_HEREDOC)
 			{
 				print_err(NULL, red->file, strerror(errno));
 				return (1);
@@ -252,42 +265,105 @@ char	*generate_file(t_redir *red)
 	return (str);
 }
 
-void	here_docs(t_redir *red, t_env *envh)
+void	sig_herdoc(int sig)
 {
-	char	*line;
-	char	*file;
+	if (sig == SIGINT)
+	{
+		printf("\n");
+		exit(130);
+	}
+}
+size_t	there_is_herdoc(t_redir *red)
+{
+	size_t	i;
 
-	line = NULL;
+	i = 0;
 	while (red)
 	{
 		if (red->type == REDIR_HEREDOC)
+			i++;
+		red = red->next;
+	}
+	return (i);
+}
+
+void	here_docs(t_redir *red, t_env *envh, t_tool *tool)
+{
+	char			*line;
+	char			*file;
+	int				status;
+	struct termios	orig_termios;
+	pid_t			pid;
+	int				fd[2];
+	size_t			n_herdocs;
+	t_redir			*backup;
+
+	if (pipe(fd) == -1)
+		print_err(NULL, "pipe failed :", strerror(errno));
+	pid = 0;
+	backup = red;
+	n_herdocs = there_is_herdoc(red);
+	line = NULL;
+	if (n_herdocs)
+	{
+		pid = fork();
+	}
+	if (pid == 0 && n_herdocs)
+	{
+		close(fd[0]);
+		signal(SIGINT, sig_herdoc);
+		while (red)
 		{
-			file = generate_file(red);
-			while (1)
+			if (red->type == REDIR_HEREDOC)
 			{
-				line = readline("> ");
-				if (!line)
-					break ;
-				if (!ft_strcmp(line, red->file))
-				{
-					free(line);
-					break ;
-				}
-				line = ft_strjoin(line, "\n", 1);
-				write(red->fd, line, ft_strlen(line));
-				free(line);
+					file = generate_file(red);
+					while (1)
+					{
+						disable_echoctl(&orig_termios);
+						line = readline("> ");
+						restore_terminal(&orig_termios);
+						if (!line)
+							break ;
+						if (!ft_strcmp(line, red->file))
+						{
+							// free(line);
+							break;
+						}
+						line = ft_strjoin(line, "\n", 1);
+						write(red->fd, line, ft_strlen(line));
+						free(line);
+					}
+					close(red->fd);
+					red->fd = open(file, O_CREAT | O_RDWR | O_APPEND, 0644);
+					if (red->fd == -1)
+						(perror("Open failed in 272:"), exit (1)); // add free file
+					write(fd[1], file, 34);
 			}
-			close(red->fd);
-			///
+			red = red->next;
+		}		
+		exit(0);
+	}
+	signal(SIGINT, SIG_IGN);
+	waitpid(pid, &status, 0);
+	red = backup;
+	close(fd[1]);
+	file = malloc(34);
+	while (red && !WIFSIGNALED(status))
+	{
+		if (red->type == REDIR_HEREDOC)
+		{
+			read(fd[0], file, 34);
+			puts(file);		
 			red->fd = open(file, O_CREAT | O_RDWR | O_APPEND);
-			// read it and expand each line
 			if (red->fd == -1)
-				(perror("Open failed in 272:"), free_envh(envh),free(file), exit (1)); // add free file
+				(perror("Open failed in 359`:"), exit (1)); // add free file
 			unlink(file);
-			free(file);
 		}
 		red = red->next;
 	}
+	tool->herdoc_err = WEXITSTATUS(status);
+	if (tool->herdoc_err == 127)
+		tool->herdoc_err = 0;
 }
 
 t_redir	*find_lasthd(t_redir *redirs)
@@ -328,6 +404,7 @@ int	is_builtin(t_tree *tree, char	*cmd, t_env *envh)
 int	execute_cmd(t_tree *tree, t_env *envh, int status)
 {
 	char	*cmd;
+
 	if (tree && tree->cmd)
 	{
 		cmd = tree->cmd[0];
@@ -337,7 +414,26 @@ int	execute_cmd(t_tree *tree, t_env *envh, int status)
 		if (status == -1)
 		{
 			(execute_one(tree, envh), waitpid(0, &status, 0));
-			status = WEXITSTATUS(status);
+			if (WIFSIGNALED(status))
+			{
+				int sig = WTERMSIG(status);
+				if (sig == SIGQUIT)
+				{
+					write(STDERR_FILENO, "Quit: 3\n", 8);
+					// printf("Quit: 3\n");
+				}
+				else if (sig == SIGINT)
+				{
+					// printf("\n");
+					write(STDERR_FILENO, "\n", 3);
+				}
+			}
+			if (WIFEXITED(status))
+				status = WEXITSTATUS(status);
+			else
+				status = 128 + WTERMSIG(status); // Bash-like status code
+			// setup_signals();
+			// status = WEXITSTATUS(status);
 		}
 	}
 	return (status);
@@ -849,8 +945,6 @@ static void free_list_wld(char **list_wld)
     free(list_wld);
 }
 
-
-
 static char **expand_wildcard(char *buff_exp)
 {
 	t_token	*list_matches = NULL;
@@ -896,7 +990,6 @@ static char **expand_wildcard(char *buff_exp)
 
     return (list_wld);
 }
-
 
 char	**handel_expand(t_tree *tree, t_env *env, int exit_status)
 {
@@ -986,7 +1079,6 @@ char	**handel_expand(t_tree *tree, t_env *env, int exit_status)
 	return (result);
 }
 
-
 /******************************************************************************************/
 
 int	executor(t_tree *tree, t_env *envh, t_tool	*tool)
@@ -999,7 +1091,6 @@ int	executor(t_tree *tree, t_env *envh, t_tool	*tool)
 	char **expanded_cmd;
 
 	status = tool->err;
-
     // if (tree && tree->cmd)
     // {
     //     for (int i = 0; tree->cmd[i]; i++)
@@ -1007,7 +1098,6 @@ int	executor(t_tree *tree, t_env *envh, t_tool	*tool)
     // }
     // else
     //     printf("\033[32m executor: tree->cmd is NULL or tree is NULL \033[0m\n");
-	
 	expanded_cmd = handel_expand(tree, envh, status);
 	// if (search_for_defaults(envh, "x"))
 	// 	printf("X => %s\n", search_for_defaults(envh, "x")->value);
@@ -1017,7 +1107,6 @@ int	executor(t_tree *tree, t_env *envh, t_tool	*tool)
     //         printf("\033[32m executor: expanded_cmd[%d] = '%s' \033[0m\n", i, expanded_cmd[i]);
     // }
     tree->cmd = expanded_cmd;
-
 	if (!tree || tree->type != NODE_COMMAND && tree->type != NODE_PARENTHS)
 		return (1);
 	ft_dup(fds, 1);

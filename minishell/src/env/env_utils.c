@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 07:50:25 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/23 07:55:05 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/05/31 08:17:10 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ void	free_envh(t_env *envh)
 
 	while (envh)
 	{
-		printf("key: %s. val: %s\n", envh->key, envh->value);
 		free(envh->key);
 		free(envh->value);
 		tmp = envh;

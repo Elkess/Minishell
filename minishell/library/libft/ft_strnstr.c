@@ -1,24 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   here_docs.c                                        :+:      :+:    :+:   */
+/*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/22 18:17:26 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/31 12:11:58 by melkess          ###   ########.fr       */
+/*   Created: 2024/10/27 15:09:51 by melkess           #+#    #+#             */
+/*   Updated: 2025/05/30 12:09:29 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
-void	handle_herdocs(t_tree *tree, t_env *envh, t_tool *tool)
+char	*ft_strnstr(const char *hs, const char *n, size_t len)
 {
-	if (!tree)
-		return ;
-	if (tool->herdoc_err == 130)
-		return ;
-	here_docs(tree->redirs, envh, tool);
-	handle_herdocs(tree->left, envh, tool);
-	handle_herdocs(tree->right, envh, tool);
+	size_t	i;
+	size_t	j;
+
+	if (n[0] == '\0')
+		return ((char *)hs);
+	i = 0;
+	while (i < len && hs[i])
+	{
+		j = 0;
+		while (i + j < len && hs[i + j] == n[j])
+		{
+			j++;
+			if (n[j] == '\0')
+				return ((char *)(hs + i));
+		}
+		i++;
+	}
+	return (NULL);
 }
