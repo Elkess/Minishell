@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/01 14:48:25 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/01 21:38:26 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,8 +108,8 @@ void	execute_one(t_tree *cmd, t_env *envh)
 
 	path = NULL;
 	env = NULL;
-	// signal(SIGINT, SIG_DFL);
-	// signal(SIGQUIT, SIG_DFL);
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	if (search_for_defaults(envh, "PATH"))
 		path = ft_split(search_for_defaults(envh, "PATH")->value, ':');
 	env = struct_to_darr(envh);
@@ -286,86 +286,6 @@ size_t	there_is_herdoc(t_redir *red)
 	}
 	return (i);
 }
-
-void	here_docs(t_redir *red, t_env *envh, t_tool *tool)
-{
-	char			*line;
-	char			*file;
-	int				status;
-	struct termios	orig_termios;
-	pid_t			pid;
-	int				fd[2];
-	size_t			n_herdocs;
-	t_redir			*backup;
-
-	if (pipe(fd) == -1)
-		print_err(NULL, "pipe failed :", strerror(errno));
-	pid = 0;
-	backup = red;
-	n_herdocs = there_is_herdoc(red);
-	line = NULL;
-	if (n_herdocs)
-	{
-		pid = fork();
-	}
-	if (pid == 0 && n_herdocs)
-	{
-		close(fd[0]);
-		signal(SIGINT, sig_herdoc);
-		while (red)
-		{
-			if (red->type == REDIR_HEREDOC)
-			{
-					file = generate_file(red);
-					while (1)
-					{
-						disable_echoctl(&orig_termios);
-						line = readline("> ");
-						restore_terminal(&orig_termios);
-						if (!line)
-							break ;
-						if (!ft_strcmp(line, red->file))
-						{
-							// free(line);
-							break;
-						}
-						line = ft_strjoin(line, "\n", 1);
-						write(red->fd, line, ft_strlen(line));
-						free(line);
-					}
-					close(red->fd);
-					red->fd = open(file, O_CREAT | O_RDWR | O_APPEND, 0644);
-					if (red->fd == -1)
-						(perror("Open failed in 272:"), exit (1)); // add free file
-					write(fd[1], file, 34);
-			}
-			red = red->next;
-		}		
-		exit(0);
-	}
-	signal(SIGINT, SIG_IGN);
-	waitpid(pid, &status, 0);
-	red = backup;
-	close(fd[1]);
-	file = malloc(34);
-	while (red && !WIFSIGNALED(status))
-	{
-		if (red->type == REDIR_HEREDOC)
-		{
-			read(fd[0], file, 34);
-			puts(file);		
-			red->fd = open(file, O_CREAT | O_RDWR | O_APPEND);
-			if (red->fd == -1)
-				(perror("Open failed in 359`:"), exit (1)); // add free file
-			unlink(file);
-		}
-		red = red->next;
-	}
-	tool->herdoc_err = WEXITSTATUS(status);
-	if (tool->herdoc_err == 127)
-		tool->herdoc_err = 0;
-}
-
 t_redir	*find_lasthd(t_redir *redirs)
 {
 	t_redir	*last;
@@ -378,6 +298,92 @@ t_redir	*find_lasthd(t_redir *redirs)
 		redirs = redirs->next;
 	}
 	return (last);
+}
+
+void	here_docs(t_redir *red, t_env *envh, t_tool *tool)
+{
+	char			*line;
+	char			*file;
+	int				status;
+	struct termios	orig_termios;
+	pid_t			pid;
+	int				fd[2];
+	size_t			n_herdocs;
+	t_redir			*backup;
+	int				sig;
+
+	if (pipe(fd) == -1)
+		print_err(NULL, "pipe failed :", strerror(errno));
+	pid = 0;
+	backup = red;
+	n_herdocs = there_is_herdoc(red);
+	line = NULL;
+	if (n_herdocs)
+		pid = fork();
+	if (pid == 0 && n_herdocs)
+	{
+		close(fd[0]);
+		signal(SIGINT, SIG_DFL);
+		while (red)
+		{
+			if (red->type == REDIR_HEREDOC)
+			{
+				file = generate_file(red);
+				while (1)
+				{						
+					disable_echoctl(&orig_termios);
+					line = readline("> ");
+					restore_terminal(&orig_termios);
+					if (!line)
+						break ;
+					if (!ft_strcmp(line, red->file))
+					{
+						free(line);
+						break;
+					}
+					line = ft_strjoin(line, "\n", 1);
+					write(red->fd, line, ft_strlen(line));
+					free(line);
+				}
+				close(red->fd);
+				red->fd = open(file, O_CREAT | O_RDWR | O_APPEND, 0644);
+				if (red->fd == -1)
+					(perror("Open failed in 272:"), exit (1)); // add free file
+				write(fd[1], file, 34);
+			}
+			if (find_lasthd(red) == red)
+				exit(0);
+			red = red->next;
+		}
+		exit(0);
+	}
+	signal(SIGINT, SIG_IGN);
+	waitpid(pid, &status, 0);
+	if (WIFSIGNALED(status))
+	{
+		sig = WTERMSIG(status);
+		if (sig == SIGINT)
+		{
+			printf("\n");
+			tool->herdoc_err = 1;
+		}
+	}
+	red = backup;
+	close(fd[1]);
+	file = malloc(34);
+	while (red && !WIFSIGNALED(status))
+	{
+		if (red->type == REDIR_HEREDOC)
+		{
+			read(fd[0], file, 34);
+			// puts(file);
+			red->fd = open(file, O_CREAT | O_RDWR | O_APPEND);
+			if (red->fd == -1)
+				(perror("Open failed in 359`"), exit (1)); // add free file
+			unlink(file);
+		}
+		red = red->next;
+	}
 }
 
 int	is_builtin(t_tree *tree, char	*cmd, t_env *envh)
@@ -404,7 +410,6 @@ int	is_builtin(t_tree *tree, char	*cmd, t_env *envh)
 int	execute_cmd(t_tree *tree, t_env *envh, int status)
 {
 	char	*cmd;
-
 	if (tree && tree->cmd)
 	{
 		cmd = tree->cmd[0];
@@ -425,7 +430,7 @@ int	execute_cmd(t_tree *tree, t_env *envh, int status)
 				else if (sig == SIGINT)
 				{
 					// printf("\n");
-					write(STDERR_FILENO, "\n", 3);
+					write(STDERR_FILENO, "\n", 1);
 				}
 			}
 			if (WIFEXITED(status))

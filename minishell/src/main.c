@@ -6,13 +6,12 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/01 14:27:21 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/01 21:39:17 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int	g_signal = 0;
 void disable_echoctl(struct termios *orig_termios)
 {
 	struct termios term;
@@ -30,14 +29,11 @@ void restore_terminal(struct termios *orig_termios)
 }
 void	ft_handle_signals(int sig)
 {
-	if (sig == SIGINT)
-	{
-		g_signal = 1;
-		write(1, "\n", 1);
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		rl_redisplay();
-	}
+	g_signal = sig;
+	write(1, "\n", 1);
+	rl_replace_line("", 0);
+	rl_on_new_line();
+	rl_redisplay();
 }
 
 void	setup_signals(void)
@@ -99,13 +95,15 @@ int	main(int ac, char **av, char **env)
 		setup_signals();
 		line = ft_get_prompt(0); // TO DO: give new prompt if line full of spaces 
 		tree = parsing_input(line, &tool);
-		if (tree && line && *line)
-			tool.err = execute_tree(tree, envh, &tool);
-		if (tool.herdoc_err == 130)
+		handle_herdocs(tree, envh, &tool);
+		if (tool.herdoc_err == 1)
 		{
 			tool.herdoc_err = 0;
-			continue ;
+			tool.err = 1;
+			continue;
 		}
+		else if (tree && line && *line)
+			tool.err = execute_tree(tree, envh, &tool);
 		free(line);
 		clear_garbcoll(tool.grbg); // TO DO: if we use clear_garbcoll(tool.grbg); we got segfault
 		g_signal = 0;

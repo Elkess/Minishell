@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 18:17:26 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/31 12:11:58 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/01 20:30:26 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	handle_herdocs(t_tree *tree, t_env *envh, t_tool *tool)
 {
 	if (!tree)
 		return ;
-	if (tool->herdoc_err == 130)
+	if (tool->herdoc_err == 1)
 		return ;
 	here_docs(tree->redirs, envh, tool);
 	handle_herdocs(tree->left, envh, tool);

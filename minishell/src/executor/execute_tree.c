@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 08:39:55 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/01 12:17:21 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/01 20:20:49 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,6 @@ int	execute_tree(t_tree *tree, t_env *envh, t_tool	*tool)
 	status = 1;
 	if (!tree)
 		return (status);
-	handle_herdocs(tree, envh, tool);
-	if (tool->herdoc_err == 130)
-	{
-		tool->herdoc_err = 0;
-		return (1);
-	}
 	if (tree->type == NODE_COMMAND)
 		return (executor(tree, envh, tool));
 	if (tree->type == NODE_PARENTHS)

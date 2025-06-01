@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 10:01:34 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/30 10:39:15 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/01 21:31:35 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ void	cd_helper(t_env **envh, char *cmd, char	**pwd_backup, char *dir)
 	char	*new_pwd;
 
 	*envh = edit_env("OLDPWD", ft_strdup(*pwd_backup), *envh, 0);
-	
 	if (dir)
 	{
 		// getcwd() succeeded, use the real current directory
@@ -55,6 +54,13 @@ void	cd_helper(t_env **envh, char *cmd, char	**pwd_backup, char *dir)
 
 int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup)
 {
+	/*
+	minishell$> unset PWD
+	minishell$> unset OLDPWD
+	minishell$> echo $PWD
+	minishell$> echo $OLDPWD
+	minishell$> cd ..
+	minishell$> echo $OLDPWD*/
 	char	*dir;
 
 	cmd->cmd++;
