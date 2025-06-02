@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/02 17:05:35 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/02 17:58:41 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,21 +89,6 @@ void	exec_helper(char **cmd, char **env, t_env *envh, char **path)
 		}
 	}
 }
-// void handle_ctrc(int sig)
-// {
-// 	if (isatty(1) && isatty(0))
-// 		ft_putstr_fd("^P\n", 2);
-// 	g_signal = sig;
-// 	// ft_putnbr_fd(g_signal, 2);
-	
-// }
-
-// void handle_ctrbackslash(int sig)
-// {
-// 	// if (isatty(1) && isatty(0))
-// 		ft_putstr_fd("\\^Quit: 3\n", 2);
-// 	// g_signal = sig;
-// }
 
 int	execute_one(t_tree *cmd, t_env *envh, int *fds)
 {
@@ -129,7 +114,9 @@ int	execute_one(t_tree *cmd, t_env *envh, int *fds)
 			if (execve(cmd->cmd[0], cmd->cmd, env) == -1)
 				(perror("Execve1 Failed:"), exit(1));// SHoud it be exit and free_ evnh ??? exit
 		exec_helper(cmd->cmd, env, envh, path);
-		if (((errno == 20 || errno == 13 || errno == 2) && ft_strchr(cmd->cmd[0], '/')) || !path)
+		if (errno == 13)
+			(print_err(NULL, cmd->cmd[0], strerror(errno)), exit (126));
+		if (((errno == 20 || errno == 2) && ft_strchr(cmd->cmd[0], '/')) || !path)
 			(print_err(NULL, cmd->cmd[0], strerror(errno)), exit (126 * (errno != 2) + 127 * (errno == 2)));
 		(print_err(NULL, cmd->cmd[0], ": command not found"), exit(127));// SHoud it be exit and free_ evnh ??? exit
 	}

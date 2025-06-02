@@ -1,10 +1,4 @@
 Makefile
-include
-library
-minishell
-s
-src
-Makefile
 cat
 i
 include
