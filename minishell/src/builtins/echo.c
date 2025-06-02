@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:52:33 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/18 08:37:22 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/02 08:59:29 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	str_full_of_n(char *s)
 	return (0);
 }
 
-int	echo(t_tree *tree)
+int	ft_echo(t_tree *tree)
 {
 	size_t	i;
 	int		n;

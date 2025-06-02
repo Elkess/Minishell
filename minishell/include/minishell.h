@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/01 21:29:41 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/02 15:58:39 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,10 @@
 # include <errno.h>
 #include <termios.h> 
 #include <dirent.h>
+#include <curses.h>
+#include <term.h>
 
-volatile sig_atomic_t g_signal;
+int g_signal;
 
 typedef enum e_token_type
 {
@@ -201,7 +203,7 @@ int			execute_tree(t_tree *tree, t_env *envh, t_tool	*tool);
 int			executor(t_tree *tree, t_env *envh, t_tool	*tool);
 
 // Built-in commands 
-int			echo(t_tree *cmd1);
+int			ft_echo(t_tree *cmd1);
 int			pwd(char **cd_path);
 int			env(t_env *envh);
 int			cd(t_env **envh, t_tree *cmd, char **fake_pwd);
@@ -236,6 +238,7 @@ int			ft_isalpha(int a);
 int			ft_isdigit(int n);
 int			ft_isalnum(int c);
 char		*ft_itoa(int n);
+void		ft_putnbr_fd(int n, int fd);
 
 // char		*ft_substr_env(char const *s, unsigned int start, size_t len);
 char		*ft_strdup_env(const char *s1, int flag);

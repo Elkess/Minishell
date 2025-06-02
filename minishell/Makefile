@@ -1,7 +1,7 @@
 NAME = minishell
 
 C_Compiler = cc
-CFLAGS = -Iinclude -g3 -fsanitize=address #-Wall -Wextra -Werror 
+CFLAGS = -Iinclude #-g3 -fsanitize=address #-Wall -Wextra -Werror 
 
 READLINEFLAG = -lreadline
 
@@ -46,6 +46,7 @@ Funs =	src/main.c \
 		library/libft/ft_atol.c       \
 		library/libft/ft_isalpha.c    \
 		library/libft/ft_putchar_fd.c \
+		library/libft/ft_putnbr_fd.c \
 		library/libft/ft_strchr.c     \
 		library/libft/ft_strjoin.c    \
 		library/libft/ft_substr.c\

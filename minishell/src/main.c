@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/01 21:39:17 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/02 17:05:28 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void restore_terminal(struct termios *orig_termios)
 {
 	tcsetattr(STDIN_FILENO, TCSANOW, orig_termios);
 }
+
 void	ft_handle_signals(int sig)
 {
 	g_signal = sig;
@@ -48,9 +49,8 @@ char	*ft_get_prompt(int exit_status)
 	struct termios orig_termios;
 
 	disable_echoctl(&orig_termios);
-	prompt = readline("minishell$> ");	
+	prompt = readline("minishell$> ");
 	restore_terminal(&orig_termios);
-
 	if (prompt && prompt[0])
 		add_history(prompt);
 	if (!prompt)
@@ -78,7 +78,7 @@ void	fun_help(void)
 }
 
 int	main(int ac, char **av, char **env)
-{   // TODO: Export with args cd in erros
+{   // TODO: Export with args cd in erros 
 	char	*line;
 	t_tree	*tree;
 	t_tool	tool;
@@ -104,6 +104,10 @@ int	main(int ac, char **av, char **env)
 		}
 		else if (tree && line && *line)
 			tool.err = execute_tree(tree, envh, &tool);
+		if (g_signal == SIGINT)
+			ft_putstr_fd("\n", 1);
+		else if (g_signal == SIGQUIT)
+			ft_putstr_fd("Quit: 3\n", 1);
 		free(line);
 		clear_garbcoll(tool.grbg); // TO DO: if we use clear_garbcoll(tool.grbg); we got segfault
 		g_signal = 0;
