@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 08:39:55 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/02 16:55:11 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/03 09:38:01 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int	execute_pipes(t_tree *tree, t_env *envh, t_tool	*tool)
 
 	if (tree->type != NODE_PIPE)
 		return (-1);
+	tool->fork = 1;
 	if (pipe(pipefd) == -1)
 		return (perror("Pipe failed"), -1);
 	pids[0] = fork();
@@ -35,6 +36,7 @@ int	execute_pipes(t_tree *tree, t_env *envh, t_tool	*tool)
 		(close(pipefd[0]), dup2(pipefd[1], 1));
 		(close(pipefd[1]), exit(execute_tree(tree->left, envh, tool))); // SHoud it be exit and free_ evnh ???
 	}
+	tool->err = 0;
 	pids[1] = fork();
 	if (pids[1] == -1){perror("Fork failed");return (-1);}
 	if (pids[1] == 0)
@@ -45,9 +47,15 @@ int	execute_pipes(t_tree *tree, t_env *envh, t_tool	*tool)
 	(close(pipefd[0]), close(pipefd[1]));
 	signal(SIGINT, SIG_IGN);
 	(waitpid(pids[0], &status[0], 0), waitpid(pids[1], &status[1], 0));
-	g_signal = (WEXITSTATUS(status[1]) == 2 || WEXITSTATUS(status[0]) == 2) * 2 + (WEXITSTATUS(status[1]) == 3) * 3;
-	if (WEXITSTATUS(status[1]) == 2 || WEXITSTATUS(status[1]) == 3)
-		return (WEXITSTATUS(status[1]) + 128);
+	if(WIFSIGNALED(status[0]))
+		tool->signal = WTERMSIG(status[0]);
+	if(WIFSIGNALED(status[1]))
+	{
+		tool->signal = WTERMSIG(status[1]);
+		return (tool->signal + 128);
+	}
+	if (WIFSIGNALED(status[0]) && !WIFSIGNALED(status[1]) && WTERMSIG(status[0]) == SIGQUIT)
+		tool->signal = -3;
 	return (WEXITSTATUS(status[1]));
 }
 

@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/02 17:05:28 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/03 09:38:11 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void restore_terminal(struct termios *orig_termios)
 
 void	ft_handle_signals(int sig)
 {
-	g_signal = sig;
+	// g_signal = sig;
 	write(1, "\n", 1);
 	rl_replace_line("", 0);
 	rl_on_new_line();
@@ -55,7 +55,7 @@ char	*ft_get_prompt(int exit_status)
 		add_history(prompt);
 	if (!prompt)
 	{
-		printf("exit\n");
+		ft_putstr_fd("exit\n", 2);
 		exit(exit_status);
 	}
 	return (prompt);
@@ -85,6 +85,9 @@ int	main(int ac, char **av, char **env)
 	t_env	*envh;
 
 	tool.herdoc_err = 0;
+	tool.err = 0;
+	tool.signal = -1;
+	tool.fork = 0;
 	line = NULL;
 	fun_help();
 	envh = fill_env(env);
@@ -92,8 +95,10 @@ int	main(int ac, char **av, char **env)
 	(void)av;
 	while (1)
 	{
+		tool.signal = -1;
+		tool.fork = 0;
 		setup_signals();
-		line = ft_get_prompt(0); // TO DO: give new prompt if line full of spaces 
+		line = ft_get_prompt(tool.err); // TO DO: give new prompt if line full of spaces 
 		tree = parsing_input(line, &tool);
 		handle_herdocs(tree, envh, &tool);
 		if (tool.herdoc_err == 1)
@@ -104,12 +109,12 @@ int	main(int ac, char **av, char **env)
 		}
 		else if (tree && line && *line)
 			tool.err = execute_tree(tree, envh, &tool);
-		if (g_signal == SIGINT)
+		if (tool.signal == SIGINT)
 			ft_putstr_fd("\n", 1);
-		else if (g_signal == SIGQUIT)
+		else if (tool.signal == SIGQUIT)
 			ft_putstr_fd("Quit: 3\n", 1);
 		free(line);
 		clear_garbcoll(tool.grbg); // TO DO: if we use clear_garbcoll(tool.grbg); we got segfault
-		g_signal = 0;
+
 	}
 }

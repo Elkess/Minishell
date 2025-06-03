@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/02 15:58:39 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/03 09:28:43 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 #include <curses.h>
 #include <term.h>
 
-int g_signal;
+// int g_signal;
 
 typedef enum e_token_type
 {
@@ -80,6 +80,8 @@ typedef struct s_tool
 	int			anderr;
 	int			err;
 	int			herdoc_err;
+	int			signal;
+	int			fork;
 	t_garbcoll	*grbg;
 }	t_tool;
 

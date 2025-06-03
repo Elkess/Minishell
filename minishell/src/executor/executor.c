@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/02 17:58:41 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/03 09:39:17 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,9 @@ void	exec_helper(char **cmd, char **env, t_env *envh, char **path)
 	}
 }
 
-int	execute_one(t_tree *cmd, t_env *envh, int *fds)
+int	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
 {
-	pid_t		fd = fork();
+	pid_t		fd;
 	char		**env;
 	char		**path;
 
@@ -103,9 +103,12 @@ int	execute_one(t_tree *cmd, t_env *envh, int *fds)
 	if (search_for_defaults(envh, "PATH"))
 		path = ft_split(search_for_defaults(envh, "PATH")->value, ':');
 	env = struct_to_darr(envh);
+	fd = 0;
+	if (!tool->fork)
+		fd = fork();
 	if (fd == -1)
 		(perror("Fork1 Failed"), exit(1)); // SHoud it be exit and free_ evnh ??? exit
-	if (fd == 0)
+	if (fd == 0 || tool->fork)
 	{
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
@@ -396,9 +399,11 @@ int	is_builtin(t_tree *tree, char	*cmd, t_env *envh)
 	return (-1);
 }
 
-int	execute_cmd(t_tree *tree, t_env *envh, int status, int *fds)
+int	execute_cmd(t_tree *tree, t_env *envh, int status, t_tool *tool)
 {
 	char	*cmd;
+	int		data[2];
+
 	if (tree && tree->cmd)
 	{
 		cmd = tree->cmd[0];
@@ -407,14 +412,16 @@ int	execute_cmd(t_tree *tree, t_env *envh, int status, int *fds)
 		status = is_builtin(tree, cmd, envh);
 		if (status == -1)
 		{
-			execute_one(tree, envh, fds);
+			execute_one(tree, envh, tool);
 			waitpid(0, &status, 0);
 			if (WIFEXITED(status))
 				status = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
 			{
-				status = WTERMSIG(status);
-				g_signal = status;
+				// puts("here");
+				tool->signal = WTERMSIG(status);
+				// g_signal = WTERMSIG(status);
+				status = WTERMSIG(status) + 128;
 			}
 		}
 	}
@@ -1108,7 +1115,7 @@ int	executor(t_tree *tree, t_env *envh, t_tool	*tool)
 		redir_status = ft_redir(tree);
 	}
 	if (!redir_status && tree->type == NODE_COMMAND)
-		status = execute_cmd(tree, envh, status, fds);
+		status = execute_cmd(tree, envh, status, tool);
 	else if (!redir_status && tree->type == NODE_PARENTHS)
 		status = execute_tree(tree->left, envh, tool);
 	ft_dup(fds, 0);
