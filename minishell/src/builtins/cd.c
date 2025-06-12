@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 10:01:34 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/03 09:59:12 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/10 13:03:14 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,9 @@ char	*get_home_dir(t_env *envh)
 
 void	cd_helper(t_env **envh, char *cmd, char	**pwd_backup, char *dir)
 {
-	char	*new_pwd;
-
-	if (search_for_defaults(envh, "PWD"))
-		*envh = edit_env("OLDPWD", search_for_defaults(envh, "PWD")->value, *envh, 0);
-	else
-		*envh = edit_env("OLDPWD", NULL, *envh, 0);
+	*envh = edit_env(ft_strdup("OLDPWD"), ft_strdup(*pwd_backup), *envh, 0);
 	if (dir)
 	{
-		// getcwd() succeeded, use the real current directory
 		free(*pwd_backup);
 		*pwd_backup = getcwd(0, 0);
 	}
@@ -47,9 +41,8 @@ void	cd_helper(t_env **envh, char *cmd, char	**pwd_backup, char *dir)
 	{
 		if (*pwd_backup && (*pwd_backup)[ft_strlen(*pwd_backup) -1] != '/')
 			*pwd_backup = ft_strjoin(*pwd_backup, ft_strjoin("/", cmd, 0), 3); // leaks "/" and old pwd_backups
-			else
+		else
 			*pwd_backup = ft_strjoin(*pwd_backup, cmd, 1); // leaks old pwd_backups
-		if (access(*pwd_backup, X_OK))
 		ft_putstr_fd("cd: error retrieving current directory: getcwd:"
 		" cannot access parent directories: No such file or directory\n", 2);
 	}
@@ -57,13 +50,6 @@ void	cd_helper(t_env **envh, char *cmd, char	**pwd_backup, char *dir)
 
 int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup)
 {
-	/*TODO  
-	minishell$> unset PWD
-	minishell$> unset OLDPWD
-	minishell$> echo $PWD
-	minishell$> echo $OLDPWD
-	minishell$> cd ..
-	minishell$> echo $OLDPWD*/
 	char	*dir;
 
 	cmd->cmd++;
@@ -79,11 +65,10 @@ int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup)
 		free(*pwd_backup);
 		*pwd_backup = dir;
 	}
-
 	if (!chdir(cmd->cmd[0]))
 		cd_helper(envh, cmd->cmd[0], pwd_backup, dir);
 	else
 		return (print_err("cd: ", cmd->cmd[0], strerror(errno)), 1);
-	*envh = edit_env("PWD", ft_strdup(*pwd_backup), *envh, 0);
+	*envh = edit_env(ft_strdup("PWD"), ft_strdup(*pwd_backup), *envh, 0);
 	return (0);
 }

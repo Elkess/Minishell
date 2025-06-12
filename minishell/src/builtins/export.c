@@ -6,12 +6,14 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:34:29 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/29 15:07:03 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/12 14:37:08 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
 //TODO: Export need more search and testing Cases
+
 char	**sorting_str(char **str)
 {
 	size_t	i;
@@ -82,7 +84,7 @@ void	print_export(t_env *envh)
 	{
 		while (envh)
 		{
-			if (!ft_strncmp(str[i], envh->key, ft_strlen(envh->key)) && str[i][ft_strlen(envh->key)] == '=')
+			if (envh->key && !ft_strncmp(str[i], envh->key, ft_strlen(envh->key)) && str[i][ft_strlen(envh->key)] == '=')
 			{
 				if (!envh->value)
 					printf("declare -x %s\n", envh->key);

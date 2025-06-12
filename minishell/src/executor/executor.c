@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/03 09:39:17 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/12 15:36:39 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void	exec_helper(char **cmd, char **env, t_env *envh, char **path)
 	}
 }
 
-int	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
+void	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
 {
 	pid_t		fd;
 	char		**env;
@@ -124,7 +124,6 @@ int	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
 		(print_err(NULL, cmd->cmd[0], ": command not found"), exit(127));// SHoud it be exit and free_ evnh ??? exit
 	}
 	(free_twod(path), free_twod(env));
-	return (fd);
 }
 
 void	ft_dup(int *io, int flag)
@@ -196,10 +195,9 @@ int	handle_lastredir(t_redir *redirs)
 		if (lastin->fd == -1)
 			return (print_err(NULL, lastin->file, strerror(errno)), 1);
 	}
-
 	if (lastin)
 		dup2(lastin->fd, 0);
-	if (lastout) 
+	if (lastout)
 		dup2(lastout->fd, 1);
 	return (0);
 }
@@ -263,6 +261,7 @@ void	sig_herdoc(int sig)
 		exit(130);
 	}
 }
+
 size_t	there_is_herdoc(t_redir *red)
 {
 	size_t	i;
@@ -276,6 +275,7 @@ size_t	there_is_herdoc(t_redir *red)
 	}
 	return (i);
 }
+
 t_redir	*find_lasthd(t_redir *redirs)
 {
 	t_redir	*last;
@@ -308,7 +308,8 @@ void	here_docs(t_redir *red, t_env *envh, t_tool *tool)
 	backup = red;
 	n_herdocs = there_is_herdoc(red);
 	line = NULL;
-	
+	if (n_herdocs > 16)
+		(ft_putstr_fd("minishell: maximum here-document count exceeded", 2), exit(2));
 	if (n_herdocs)
 		pid = fork();
 	if (pid == 0 && n_herdocs)
@@ -1072,7 +1073,6 @@ char	**handel_expand(t_tree *tree, t_env *env, int exit_status)
 
 int	executor(t_tree *tree, t_env *envh, t_tool	*tool)
 {
-	// TODO: handle tty && signals 
 	int		fds[2];
 	int		redir_status = 0;
 	int		status;
@@ -1102,7 +1102,7 @@ int	executor(t_tree *tree, t_env *envh, t_tool	*tool)
 	// 	i++;
 	// }
     tree->cmd = expanded_cmd;
-	// loop herdoc 
+	// loop herdoc
 	if (!tree || tree->type != NODE_COMMAND && tree->type != NODE_PARENTHS)
 		return (1);
 	ft_dup(fds, 1);

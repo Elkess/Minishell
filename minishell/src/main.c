@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/03 09:38:11 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/12 15:36:06 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	main(int ac, char **av, char **env)
 	(void)ac;
 	(void)av;
 	while (1)
-	{
+	{//TODO: cd , leaks, fd 
 		tool.signal = -1;
 		tool.fork = 0;
 		setup_signals();
@@ -105,7 +105,7 @@ int	main(int ac, char **av, char **env)
 		{
 			tool.herdoc_err = 0;
 			tool.err = 1;
-			continue;
+			continue ;
 		}
 		else if (tree && line && *line)
 			tool.err = execute_tree(tree, envh, &tool);
@@ -115,6 +115,5 @@ int	main(int ac, char **av, char **env)
 			ft_putstr_fd("Quit: 3\n", 1);
 		free(line);
 		clear_garbcoll(tool.grbg); // TO DO: if we use clear_garbcoll(tool.grbg); we got segfault
-
 	}
 }

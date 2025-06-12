@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/03 09:28:43 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/09 11:51:36 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,9 +194,9 @@ int		ft_strcmp(const char *s1, const char *s2);
 
 void		print_err(char *msg1, char *arg, char *msg2);
 
-void		*ft_malloc(size_t n);
-void		ft_free(void *ptr, int flag);
-void		ft_exits(int n);
+// void		*ft_malloc(size_t n);
+// void		ft_free(void *ptr, int flag);
+// void		ft_exits(int n);
 void		free_envh(t_env *envh);
 void		free_twod(char **s);
 
