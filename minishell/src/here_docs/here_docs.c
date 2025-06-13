@@ -6,16 +6,55 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 18:17:26 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/01 20:30:26 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/13 15:34:31 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
+char	*expand_quote_file(char *delimiter)
+{
+	char *result;
+	char quote_char;
+	int i;
+	
+	result = NULL;
+	i = 0;
+	quote_char = 0;
+	while (delimiter[i])
+	{
+		if ((delimiter[i] == '"' || delimiter[i] == '\'') && quote_char == 0)
+		{
+			quote_char = delimiter[i];
+			i++;
+		}
+		else if (delimiter[i] == quote_char)
+		{
+			quote_char = 0;
+			i++;
+		}
+		else
+			result = strjoin_char(result, delimiter[i++]);
+	}
+	return (result);
+}
+
 void	handle_herdocs(t_tree *tree, t_env *envh, t_tool *tool)
 {
+	t_redir	*red;
+
 	if (!tree)
 		return ;
+	if (tree && tree->redirs)
+	{
+		red = tree->redirs;
+		while (red)
+		{
+			if (red->type == 3)
+				red->file = expand_quote_file(red->file);
+			red = red->next;
+		}
+	}
 	if (tool->herdoc_err == 1)
 		return ;
 	here_docs(tree->redirs, envh, tool);

@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 09:22:22 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/23 08:26:58 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/11 13:50:58 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ t_redir	*create_redir(t_token *token, t_tool *tool, size_t index)
 	redir->file = token->next->value;
 	redir->fd = -1;
 	redir->flag = 0;
+	redir->is_ambiguous = 0;
 	redir->next = NULL;
 	return (redir);
 }
@@ -51,7 +52,6 @@ t_tree	*create_tree_node(t_node_type type, t_tool *tool)
 	node->redirs = NULL;
 	node->redirs_before = NULL;
 	node->redirs_after = NULL;
-	node->is_ambiguous = 0;
 	node->left = NULL;
 	node->right = NULL;
 	return (node);
@@ -97,10 +97,11 @@ char	**create_cmd_array(t_token **input, t_tool *tool)
 	current = (*input)->next;
 	count = 1;
 	i = 0;
-	while (current && (current->type == 0 || current->type == 16
-			|| current->type == 17 || current->type == 18))
+	while (current && (current->type != 1 && current->type != 2 && current->type != 3))
 	{
-		count++;
+		if (current->type == 0 || current->type == 16
+			|| current->type == 17 || current->type == 18)
+			count++;
 		current = current->next;
 	}
 	array = (char **)malloc((count + 1) * sizeof(char *));
@@ -109,10 +110,11 @@ char	**create_cmd_array(t_token **input, t_tool *tool)
 	add_to_grbg(&tool->grbg, array);
 	array[i++] = ft_strdup_pars((*input)->value, tool);
 	current = (*input)->next;
-	while (i < count && current && (current->type == 0 || current->type == 16
-			|| current->type == 17 || current->type == 18))
+	while (i < count && current && (current->type != 1 && current->type != 2 && current->type != 3))
 	{
-		array[i++] = ft_strdup_pars(current->value, tool);
+		if (current->type == 0 || current->type == 16
+			|| current->type == 17 || current->type == 18)
+			array[i++] = ft_strdup_pars(current->value, tool);
 		current = current->next;
 	}
 	array[i] = NULL;

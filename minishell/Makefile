@@ -1,7 +1,7 @@
 NAME = minishell
 
 C_Compiler = cc
-CFLAGS = -Iinclude -g3 -fsanitize=address #-Wall -Wextra -Werror 
+CFLAGS = -Iinclude #-g3 -fsanitize=address #-Wall -Wextra -Werror 
 
 READLINEFLAG = -lreadline
 
@@ -20,6 +20,10 @@ Funs =	src/main.c \
 		src/parser/build_tree_utils.c \
 		src/parser/build_tree.c \
 		src/expand/expand.c \
+		src/expand/expand_utils.c \
+		src/expand/wildcards.c \
+		src/expand/expand_redir.c \
+		src/expand/lst_helper.c \
 		src/builtins/cd.c \
 		src/builtins/echo.c \
 		src/builtins/env.c \
@@ -29,7 +33,6 @@ Funs =	src/main.c \
 		src/builtins/unset.c \
 		src/executor/execute_tree.c\
 		src/executor/executor.c \
-		src/executor/garbage_collector.c \
 		src/executor/helper_funcs.c \
 		src/env/env.c  \
 		src/env/ft_strdup_env.c  \

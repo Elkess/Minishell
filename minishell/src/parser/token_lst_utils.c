@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 08:09:06 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/23 08:11:34 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/13 11:30:40 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void	init_quote_token(t_token *token)
 	current = token;
 	while (current)
 	{
-		if (current->type == TOKEN_WORD)
+		if (current->type == 0)
 		{
 			val = current->value;
 			len = ft_strlen(val);

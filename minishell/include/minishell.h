@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/09 11:51:36 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/13 16:40:50 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@
 # include <errno.h>
 #include <termios.h> 
 #include <dirent.h>
-#include <curses.h>
-#include <term.h>
+// #include <curses.h>
+// #include <term.h>
 
 // int g_signal;
 
@@ -73,6 +73,14 @@ typedef struct s_garbcoll
 	struct s_garbcoll	*next;
 }	t_garbcoll;
 
+typedef struct s_env
+{
+	char			*key;
+	char			*value;
+	struct s_env	*next;
+	struct s_env	*prev;
+}	t_env;
+
 typedef struct s_tool
 {
 	int			paren;
@@ -82,6 +90,7 @@ typedef struct s_tool
 	int			herdoc_err;
 	int			signal;
 	int			fork;
+	t_env		*envh;
 	t_garbcoll	*grbg;
 }	t_tool;
 
@@ -114,6 +123,7 @@ typedef struct s_redir
 	char			*file;
 	int				fd;
 	int				flag;
+	int				is_ambiguous;
 	struct s_redir	*next;
 }	t_redir;
 
@@ -126,13 +136,21 @@ typedef enum e_node_type
 	NODE_PARENTHS
 }	t_node_type;
 
-typedef struct s_env
+typedef struct s_expand
 {
-	char			*key;
-	char			*value;
-	struct s_env	*next;
-	struct s_env	*prev;
-}	t_env;
+    int		flg;
+	int		i;
+	int		j;
+	int		is_wildcard;
+    int		before_qoute;
+    int		is_char;
+	int		is_there_export;
+	int 	var_not_found;
+    char	*buff_exp;
+    t_token	*token;
+} t_expand;
+
+
 
 typedef struct s_tree
 {
@@ -141,7 +159,6 @@ typedef struct s_tree
 	t_redir			*redirs;
 	t_redir			*redirs_before;
 	t_redir			*redirs_after;
-	int				is_ambiguous;
 	struct s_tree	*left;
 	struct s_tree	*right;
 }	t_tree;
@@ -176,6 +193,20 @@ void	add_redir(t_redir **redirs, t_redir *new_redir);
 t_redir	*redir(t_token **input, t_tool *tool);
 t_tree	*create_tree_node(t_node_type type, t_tool *tool);
 t_redir	*concat_redirs(t_redir *before, t_redir *after, t_tool *tool);
+
+// expand 
+char	*expand_quote_file(char *delimiter);
+char	*strjoin_str(char *s1, char *s2);
+char	*strjoin_char(char *str, char c);
+char	**handel_expand(t_tree *tree, int exit_status, t_tool *tool);
+char **create_cmd_array_2(t_token *token);
+int has_space(const char *str);
+int	valid_char(char c);
+void    expand_redir(t_tree *tree, t_tool *tool, int status);
+
+char	*ft_strdup_exc(const char *s1, t_tool *tool);
+t_token	*new_lst(void *content, t_tool *tool);
+char **expand_wildcard(char *buff_exp, t_tool *tool);
 
 // Parser-specific libft functions
 size_t	ft_strlen(const char *s);

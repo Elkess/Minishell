@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_funs_help.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 08:57:56 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/23 07:58:21 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/13 15:31:35 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,41 +42,26 @@ void	hundel_quotes_paren(t_tool *tool, char cmd)
 
 int	is_delimter(char c, char d)
 {
-	if (c == '|' || c == '&' || c == '>' || c == '<' || c == '(' || c == ')')
-	{
-		if (c == '>')
-		{
-			if (d == '>')
-				return (TOKEN_REDIR_APPEND);
-			else
-				return (TOKEN_REDIR_OUT);
-		}
-		else if (c == '<')
-		{
-			if (d == '<')
-				return (TOKEN_REDIR_HEREDOC);
-			else
-				return (TOKEN_REDIR_IN);
-		}
-		else if (c == '|')
-		{
-			if (d == '|')
-				return (TOKEN_OR);
-			else
-				return (TOKEN_PIPE);
-		}
-		else if (c == '&')
-		{
-			if (d == '&')
-				return (TOKEN_AND);
-			else
-				return (TOKEN_SINGL_AND);
-		}
-		else if (c == '(')
-			return (TOKEN_PAREN_OPEN);
-		else if (c == ')')
-			return (TOKEN_PAREN_CLOSE);
-	}
+	if (c == '>' && d == '>')
+		return (TOKEN_REDIR_APPEND);
+	if (c == '>')
+		return (TOKEN_REDIR_OUT);
+	if (c == '<' && d == '<')
+		return (TOKEN_REDIR_HEREDOC);
+	if (c == '<')
+		return (TOKEN_REDIR_IN);
+	if (c == '|' && d == '|')
+		return (TOKEN_OR);
+	if (c == '|') 
+		return (TOKEN_PIPE);
+	if (c == '&' && d == '&')
+		return (TOKEN_AND);
+	if (c == '&')
+		return (TOKEN_SINGL_AND);
+	if (c == '(')
+		return (TOKEN_PAREN_OPEN);
+	if (c == ')')
+		return (TOKEN_PAREN_CLOSE);
 	return (0);
 }
 

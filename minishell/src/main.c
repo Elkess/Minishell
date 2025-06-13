@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/12 15:36:06 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/13 15:27:34 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ void restore_terminal(struct termios *orig_termios)
 
 void	ft_handle_signals(int sig)
 {
-	// g_signal = sig;
 	write(1, "\n", 1);
 	rl_replace_line("", 0);
 	rl_on_new_line();
@@ -77,43 +76,48 @@ void	fun_help(void)
 		(free(line), line = NULL);
 }
 
+void	init_struct_tool_exec(t_tool *tool)
+{
+	tool->herdoc_err = 0;
+	tool->err = 0;
+	tool->signal = -1;
+	tool->fork = 0;
+}
+
+void	main_helper(t_tool *tool, char *line)
+{
+	if (tool->signal == SIGINT)
+		ft_putstr_fd("\n", 1);
+	else if (tool->signal == SIGQUIT)
+		ft_putstr_fd("Quit: 3\n", 1);
+	free(line);
+	clear_garbcoll(tool->grbg);
+}
+
 int	main(int ac, char **av, char **env)
-{   // TODO: Export with args cd in erros 
+{//TODO: leaks, fd 
 	char	*line;
 	t_tree	*tree;
 	t_tool	tool;
 	t_env	*envh;
 
-	tool.herdoc_err = 0;
-	tool.err = 0;
-	tool.signal = -1;
-	tool.fork = 0;
-	line = NULL;
+	init_struct_tool_exec(&tool);
 	fun_help();
 	envh = fill_env(env);
-	(void)ac;
-	(void)av;
-	while (1)
-	{//TODO: cd , leaks, fd 
+	while (av || ac)
+	{
 		tool.signal = -1;
-		tool.fork = 0;
-		setup_signals();
-		line = ft_get_prompt(tool.err); // TO DO: give new prompt if line full of spaces 
+		(tool.fork = 0, setup_signals());
+		line = ft_get_prompt(tool.err);
 		tree = parsing_input(line, &tool);
 		handle_herdocs(tree, envh, &tool);
 		if (tool.herdoc_err == 1)
 		{
-			tool.herdoc_err = 0;
-			tool.err = 1;
+			(tool.herdoc_err = 0, tool.err = 1);
 			continue ;
 		}
 		else if (tree && line && *line)
 			tool.err = execute_tree(tree, envh, &tool);
-		if (tool.signal == SIGINT)
-			ft_putstr_fd("\n", 1);
-		else if (tool.signal == SIGQUIT)
-			ft_putstr_fd("Quit: 3\n", 1);
-		free(line);
-		clear_garbcoll(tool.grbg); // TO DO: if we use clear_garbcoll(tool.grbg); we got segfault
+		main_helper(&tool, line);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 09:20:22 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/26 13:30:09 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/13 14:49:41 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ t_tree	*node_command_utils(t_token **input, t_tool *tool, t_redir *before)
 {
 	t_tree	*node;
 
-	node = create_tree_node(NODE_COMMAND, tool);
+	node = create_tree_node(0, tool);
 	if (!node)
 		return (NULL);
 	node->redirs_before = before;
@@ -66,12 +66,10 @@ t_tree	*node_command(t_token **input, t_tool *tool)
 				node->redirs_after, tool);
 		return (node);
 	}
-	if (!*input || ((*input)->type != 17 && (*input)->type != 18 &&
-                (*input)->type != 16 && (*input)->type != 0))
+	if (!*input || ((*input)->type != 17 && (*input)->type != 18
+			&& (*input)->type != 16 && (*input)->type != 0))
 	{
 		node = create_tree_node(0, tool);
-		if (!node)
-			return (NULL);
 		node->redirs_before = before;
 		node->redirs_after = NULL;
 		node->redirs = concat_redirs(node->redirs_before,
@@ -89,9 +87,9 @@ t_tree	*node_pipe(t_token **input, t_tool *tool)
 
 	pipe = NULL;
 	left = node_command(input, tool);
-	while (*input && (*input)->type == TOKEN_PIPE)
+	while (*input && (*input)->type == 1)
 	{
-		pipe = create_tree_node(NODE_PIPE, tool);
+		pipe = create_tree_node(1, tool);
 		*input = (*input)->next;
 		right = node_pipe(input, tool);
 		pipe->left = left;
@@ -112,10 +110,10 @@ t_tree	*ft_tree(t_token **control, t_tool *tool)
 	left = node_pipe(control, tool);
 	while (*control && ((*control)->type == 2 || (*control)->type == 3))
 	{
-		if ((*control)->type == TOKEN_AND)
-			node_type = NODE_AND;
+		if ((*control)->type == 2)
+			node_type = 2;
 		else
-			node_type = NODE_OR;
+			node_type = 3;
 		op = create_tree_node(node_type, tool);
 		*control = (*control)->next;
 		right = node_pipe(control, tool);
