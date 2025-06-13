@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/13 16:45:52 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/13 16:51:43 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,13 @@ void	is_dir(char **p, char *path)
 	struct stat	s;
 
 	if (!ft_strcmp(path, "."))
-		(print_err(NULL, path, ": command not found"), exit(127)); // SHoud it be exit and free_ evnh exit YES
+		(print_err(NULL, path, "command not found"), exit(127)); // SHoud it be exit and free_ evnh exit YES
 	if (!stat(path, &s) && S_ISDIR(s.st_mode))
 	{
 		if ((p && *p && !ft_strcmp(path, "..")) || !ft_strchr(path, '/'))
-			(print_err(NULL, path, ": command not found"),exit(127)); // SHoud it be exit and free_ evnh exit YES
+			(print_err(NULL, path, "command not found"),exit(127)); // SHoud it be exit and free_ evnh exit YES
 		else
-			(print_err(NULL, path, ": is a directory"), exit(126)); // SHoud it be exit and free_ evnh exit YES
+			(print_err(NULL, path, "is a directory"), exit(126)); // SHoud it be exit and free_ evnh exit YES
 	}
 }
 
@@ -121,7 +121,7 @@ void	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
 			(print_err(NULL, cmd->cmd[0], strerror(errno)), exit (126));
 		if (((errno == 20 || errno == 2) && ft_strchr(cmd->cmd[0], '/')) || !path)
 			(print_err(NULL, cmd->cmd[0], strerror(errno)), exit (126 * (errno != 2) + 127 * (errno == 2)));
-		(print_err(NULL, cmd->cmd[0], ": command not found"), exit(127));// SHoud it be exit and free_ evnh ??? exit
+		(print_err(NULL, cmd->cmd[0], "command not found"), exit(127));// SHoud it be exit and free_ evnh ??? exit
 	}
 	(free_twod(path), free_twod(env));
 }
