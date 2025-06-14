@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/13 16:40:50 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/14 16:46:52 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 // #include <term.h>
 
 // int g_signal;
+# define BUFFER_SIZE 1
 
 typedef enum e_token_type
 {
@@ -121,6 +122,7 @@ typedef struct s_redir
 	size_t			index;
 	t_redir_type	type;
 	char			*file;
+	char			*content;
 	int				fd;
 	int				flag;
 	int				is_ambiguous;
@@ -162,7 +164,7 @@ typedef struct s_tree
 	struct s_tree	*left;
 	struct s_tree	*right;
 }	t_tree;
-
+char	*get_next_line(int fd);
 //signals
 void	setup_signals(void);
 void	disable_echoctl(struct termios *orig_termios);
@@ -242,7 +244,7 @@ int			env(t_env *envh);
 int			cd(t_env **envh, t_tree *cmd, char **fake_pwd);
 int			ft_export(t_env **envh, t_tree *tree);
 int			unset(t_env **envh, char **args);
-void		ft_exit(t_tree *cmd, int status, t_env *envh);
+int			ft_exit(t_tree *cmd, int status, t_env *envh);
 
 //
 t_env		*fill_env(char **envp);
@@ -259,7 +261,7 @@ void		handle_herdocs(t_tree *tree, t_env *envh, t_tool *tool);
 
 // Libft functions for executor 
 int			ft_atoi(const char *str);
-long long	ft_atol(char *str, int sign);
+long long	ft_atol_ex(char *str, int sign, int i);
 size_t		ft_dstrlen(const char **s);
 char		**ft_split(char const *s, char c);
 char		*ft_strjoin(char *s1, char *s2, int flag);

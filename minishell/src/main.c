@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/13 15:27:34 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/14 16:22:36 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,15 @@ void	init_struct_tool_exec(t_tool *tool)
 	tool->fork = 0;
 }
 
+void	colse_all()
+{
+	int	i;
+
+	i = 3;
+	while (i < OPEN_MAX)
+		close(i++);
+}
+
 void	main_helper(t_tool *tool, char *line)
 {
 	if (tool->signal == SIGINT)
@@ -92,6 +101,7 @@ void	main_helper(t_tool *tool, char *line)
 		ft_putstr_fd("Quit: 3\n", 1);
 	free(line);
 	clear_garbcoll(tool->grbg);
+	colse_all();
 }
 
 int	main(int ac, char **av, char **env)

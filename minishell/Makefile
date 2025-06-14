@@ -40,6 +40,7 @@ Funs =	src/main.c \
 		src/env/ft_itoa_env.c \
 		src/env/ft_strjoin_env.c \
 		src/env/env_utils.c \
+		library/gnl/get_next_line.c   \
 		library/libft/ft_atoi.c       \
 		library/libft/ft_isalnum.c    \
 		library/libft/ft_itoa.c       \

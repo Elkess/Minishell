@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/13 16:51:43 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/14 16:39:01 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void	exec_helper(char **cmd, char **env, t_env *envh, char **path)
 
 void	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
 {
-	pid_t		fd;
+	pid_t		pid;
 	char		**env;
 	char		**path;
 
@@ -103,12 +103,12 @@ void	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
 	if (search_for_defaults(envh, "PATH"))
 		path = ft_split(search_for_defaults(envh, "PATH")->value, ':');
 	env = struct_to_darr(envh);
-	fd = 0;
+	pid = 0;
 	if (!tool->fork)
-		fd = fork();
-	if (fd == -1)
+		pid = fork();
+	if (pid == -1)
 		(perror("Fork1 Failed"), exit(1)); // SHoud it be exit and free_ evnh ??? exit
-	if (fd == 0 || tool->fork)
+	if (pid == 0 || tool->fork)
 	{
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
@@ -176,25 +176,25 @@ int	handle_lastredir(t_redir *redirs)
 	lastin = find_lastredir(redirs, REDIR_IN);
 	lastout = find_lastredir(redirs, REDIR_OUT);
 
-	if (lastin && lastin->type != REDIR_HEREDOC && (!lastout ||
-		(lastout && lastin->index < lastout->index)))
-	{
-		lastin->fd = open(lastin->file, O_RDONLY);
-		if (lastin->fd == -1)
-			return (print_err(NULL, lastin->file, strerror(errno)), 1);
-	}
-	if (lastout && lastout->type == REDIR_OUT)
-		lastout->fd = open(lastout->file, O_CREAT | O_TRUNC | O_WRONLY, 0644);
-	else if (lastout && lastout->type == REDIR_APPEND)
-		lastout->fd = open(lastout->file, O_CREAT | O_APPEND | O_WRONLY, 0644);
-	if (lastout && lastout->fd == -1)
-		return (print_err(NULL, lastout->file, strerror(errno)), 1);
-	if (lastin && lastin->type != REDIR_HEREDOC && lastout && lastin->index > lastout->index)
-	{
-		lastin->fd = open(lastin->file, O_RDONLY);
-		if (lastin->fd == -1)
-			return (print_err(NULL, lastin->file, strerror(errno)), 1);
-	}
+	// if (lastin && lastin->type != REDIR_HEREDOC && (!lastout ||
+	// 	(lastout && lastin->index < lastout->index)))
+	// {
+	// 	lastin->fd = open(lastin->file, O_RDONLY);
+	// 	if (lastin->fd == -1)
+	// 		return (print_err(NULL, lastin->file, strerror(errno)), 1);
+	// }
+	// if (lastout && lastout->type == REDIR_OUT)
+	// 	lastout->fd = open(lastout->file, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	// else if (lastout && lastout->type == REDIR_APPEND)
+	// 	lastout->fd = open(lastout->file, O_CREAT | O_APPEND | O_WRONLY, 0644);
+	// if (lastout && lastout->fd == -1)
+	// 	return (print_err(NULL, lastout->file, strerror(errno)), 1);
+	// if (lastin && lastin->type != REDIR_HEREDOC && lastout && lastin->index > lastout->index)
+	// {
+	// 	lastin->fd = open(lastin->file, O_RDONLY);
+	// 	if (lastin->fd == -1)
+	// 		return (print_err(NULL, lastin->file, strerror(errno)), 1);
+	// }
 	if (lastin)
 		dup2(lastin->fd, 0);
 	if (lastout)
@@ -295,10 +295,11 @@ t_redir	*find_lasthd(t_redir *redirs)
 void	here_docs(t_redir *red, t_env *envh, t_tool *tool)
 {
 	char			*line;
-	char			*file;
+	char			*lines;
 	int				status;
 	struct termios	orig_termios;
 	pid_t			pid;
+	char	buff[2];
 	int				fd[2];
 	size_t			n_herdocs;
 	t_redir			*backup;
@@ -310,6 +311,7 @@ void	here_docs(t_redir *red, t_env *envh, t_tool *tool)
 	backup = red;
 	n_herdocs = there_is_herdoc(red);
 	line = NULL;
+	lines = NULL;
 	if (n_herdocs > 16)
 		(ft_putstr_fd("minishell: maximum here-document count exceeded", 2), exit(2));
 	if (n_herdocs)
@@ -322,29 +324,24 @@ void	here_docs(t_redir *red, t_env *envh, t_tool *tool)
 		{
 			if (red->type == REDIR_HEREDOC)
 			{
-				file = generate_file(red);
 				while (1)
 				{						
 					disable_echoctl(&orig_termios);
 					line = readline("> ");
 					if (!line)
-					{
 						break;
-					}
 					if (!ft_strcmp(line, red->file))
 					{
 						free(line);
 						break;
 					}
 					line = ft_strjoin(line, "\n", 1);
-					write(red->fd, line, ft_strlen(line));
+					lines = ft_strjoin(lines, line, 1);
 					free(line);
 				}
-				close(red->fd);
-				red->fd = open(file, O_CREAT | O_RDWR | O_APPEND , 0644);
-				if (red->fd == -1)
-					(perror("Open failed in 272:"), exit (1)); // add free file
-				write(fd[1], file, ft_strlen(file) +1);
+				if (lines)
+					write(fd[1], lines, ft_strlen(lines) +1);
+				lines = NULL;
 			}
 			if (find_lasthd(red) == red)
 				exit(0);
@@ -365,16 +362,22 @@ void	here_docs(t_redir *red, t_env *envh, t_tool *tool)
 	}
 	red = backup;
 	close(fd[1]);
-	file = malloc(34);
 	while (red && !WIFSIGNALED(status))
 	{
 		if (red->type == REDIR_HEREDOC)
 		{
-			read(fd[0], file, 34);
-			red->fd = open(file, O_CREAT | O_RDWR | O_APPEND, 0644);
-			if (red->fd == -1)
-				(perror("Open failed in 359`"), exit (1)); // add free file
-			unlink(file);
+			red->content = NULL;
+			lines = NULL;
+			while (1)
+			{
+				if (read(fd[0], buff, 1) <= 0)
+					break ;
+				if (buff[0] == '\0')
+					break ;
+				buff[1] = '\0';
+				lines = ft_strjoin(lines, buff, 1);
+			}
+			red->content = lines;
 		}
 		red = red->next;
 	}
@@ -398,7 +401,7 @@ int	is_builtin(t_tree *tree, char	*cmd, t_env *envh)
 	else if (!ft_strcmp(cmd, "pwd"))
 		return(pwd(&pwd_backup));
 	else if (!ft_strcmp(cmd, "exit"))
-		ft_exit(tree, 0, envh);
+		return (ft_exit(tree, 0, envh));
 	return (-1);
 }
 
@@ -421,9 +424,7 @@ int	execute_cmd(t_tree *tree, t_env *envh, int status, t_tool *tool)
 				status = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
 			{
-				// puts("here");
 				tool->signal = WTERMSIG(status);
-				// g_signal = WTERMSIG(status);
 				status = WTERMSIG(status) + 128;
 			}
 		}
@@ -433,17 +434,42 @@ int	execute_cmd(t_tree *tree, t_env *envh, int status, t_tool *tool)
 
 /******************************************************************************************/
 
-// void	read_from_herdoc(t_redir *red)
-// {
-// 	while (red)
-// 	{
-// 		if (red->type == REDIR_HEREDOC)
-// 		{
-			 
-// 		}
-// 	}
+void	read_from_heredoc(t_redir *red)
+{
+	char	*file;
+	char	*line;
+	int		fd;
 	
-// }
+	while (red)
+	{
+		if (red->type == REDIR_HEREDOC)
+		{
+			file = generate_file(red);
+			write(red->fd, red->content, ft_strlen(red->content));
+			close(red->fd);
+			red->fd = open(file, O_CREAT | O_RDWR , 0644);
+			if (red->fd == -1) 
+				(perror("Open failed in 272:"));
+			unlink(file);
+			if (red->flag)
+			{
+				fd = open(file, O_CREAT | O_RDWR | O_TRUNC , 0644);
+				if (fd == -1) 
+					(perror("Open failed in 469:"));
+				line = get_next_line(red->fd);
+				while (line)
+				{
+					// line = expand_herdoc_content();
+					write(fd, line, ft_strlen(line) +1);
+					free(line);
+					line = get_next_line(red->fd);
+				}
+				red->fd = fd;
+			}
+		}
+		red = red->next;
+	}
+}
 
 int	executor(t_tree *tree, t_env *envh, t_tool	*tool)
 {
@@ -453,6 +479,7 @@ int	executor(t_tree *tree, t_env *envh, t_tool	*tool)
 	char **expanded_cmd;
 
 	status = tool->err;
+	tool->envh = envh;
 	if (!tree || tree->type != NODE_COMMAND && tree->type != NODE_PARENTHS)
 		return (1);
 	expanded_cmd = handel_expand(tree, status, tool);
@@ -461,7 +488,7 @@ int	executor(t_tree *tree, t_env *envh, t_tool	*tool)
 	ft_dup(fds, 1);
 	if (tree->redirs)
 	{
-		//read_from_herdoc(tree->redirs);
+		read_from_heredoc(tree->redirs);
 		redir_status = ft_redir(tree);
 	}
 	if (!redir_status && tree->type == NODE_COMMAND)

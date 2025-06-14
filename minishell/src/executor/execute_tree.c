@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 08:39:55 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/13 14:57:12 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/14 16:32:04 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,6 @@ int	execute_pipes(t_tree *tree, t_env *envh, t_tool	*tool)
 		perror("Fork failed");
 		while (pid)
 		{
-			kill(pid->value, SIGKILL);
 			pid = pid->next;
 		}
 		return (1);
@@ -97,8 +96,8 @@ int	execute_pipes(t_tree *tree, t_env *envh, t_tool	*tool)
 		(close(pipefd[0]), exit(execute_tree(tree->right, envh, tool))); // SHoud it be exit and free_ evnh
 	}
 	signal(SIGINT, SIG_IGN);
-	(waitpid(pids[0], &status[0], 0), waitpid(pids[1], &status[1], 0));
 	(close(pipefd[0]), close(pipefd[1]));
+	(waitpid(pids[0], &status[0], 0), waitpid(pids[1], &status[1], 0));
 	if(WIFSIGNALED(status[0]))
 		tool->signal = WTERMSIG(status[0]);
 	if(WIFSIGNALED(status[1]))
