@@ -47,7 +47,7 @@ Funs =	src/main.c \
 		library/libft/ft_split.c      \
 		library/libft/ft_strdup.c     \
 		library/libft/ft_strncmp.c\
-		library/libft/ft_atol.c       \
+		library/libft/ft_atol_ex.c       \
 		library/libft/ft_isalpha.c    \
 		library/libft/ft_putchar_fd.c \
 		library/libft/ft_putnbr_fd.c \
