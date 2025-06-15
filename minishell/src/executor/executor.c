@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/15 15:35:14 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/15 16:31:27 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	exec_helper(char **cmd, char **env, t_tool *tool, char **path)
 
 	new_path = NULL;
 	i = 0;
-	if (!ft_strchr(cmd[0], '/'))
+	if (!ft_strchr(cmd[0], '/') && cmd[0] && *cmd[0])
 	{
 		while (path && path[i])
 		{
