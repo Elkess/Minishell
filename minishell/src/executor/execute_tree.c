@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 08:39:55 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/14 16:32:04 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/15 08:50:55 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ typedef struct s_pid
 	struct s_pid *next;
 } t_pid;
 
-t_pid	*add_to_pids_list(t_pid *head, int val)
+t_pid	*add_to_pids_list(t_pid *head, int val, t_tool *tool)
 {
 	t_pid	*node;
 	t_pid	*backup;
@@ -32,6 +32,7 @@ t_pid	*add_to_pids_list(t_pid *head, int val)
 	node = malloc(sizeof(t_pid));
 	if (!node)
 		(perror(""), exit (1));
+	add_to_grbg(&tool->grbg, node);
 	node->value = val;
 	node->next = NULL;
 	if (!head)
@@ -61,7 +62,7 @@ int	execute_pipes(t_tree *tree, t_env *envh, t_tool	*tool)
 		return (perror("Pipe error"), 1);
 	pids[0] = fork();
 	if (pids[0] > 0)
-		pid = add_to_pids_list(pid, pids[0]);
+		pid = add_to_pids_list(pid, pids[0], tool);
 	if (pids[0] == -1)
 	{
 		perror("Fork failed");
@@ -84,12 +85,13 @@ int	execute_pipes(t_tree *tree, t_env *envh, t_tool	*tool)
 		perror("Fork failed");
 		while (pid)
 		{
+			kill(pid->value, SIGKILL);
 			pid = pid->next;
 		}
 		return (1);
 	}
 	if (pids[1] > 0)
-		pid = add_to_pids_list(pid, pids[1]);
+		pid = add_to_pids_list(pid, pids[1], tool);
 	if (pids[1] == 0)
 	{
 		(close(pipefd[1]), dup2(pipefd[0], 0));

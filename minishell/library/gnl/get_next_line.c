@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 11:46:59 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/13 17:30:00 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/15 11:07:48 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static char	*extract_line(int fd, char	*holder)
 			return (free(buff), free(holder), holder = NULL);
 		buff[reads] = '\0';
 		temp = holder;
-		holder = ft_strjoin(holder, buff, 0);
+		holder = ft_strjoin_env(holder, buff, 0);
 		free(temp);
 	}
 	free(buff);
@@ -45,7 +45,7 @@ static char	*filter_line(char *holder)
 	i = 0;
 	while (holder[i] != '\n' && holder[i] != '\0')
 		i++;
-	return (ft_substr(holder, 0, i +1));
+	return (ft_substr_env(holder, 0, i +1));
 }
 
 static char	*ft_remainder(char *holder)
@@ -79,7 +79,7 @@ char	*get_next_line(int fd)
 	static char	*holder[OPEN_MAX];
 	char		*line;
 
-	if (BUFFER_SIZE <= 0 || fd < 0 || BUFFER_SIZE > INT_MAX || fd > OPEN_MAX)
+	if (fd < 0 || fd > OPEN_MAX)
 		return (NULL);
 	line = NULL;
 	holder[fd] = extract_line(fd, holder[fd]);

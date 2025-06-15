@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/14 16:39:01 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/15 10:12:18 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void print_err(char *msg1, char *arg, char *msg2)
 	dup2(fd, 1);
 }
 
-char	**struct_to_darr(t_env *envh)
+char	**struct_to_darr(t_env *envh, t_tool *tool)
 {
 	size_t	len;
 	t_env	*tmp;
@@ -34,14 +34,14 @@ char	**struct_to_darr(t_env *envh)
 	env = malloc((len +1) * sizeof(char *));
 	if (!env)
 		(free_envh(envh), exit (2));
+	add_to_grbg(&tool->grbg, env);
 	len = 0;
 	while (envh)
 	{
 		if (envh->value)
 		{
-			env[len] = ft_strjoin(envh->key, "=", 0);
-			// free tmp of before env[len]
-			env[len] = ft_strjoin(env[len], envh->value, 1);
+			env[len] = ft_strjoin(envh->key, "=", tool);
+			env[len] = ft_strjoin(env[len], envh->value, tool);
 			len++;
 		}
 		envh = envh->next;
@@ -65,7 +65,7 @@ void	is_dir(char **p, char *path)
 	}
 }
 
-void	exec_helper(char **cmd, char **env, t_env *envh, char **path)
+void	exec_helper(char **cmd, char **env, t_tool *tool, char **path)
 {
 	size_t	i;
 	char	*new_path;
@@ -76,15 +76,13 @@ void	exec_helper(char **cmd, char **env, t_env *envh, char **path)
 	{
 		while (path && path[i])
 		{
-			new_path = ft_strjoin(path[i], "/", 0);
-			// free before path[i] in tmp
-			new_path = ft_strjoin(new_path, cmd[0], 1);
+			new_path = ft_strjoin(path[i], "/", tool);
+			new_path = ft_strjoin(new_path, cmd[0], tool);
 			if (!access(new_path, X_OK))
 			{
 				if (execve(new_path, cmd, env) == -1)
 					(perror("Execve2 Failed:"), exit(1)); // SHoud it be exit and free_ evnh ??? exit
 			}
-			free(new_path);
 			i++;
 		}
 	}
@@ -101,8 +99,8 @@ void	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 	if (search_for_defaults(envh, "PATH"))
-		path = ft_split(search_for_defaults(envh, "PATH")->value, ':');
-	env = struct_to_darr(envh);
+		path = ft_split(search_for_defaults(envh, "PATH")->value, ':', tool);
+	env = struct_to_darr(envh, tool);
 	pid = 0;
 	if (!tool->fork)
 		pid = fork();
@@ -116,14 +114,14 @@ void	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
 		if ((!access(cmd->cmd[0], X_OK)))
 			if (execve(cmd->cmd[0], cmd->cmd, env) == -1)
 				(perror("Execve1 Failed:"), exit(1));// SHoud it be exit and free_ evnh ??? exit
-		exec_helper(cmd->cmd, env, envh, path);
+		exec_helper(cmd->cmd, env, tool, path);
 		if (errno == 13)
 			(print_err(NULL, cmd->cmd[0], strerror(errno)), exit (126));
 		if (((errno == 20 || errno == 2) && ft_strchr(cmd->cmd[0], '/')) || !path)
 			(print_err(NULL, cmd->cmd[0], strerror(errno)), exit (126 * (errno != 2) + 127 * (errno == 2)));
 		(print_err(NULL, cmd->cmd[0], "command not found"), exit(127));// SHoud it be exit and free_ evnh ??? exit
 	}
-	(free_twod(path), free_twod(env));
+	// (free_twod(path), free_twod(env));
 }
 
 void	ft_dup(int *io, int flag)
@@ -236,7 +234,7 @@ int	ft_redir(t_tree *tree)
 	return (handle_lastredir(tree->redirs));
 }
 
-char	*generate_file(t_redir *red)
+char	*generate_file(t_redir *red, t_tool *tool)
 {// USE STATIC instead 
 	char	*str;
 	size_t	i;
@@ -245,8 +243,7 @@ char	*generate_file(t_redir *red)
 	i = 0;
 	while (1)
 	{
-		free (str);
-		str = ft_strjoin("/tmp/.here_doc", ft_itoa(i), 2); //leaks
+		str = ft_strjoin("/tmp/.here_doc", ft_itoa(i, tool), tool); //leaks
 		red->fd = open(str, O_CREAT | O_RDWR | O_APPEND | O_EXCL, 0644);
 		if (red->fd != -1)
 			break ;
@@ -328,16 +325,12 @@ void	here_docs(t_redir *red, t_env *envh, t_tool *tool)
 				{						
 					disable_echoctl(&orig_termios);
 					line = readline("> ");
-					if (!line)
+					if (line)
+						add_to_grbg(&tool->grbg, line);
+					if (!line || !ft_strcmp(line, red->file))
 						break;
-					if (!ft_strcmp(line, red->file))
-					{
-						free(line);
-						break;
-					}
-					line = ft_strjoin(line, "\n", 1);
-					lines = ft_strjoin(lines, line, 1);
-					free(line);
+					line = ft_strjoin(line, "\n", tool);// TODO: need to understand how it works as in child 
+					lines = ft_strjoin(lines, line, tool);
 				}
 				if (lines)
 					write(fd[1], lines, ft_strlen(lines) +1);
@@ -375,7 +368,7 @@ void	here_docs(t_redir *red, t_env *envh, t_tool *tool)
 				if (buff[0] == '\0')
 					break ;
 				buff[1] = '\0';
-				lines = ft_strjoin(lines, buff, 1);
+				lines = ft_strjoin(lines, buff, tool);
 			}
 			red->content = lines;
 		}
@@ -384,24 +377,24 @@ void	here_docs(t_redir *red, t_env *envh, t_tool *tool)
 	setup_signals();
 }
 
-int	is_builtin(t_tree *tree, char	*cmd, t_env *envh)
+int	is_builtin(t_tree *tree, char	*cmd, t_env *envh, t_tool *tool)
 {
 	static char	*pwd_backup;
 
 	if (!ft_strcmp(cmd, "echo"))
-		return(ft_echo(tree));
+		return(ft_echo(tree, tool));
 	else if (!ft_strcmp(cmd, "cd"))
-		return(cd(&envh, tree, &pwd_backup));
+		return(cd(&envh, tree, &pwd_backup, tool));
 	else if (!ft_strcmp(cmd, "export"))
-		return(ft_export(&envh, tree));
+		return(ft_export(&envh, tree, tool));
 	else if (!ft_strcmp(cmd, "unset"))
 		return(unset(&envh, tree->cmd));
 	else if (!ft_strcmp(cmd, "env"))
-		return(env(envh));
+		return(env(envh, tool));
 	else if (!ft_strcmp(cmd, "pwd"))
 		return(pwd(&pwd_backup));
 	else if (!ft_strcmp(cmd, "exit"))
-		return (ft_exit(tree, 0, envh));
+		return (ft_exit(tree, 0, envh, tool));
 	return (-1);
 }
 
@@ -415,7 +408,7 @@ int	execute_cmd(t_tree *tree, t_env *envh, int status, t_tool *tool)
 		cmd = tree->cmd[0];
 		if (!cmd)
 			return (0);
-		status = is_builtin(tree, cmd, envh);
+		status = is_builtin(tree, cmd, envh, tool);
 		if (status == -1)
 		{
 			execute_one(tree, envh, tool);
@@ -432,9 +425,7 @@ int	execute_cmd(t_tree *tree, t_env *envh, int status, t_tool *tool)
 	return (status);
 }
 
-/******************************************************************************************/
-
-void	read_from_heredoc(t_redir *red)
+void	read_from_heredoc(t_redir *red, t_tool *tool)
 {
 	char	*file;
 	char	*line;
@@ -444,7 +435,7 @@ void	read_from_heredoc(t_redir *red)
 	{
 		if (red->type == REDIR_HEREDOC)
 		{
-			file = generate_file(red);
+			file = generate_file(red, tool);
 			write(red->fd, red->content, ft_strlen(red->content));
 			close(red->fd);
 			red->fd = open(file, O_CREAT | O_RDWR , 0644);
@@ -459,9 +450,9 @@ void	read_from_heredoc(t_redir *red)
 				line = get_next_line(red->fd);
 				while (line)
 				{
+					add_to_grbg(&tool->grbg, line);
 					// line = expand_herdoc_content();
 					write(fd, line, ft_strlen(line) +1);
-					free(line);
 					line = get_next_line(red->fd);
 				}
 				red->fd = fd;
@@ -488,7 +479,7 @@ int	executor(t_tree *tree, t_env *envh, t_tool	*tool)
 	ft_dup(fds, 1);
 	if (tree->redirs)
 	{
-		read_from_heredoc(tree->redirs);
+		read_from_heredoc(tree->redirs, tool);
 		redir_status = ft_redir(tree);
 	}
 	if (!redir_status && tree->type == NODE_COMMAND)

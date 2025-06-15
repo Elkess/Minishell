@@ -6,13 +6,13 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 18:17:26 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/13 15:34:31 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/15 10:18:58 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-char	*expand_quote_file(char *delimiter)
+char	*expand_quote_file(char *delimiter, t_tool *tool)
 {
 	char *result;
 	char quote_char;
@@ -34,7 +34,7 @@ char	*expand_quote_file(char *delimiter)
 			i++;
 		}
 		else
-			result = strjoin_char(result, delimiter[i++]);
+			result = strjoin_char(result, delimiter[i++], tool);
 	}
 	return (result);
 }
@@ -51,7 +51,7 @@ void	handle_herdocs(t_tree *tree, t_env *envh, t_tool *tool)
 		while (red)
 		{
 			if (red->type == 3)
-				red->file = expand_quote_file(red->file);
+				red->file = expand_quote_file(red->file, tool);
 			red = red->next;
 		}
 	}

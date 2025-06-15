@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:34:29 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/12 14:37:08 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/15 11:38:03 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,17 +53,20 @@ size_t	ft_envlen(t_env *envh)
 	return (i);
 }
 
-char	**filling_str(t_env *envh)
+char	**filling_str(t_env *envh, t_tool *tool)
 {
 	size_t	i;
 	char	**str;
 
 	str = malloc((ft_envlen(envh) +1) * sizeof(char *));
+	if (!str)
+		return (NULL);
+	add_to_grbg(&tool->grbg, str);
 	i = 0;
 	while (envh)
 	{
-			str[i] = ft_strjoin(envh->key, "=", 0);
-			str[i] = ft_strjoin(str[i], envh->value, 1);
+			str[i] = ft_strjoin(envh->key, "=", tool);
+			str[i] = ft_strjoin(str[i], envh->value, tool);
 		i++;
 		envh = envh->next;
 	}
@@ -71,7 +74,7 @@ char	**filling_str(t_env *envh)
 	return (str);
 }
 
-void	print_export(t_env *envh)
+void	print_export(t_env *envh, t_tool *tool)
 {
 	size_t	i;
 	char	**str;
@@ -79,7 +82,7 @@ void	print_export(t_env *envh)
 
 	i = 0;
 	holder = envh;
-	str = sorting_str(filling_str(envh));
+	str = sorting_str(filling_str(envh, tool));
 	while (str[i])
 	{
 		while (envh)
@@ -97,7 +100,7 @@ void	print_export(t_env *envh)
 		envh = holder;
 		i++;
 	}
-	free_twod(str);
+	// free_twod(str);
 }
 
 int	manipulate_export(t_env **envh, t_tree *cmd1, char *key, char *val)
@@ -112,22 +115,16 @@ int	manipulate_export(t_env **envh, t_tree *cmd1, char *key, char *val)
 		if (key && *key  && *key != '+' && key[ft_strlen(key) -1] == '+' )
 		{
 			tmp = key;
-			key = ft_substr(key, 0, ft_strlen(key) -1);//free old key
+			key = ft_substr_env(key, 0, ft_strlen(key) -1);//free old key
 			free(tmp);
 			if (is_valid_key(key))
-			{
-				*envh = edit_env(ft_strdup(key), val, *envh, 1);
-				free(key);
-			}
+				*envh = edit_env(key, val, *envh, 1);
 			else
 				return (print_err("export: `", cmd1->cmd[i],
 					"': not a valid identifier"), free(key), 1); // free attrs
 		}
 		else if (is_valid_key(key))
-		{
-			*envh = edit_env(ft_strdup(key), val, *envh, 0);
-			free(key);
-		}
+			*envh = edit_env(key, val, *envh, 0);
 		else
 			return(print_err("export: `", cmd1->cmd[i],
 				"': not a valid identifier"), free(key), 1);
@@ -136,7 +133,7 @@ int	manipulate_export(t_env **envh, t_tree *cmd1, char *key, char *val)
 	return (0);
 }
 
-int	ft_export(t_env **envh, t_tree *tree)
+int	ft_export(t_env **envh, t_tree *tree, t_tool *tool)
 {
 	char	*key;
 	char	*val;
@@ -147,6 +144,6 @@ int	ft_export(t_env **envh, t_tree *tree)
 	if (tree->cmd[0])
 		return (manipulate_export(envh, tree, key, val));
 	else
-		print_export(*envh);
+		print_export(*envh, tool);
 	return (0);
 }

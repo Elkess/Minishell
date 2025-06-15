@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 13:08:39 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/23 07:53:35 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/15 11:47:58 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,21 +17,23 @@ t_env	*edit_env(char *key, char *val, t_env *envh, int should_concat)
 	t_env	*newnode;
 	t_env	*tmp;
 	int		exist;
+	char	*tmp_val;
 
 	exist = 0;
-	tmp = envh; //leaks
+	tmp = envh;
 	while (tmp)
 	{
 		if (!ft_strcmp(tmp->key, key))
 		{
+			free(key);
 			if (should_concat)
-				tmp->value = ft_strjoin(tmp->value, val, 3); // leaks in val and tmp.val
+				tmp->value = ft_strjoin_env(tmp->value, val, 3);
 			else
 			{
 				if (val)
 				{
 					free(tmp->value);
-					tmp->value = val; //leaks
+					tmp->value = val;
 				}
 			}
 			return (envh);
@@ -52,9 +54,9 @@ char	*extract_data(char *line, int flag)
 	{
 		if (!line[i])
 			return (NULL);
-		return (ft_substr(line, ++i, ft_strlen(line))); // no leaks it is going to env
+		return (ft_substr_env(line, ++i, ft_strlen(line))); // no leaks it is going to env
 	}
-	return (ft_substr(line, 0, i)); // no leaks it is going to env
+	return (ft_substr_env(line, 0, i)); // no leaks it is going to env
 }
 
 int	handle_defaults(t_env **envh)
@@ -81,8 +83,7 @@ int	handle_defaults(t_env **envh)
 		{
 			printf("bash: cd: getcwd Failed\n");
 			return (1);
-		} //leaks
-		vals[1] = ft_strdup_env(vals[1], 1);
+		}
 	}
 	if (!search_for_defaults(*envh, "SHLVL"))
 	{
@@ -144,9 +145,7 @@ t_env	*fill_env(char **envp)
 			val = extract_data(envp[i], 1);
 			key = extract_data(envp[i], 0);
 			if (!ft_strcmp(key, "SHLVL"))
-			{ // free(val);
 				val = handle_shlvl(val);
-			}
 			envh = append_node(envh, key, val);
 			i++;
 		}

@@ -6,18 +6,18 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 16:52:06 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/14 16:50:26 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/15 10:11:11 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-char	*filter_arg(char *s,int *sign, t_env *envh)
+// TODO : add clear grb 
+char	*filter_arg(char *s,int *sign, t_env *envh, t_tool *tool)
 {
 	char	**args;
 	size_t	i;
 
-	args = ft_split(s, 32); // maybe s need free
+	args = ft_split(s, 32, tool); // maybe s need free
 	if (!args || !args[0] || args && args[1])
 		(print_err("exit: ", s, ": numeric Filter Range argument required\n"),  exit(255)); // free s and args
 	i = 0;
@@ -58,7 +58,7 @@ void	check_range(char *s, int sign, t_env *envh)
 	}
 }
 
-int	ft_exit(t_tree *cmd, int status, t_env *envh)
+int	ft_exit(t_tree *cmd, int status, t_env *envh, t_tool *tool)
 {
 	size_t		i;
 	char		*s;
@@ -76,9 +76,9 @@ int	ft_exit(t_tree *cmd, int status, t_env *envh)
 		(free_envh(envh), exit (0));
 	while (cmd && cmd->cmd[i])
 		i++;
-	s = filter_arg(cmd->cmd[0], &sign, envh);
+	s = filter_arg(cmd->cmd[0], &sign, envh, tool);
 	if (sign == -1)
-		s = ft_strjoin("-", s, 2); // free s
+		s = ft_strjoin("-", s, tool); // free s
 	if ((sign == -1 && ft_strlen(s) > 20) || sign == 1 && ft_strlen(s) > 19)
 		(print_err("exit: ", s, ":83 numeric  argument required"), exit(255)); // free s
 	if ((sign == -1 && ft_strlen(s) == 20) || (sign == 1 && ft_strlen(s) == 19))

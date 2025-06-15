@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 14:55:36 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/13 16:37:54 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/15 09:56:26 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void    expand_redir(t_tree *tree, t_tool *tool, int status)
                     file_count++;
 				if (file_count == 1)
                 {
-                    red->file = ft_strdup(expand_file[0]);
+                    red->file = ft_strdup(expand_file[0], tool);
                     red->is_ambiguous = 0;
                 }
                 else if (file_count == 0)

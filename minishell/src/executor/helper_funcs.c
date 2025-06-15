@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:39:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/05/29 11:52:05 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/15 10:25:53 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	is_valid_key(char *key)
 	return (1);
 }
 
-void	print_rest(char **s, int n)
+void	print_rest(char **s, int n, t_tool *tool)
 {
 	size_t	i;
 	char	*buffer;
@@ -41,14 +41,14 @@ void	print_rest(char **s, int n)
 	i = 0;
 	while (s[i])
 	{
-		buffer = ft_strjoin(buffer, s[i++], 1); // leaks
+		buffer = ft_strjoin(buffer, s[i++], tool); // leaks
 		if (s[i])
-			buffer= ft_strjoin(buffer, " ", 1); //TODO: handle tabs // leaks
+			buffer= ft_strjoin(buffer, " ", tool); //TODO: handle tabs // leaks
 	}
 	if (!n)
-		buffer= ft_strjoin(buffer, "\n", 1); // leaks
+		buffer= ft_strjoin(buffer, "\n", tool); // leaks
 	write(1, buffer, ft_strlen(buffer));
-	free(buffer);
+	// free(buffer);
 }
 
 void	free_twod(char **s)

@@ -3,49 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expand_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 14:54:25 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/11 19:51:27 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/15 10:26:08 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-char	*strjoin_str(char *s1, char *s2)
-{
-	size_t	len1;
-	size_t	len2;
-	char	*result;
-	size_t	i;
-
-	len1 = ft_strlen(s1);
-	len2 = ft_strlen(s2);
-	result = malloc(len1 + len2 + 1);
-	i = 0;
-	if (!result)
-		return (NULL);
-	if (s1)
-	{
-		while (i < len1)
-		{
-			result[i] = s1[i];
-			i++;
-		}
-	}
-	if (s2)
-	{
-		while (i < len1 + len2)
-		{
-			result[i] = s2[i - len1];
-			i++;
-		}
-	}
-	result[i] = '\0';
-	return (result);
-}
-
-char	*strjoin_char(char *str, char c)
+char	*strjoin_char(char *str, char c, t_tool *tool)
 {
 	size_t	len;
 	size_t	i;
@@ -58,6 +25,7 @@ char	*strjoin_char(char *str, char c)
 		new_str = malloc(sizeof(char) * 2);
 		if (!new_str)
 			return (NULL);
+		add_to_grbg(&tool->grbg, new_str);
 		new_str[0] = c;
 		new_str[1] = '\0';
 		return (new_str);
@@ -66,6 +34,7 @@ char	*strjoin_char(char *str, char c)
 	new_str = malloc(sizeof(char) * (len + 2));
 	if (!new_str)
 		return (NULL);
+	add_to_grbg(&tool->grbg, new_str);
 	i = 0;
 	while (i < len)
 	{
@@ -74,7 +43,7 @@ char	*strjoin_char(char *str, char c)
 	}
 	new_str[i] = c;
 	new_str[i + 1] = '\0';
-	free(old_str);
+	// free(old_str);
 	return (new_str);
 }
 
@@ -100,7 +69,7 @@ int has_space(const char *str)
     return (0);
 }
 
-char **create_cmd_array_2(t_token *token)
+char **create_cmd_array_2(t_token *token, t_tool *tool)
 {
     t_token *current;
     char **result;
@@ -119,6 +88,7 @@ char **create_cmd_array_2(t_token *token)
     result = malloc(sizeof(char *) * (count + 1));
     if (!result)
         return (NULL);
+	add_to_grbg(&tool->grbg, result);
     current = token;
     i = 0;
     while (current && i < count)

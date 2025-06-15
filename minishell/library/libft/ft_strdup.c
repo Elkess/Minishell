@@ -6,15 +6,15 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 10:28:42 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/09 11:51:16 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/15 09:20:34 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-char	*ft_strdup(const char *s1)
+char	*ft_strdup(const char *s1, t_tool *tool)
 {
-	char	*s;
+	char	*str;
 	size_t	i;
 
 	if (!s1)
@@ -22,15 +22,16 @@ char	*ft_strdup(const char *s1)
 	i = 0;
 	while (s1[i])
 		i++;
-	s = (char *)malloc(i + 1 * sizeof(char));
-	if (!s)
+	str = (char *)malloc(i + 1 * sizeof(char));
+	if (!str)
 		return (NULL);
+	add_to_grbg(&tool->grbg, str);
 	i = 0;
 	while (s1[i])
 	{
-		s[i] = s1[i];
+		str[i] = s1[i];
 		i++;
 	}
-	s[i] = '\0';
-	return (s);
+	str[i] = '\0';
+	return (str);
 }

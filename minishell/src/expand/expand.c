@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 08:56:07 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/13 15:46:46 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/15 10:01:09 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,13 @@ static void	expand_quote(t_expand *expand, char *str, int status, t_tool *tool)
 	}
 	else if (expand->flg == str[expand->j])
 	{
-		expand->buff_exp = strjoin_str(expand->buff_exp, ft_strdup_exc("", tool));
+		expand->buff_exp = ft_strjoin(expand->buff_exp, ft_strdup("", tool), tool);
 		expand->flg = 0;
 		expand->before_qoute = 0;
 	}
 	else
 	{
-		expand->buff_exp = strjoin_char(expand->buff_exp, str[expand->j]);
+		expand->buff_exp = strjoin_char(expand->buff_exp, str[expand->j], tool);
 		expand->is_char = 1;
 	}
 }
@@ -44,31 +44,31 @@ static void	expand_dollar(t_expand *expand, t_tool *tool, char *str, int status)
 	expand->j++;
 	if (str[expand->j] == '?')
 	{
-		var_name = ft_itoa(status);
+		var_name = ft_itoa(status, tool);
 		if (var_name)
 		{
-			lst_add_back(&expand->token, new_lst(ft_strdup_exc(var_name, tool), tool));
-			free(var_name);
+			lst_add_back(&expand->token, new_lst(ft_strdup(var_name, tool), tool));
+			// free(var_name);
 		}
 		expand->j++;
 		return ;
 	}
 	else if (str[expand->j] == '$')
 	{
-		expand->buff_exp = strjoin_char(expand->buff_exp, '$');
+		expand->buff_exp = strjoin_char(expand->buff_exp, '$', tool);
 		expand->is_char = 1;
 		expand->j++;
 		return ;
 	}
 	else if (str[expand->j] == '0')
 	{
-		lst_add_back(&expand->token, new_lst(ft_strdup_exc("minishell", tool), tool));
+		lst_add_back(&expand->token, new_lst(ft_strdup("minishell", tool), tool));
 		expand->j++;
 		return ;
 	}
 	while (str[expand->j] && valid_char(str[expand->j]))
 	{
-		var_name = strjoin_char(var_name, str[expand->j]);
+		var_name = strjoin_char(var_name, str[expand->j], tool);
 		expand->j++;
 	}
 	if (!var_name)
@@ -80,69 +80,69 @@ static void	expand_dollar(t_expand *expand, t_tool *tool, char *str, int status)
 			expand->is_wildcard = 1;
 		if (expand->flg != '"' && !expand->is_there_export && has_space(env_node->value))
 		{
-			words = ft_split(env_node->value, ' ');
+			words = ft_split(env_node->value, ' ', tool);
 
 			if (has_space(env_node->value) == 2)
             {
                 if (expand->buff_exp)
                 {
-                    lst_add_back(&expand->token, new_lst(ft_strdup_exc(expand->buff_exp, tool), tool));
+                    lst_add_back(&expand->token, new_lst(ft_strdup(expand->buff_exp, tool), tool));
                     expand->buff_exp = NULL;
                 }
                 int i = 0;
 				while (words[i])
 				{
-					lst_add_back(&expand->token, new_lst(ft_strdup_exc(words[i], tool), tool));
+					lst_add_back(&expand->token, new_lst(ft_strdup(words[i], tool), tool));
 					i++;
 				}
-				free(var_name);
+				// free(var_name);
 				return ;
             }
 			
 			if (!expand->buff_exp)
 			{
 				if (words[0])
-					lst_add_back(&expand->token, new_lst(ft_strdup_exc(words[0], tool), tool));
+					lst_add_back(&expand->token, new_lst(ft_strdup(words[0], tool), tool));
 				if (words[1])
-					expand->buff_exp = strjoin_str(expand->buff_exp, words[1]);
+					expand->buff_exp = ft_strjoin(expand->buff_exp, words[1], tool);
 				else
 					expand->buff_exp = NULL;
 			}
 			else
 			{
 				if (words[0])
-					expand->buff_exp = strjoin_str(expand->buff_exp, words[0]);
+					expand->buff_exp = ft_strjoin(expand->buff_exp, words[0], tool);
 				if (expand->buff_exp)
 					lst_add_back(&expand->token,
-						new_lst(ft_strdup_exc(expand->buff_exp, tool), tool));
-				free(expand->buff_exp);
+						new_lst(ft_strdup(expand->buff_exp, tool), tool));
+				// free(expand->buff_exp);
 				if (words[1])
-					expand->buff_exp = strjoin_str(NULL, words[1]);
+					expand->buff_exp = ft_strjoin(NULL, words[1], tool);
 				else
 					expand->buff_exp = NULL;
 			}
-			free(var_name);
+			// free(var_name);
 			return ;
 		}
 		else
-			expand->buff_exp = strjoin_str(expand->buff_exp, env_node->value);
+			expand->buff_exp = ft_strjoin(expand->buff_exp, env_node->value, tool);
 	}
 	else
 	{
 		if (expand->flg == '"' || expand->is_char == 1)
 		{
-			expand->buff_exp = strjoin_str(expand->buff_exp, "");
+			expand->buff_exp = ft_strjoin(expand->buff_exp, "", tool);
 			expand->is_char = 1;
 		}
 	}
-	free(var_name);
+	// free(var_name);
 }
 
-static void	expand_to_buff(t_expand *expand, char *str)
+static void	expand_to_buff(t_expand *expand, char *str, t_tool *tool)
 {
 	if (str[expand->j] == '*' && expand->flg != '\'' && expand->flg != '"')
 	{
-		expand->buff_exp = strjoin_char(expand->buff_exp, '*');
+		expand->buff_exp = strjoin_char(expand->buff_exp, '*', tool);
 		expand->j++;
 		while (str[expand->j] && str[expand->j] == '*')
 			expand->j++;
@@ -151,7 +151,7 @@ static void	expand_to_buff(t_expand *expand, char *str)
 			expand->is_char = 1;
 		return ;
 	}
-	expand->buff_exp = strjoin_char(expand->buff_exp, str[expand->j]);
+	expand->buff_exp = strjoin_char(expand->buff_exp, str[expand->j], tool);
 	expand->is_char = 1;
 	expand->j++;
 }
@@ -197,7 +197,7 @@ char	**handel_expand(t_tree *tree, int exit_status, t_tool *tool)
 			else if (tree->cmd[expand.i][expand.j] == '$' && expand.flg != '\'')
 				expand_dollar(&expand, tool, tree->cmd[expand.i], exit_status);
 			else
-				expand_to_buff(&expand, tree->cmd[expand.i]);
+				expand_to_buff(&expand, tree->cmd[expand.i], tool);
 		}
 		if (expand.buff_exp)
 		{
@@ -208,20 +208,20 @@ char	**handel_expand(t_tree *tree, int exit_status, t_tool *tool)
 				while (list_wld && list_wld[k])
 				{
 					lst_add_back(&expand.token,
-						new_lst(ft_strdup_exc(list_wld[k], tool), tool));
+						new_lst(ft_strdup(list_wld[k], tool), tool));
 					k++;
 				}
 			}
 			else
 				lst_add_back(&expand.token,
-					new_lst(ft_strdup_exc(expand.buff_exp, tool), tool));
-			free(expand.buff_exp);
+					new_lst(ft_strdup(expand.buff_exp, tool), tool));
+			// free(expand.buff_exp);
 			expand.buff_exp = NULL;
 			expand.is_char = 0;
 			expand.is_wildcard = 0;
 		}
 		expand.i++;
 	}
-	result = create_cmd_array_2(expand.token);
+	result = create_cmd_array_2(expand.token, tool);
 	return (result);
 }

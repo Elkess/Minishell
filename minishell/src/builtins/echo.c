@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:52:33 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/12 14:58:38 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/15 10:12:03 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	str_full_of_n(char *s)
 	return (0);
 }
 
-int	ft_echo(t_tree *tree)
+int	ft_echo(t_tree *tree, t_tool *tool)
 {
 	size_t	i;
 	int		n;
@@ -45,7 +45,7 @@ int	ft_echo(t_tree *tree)
 		} 
 		else
 		{
-			print_rest(tree->cmd + i, n); // fail if write fails -> 1
+			print_rest(tree->cmd + i, n, tool); // fail if write fails -> 1
 			break ;
 		}
 	}

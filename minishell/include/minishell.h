@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/14 16:46:52 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/15 11:09:01 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ typedef struct s_tool
 	int			herdoc_err;
 	int			signal;
 	int			fork;
+	int			flag;
 	t_env		*envh;
 	t_garbcoll	*grbg;
 }	t_tool;
@@ -152,8 +153,6 @@ typedef struct s_expand
     t_token	*token;
 } t_expand;
 
-
-
 typedef struct s_tree
 {
 	t_node_type		type;
@@ -164,6 +163,7 @@ typedef struct s_tree
 	struct s_tree	*left;
 	struct s_tree	*right;
 }	t_tree;
+
 char	*get_next_line(int fd);
 //signals
 void	setup_signals(void);
@@ -197,16 +197,16 @@ t_tree	*create_tree_node(t_node_type type, t_tool *tool);
 t_redir	*concat_redirs(t_redir *before, t_redir *after, t_tool *tool);
 
 // expand 
-char	*expand_quote_file(char *delimiter);
-char	*strjoin_str(char *s1, char *s2);
-char	*strjoin_char(char *str, char c);
+char	*expand_quote_file(char *delimiter, t_tool *tool);
+// char	*strjoin_str(char *s1, char *s2, t_tool *tool);
+char	*strjoin_char(char *str, char c, t_tool *tool);
 char	**handel_expand(t_tree *tree, int exit_status, t_tool *tool);
-char **create_cmd_array_2(t_token *token);
-int has_space(const char *str);
-int	valid_char(char c);
-void    expand_redir(t_tree *tree, t_tool *tool, int status);
+char	**create_cmd_array_2(t_token *token, t_tool *tool);
+int		has_space(const char *str);
+int		valid_char(char c);
+void	expand_redir(t_tree *tree, t_tool *tool, int status);
 
-char	*ft_strdup_exc(const char *s1, t_tool *tool);
+// char	*ft_strdup_exc(const char *s1, t_tool *tool);
 t_token	*new_lst(void *content, t_tool *tool);
 char **expand_wildcard(char *buff_exp, t_tool *tool);
 
@@ -227,9 +227,6 @@ int		ft_strcmp(const char *s1, const char *s2);
 
 void		print_err(char *msg1, char *arg, char *msg2);
 
-// void		*ft_malloc(size_t n);
-// void		ft_free(void *ptr, int flag);
-// void		ft_exits(int n);
 void		free_envh(t_env *envh);
 void		free_twod(char **s);
 
@@ -238,13 +235,13 @@ int			execute_tree(t_tree *tree, t_env *envh, t_tool	*tool);
 int			executor(t_tree *tree, t_env *envh, t_tool	*tool);
 
 // Built-in commands 
-int			ft_echo(t_tree *cmd1);
+int			ft_echo(t_tree *cmd1, t_tool *tool);
 int			pwd(char **cd_path);
-int			env(t_env *envh);
-int			cd(t_env **envh, t_tree *cmd, char **fake_pwd);
-int			ft_export(t_env **envh, t_tree *tree);
+int			env(t_env *envh, t_tool *tool);
+int			cd(t_env **envh, t_tree *cmd, char **fake_pwd, t_tool *tool);
+int			ft_export(t_env **envh, t_tree *tree, t_tool *tool);
 int			unset(t_env **envh, char **args);
-int			ft_exit(t_tree *cmd, int status, t_env *envh);
+int			ft_exit(t_tree *cmd, int status, t_env *envh, t_tool *tool);
 
 //
 t_env		*fill_env(char **envp);
@@ -253,9 +250,9 @@ t_env		*append_node(t_env *head, char *key, char *val);
 t_env		*search_for_defaults(t_env *envh, char *key);
 int			is_valid_key(char *key);
 t_env		*edit_env(char *key, char *val, t_env *envh, int should_concat);
-void		print_rest(char **s, int n);
+void		print_rest(char **s, int n, t_tool *tool);
 size_t		ft_envlen(t_env *envh);
-char		**struct_to_darr(t_env *envh);
+char		**struct_to_darr(t_env *envh, t_tool *tool);
 void		here_docs(t_redir *redirs, t_env *envh, t_tool *tool);
 void		handle_herdocs(t_tree *tree, t_env *envh, t_tool *tool);
 
@@ -263,22 +260,22 @@ void		handle_herdocs(t_tree *tree, t_env *envh, t_tool *tool);
 int			ft_atoi(const char *str);
 long long	ft_atol_ex(char *str, int sign, int i);
 size_t		ft_dstrlen(const char **s);
-char		**ft_split(char const *s, char c);
-char		*ft_strjoin(char *s1, char *s2, int flag);
+char		**ft_split(char const *s, char c, t_tool *tool);
+char		*ft_strjoin(char *s1, char *s2, t_tool *tool);
 void		ft_putchar_fd(char c, int fd);
-char		*ft_substr(char const *s, unsigned int start, size_t len);
-char		*ft_strdup(const char *s1);
+char		*ft_substr(char const *s, unsigned int start, size_t len, t_tool *tool);
+char		*ft_strdup(const char *s1, t_tool *tool);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 int			ft_isalpha(int a);
 int			ft_isdigit(int n);
 int			ft_isalnum(int c);
-char		*ft_itoa(int n);
+char		*ft_itoa(int n, t_tool *tool);
 void		ft_putnbr_fd(int n, int fd);
 
-// char		*ft_substr_env(char const *s, unsigned int start, size_t len);
+char		*ft_substr_env(char const *s, unsigned int start, size_t len);
 char		*ft_strdup_env(const char *s1, int flag);
 char		*ft_itoa_env(int n);
-char		*ft_strjoin_env(char const *s1, char const *s2);
+char		*ft_strjoin_env(char *s1, char *s2, int flag);
 
 
 #endif

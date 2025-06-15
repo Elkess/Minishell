@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wildcards.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 14:56:56 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/11 12:10:39 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/15 10:00:47 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void list_one_wildcard(t_token **list_matches, t_tool *tool)
     while (entry_name != NULL)
     {
         if (entry_name->d_name[0] != '.')
-            lst_add_back(list_matches, new_lst(ft_strdup_exc(entry_name->d_name, tool), tool));
+            lst_add_back(list_matches, new_lst(ft_strdup(entry_name->d_name, tool), tool));
         entry_name = readdir(dir);
     }
     if (closedir(dir) != 0)
@@ -182,7 +182,7 @@ int get_list(t_token **list_matches, char *wildcard, t_tool *tool)
     {
         if (entry_name->d_name[0] != '.' && get_list_match(entry_name->d_name, wildcard, tool))
         {
-            lst_add_back(list_matches, new_lst(ft_strdup_exc(entry_name->d_name, tool), tool));
+            lst_add_back(list_matches, new_lst(ft_strdup(entry_name->d_name, tool), tool));
             found_match = 1;
         }
         entry_name = readdir(dir);
@@ -208,7 +208,7 @@ char **expand_wildcard(char *buff_exp, t_tool *tool)
 	else
     {
         if (!get_list(&list_matches, buff_exp, tool))
-            lst_add_back(&list_matches, new_lst(ft_strdup_exc(buff_exp, tool), tool));
+            lst_add_back(&list_matches, new_lst(ft_strdup(buff_exp, tool), tool));
     }
     current = list_matches;
     while (current)
@@ -219,11 +219,12 @@ char **expand_wildcard(char *buff_exp, t_tool *tool)
     list_wld = (char **)malloc(sizeof(char *) * (match_count + 1));
     if (!list_wld)
         return (NULL);
+    add_to_grbg(&tool->grbg, list_wld);
 	current = list_matches;
     i = 0;
     while (current)
     {
-        list_wld[i] = ft_strdup_exc(current->value, tool);
+        list_wld[i] = ft_strdup(current->value, tool);
         i++;
         current = current->next;
     }
