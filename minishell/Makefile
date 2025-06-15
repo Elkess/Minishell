@@ -1,7 +1,7 @@
 NAME = minishell
 
 C_Compiler = cc
-CFLAGS = -Iinclude # -fsanitize=address #-Wall -Wextra -Werror # 
+CFLAGS = -Iinclude #-g3 -fsanitize=address #-Wall -Wextra -Werror # 
 
 READLINEFLAG = -lreadline
 
@@ -22,6 +22,7 @@ Funs =	src/main.c \
 		src/expand/expand.c \
 		src/expand/expand_utils.c \
 		src/expand/wildcards.c \
+		src/expand/wild_help.c \
 		src/expand/expand_redir.c \
 		src/expand/lst_helper.c \
 		src/builtins/cd.c \

@@ -6,18 +6,18 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 18:17:26 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/15 10:18:58 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/15 14:31:01 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-char	*expand_quote_file(char *delimiter, t_tool *tool)
+static char	*expand_quote_file(char *delimiter, t_tool *tool)
 {
-	char *result;
-	char quote_char;
-	int i;
-	
+	char	*result;
+	char	quote_char;
+	int		i;
+
 	result = NULL;
 	i = 0;
 	quote_char = 0;
@@ -51,7 +51,11 @@ void	handle_herdocs(t_tree *tree, t_env *envh, t_tool *tool)
 		while (red)
 		{
 			if (red->type == 3)
+			{
+				if (!ft_strchr(red->file, '"') && !ft_strchr(red->file, '\''))
+					red->flag = 1;
 				red->file = expand_quote_file(red->file, tool);
+			}
 			red = red->next;
 		}
 	}

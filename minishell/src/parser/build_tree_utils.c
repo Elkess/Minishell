@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 09:22:22 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/11 13:50:58 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/15 11:23:00 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,72 +50,72 @@ t_tree	*create_tree_node(t_node_type type, t_tool *tool)
 	node->type = type;
 	node->cmd = NULL;
 	node->redirs = NULL;
-	node->redirs_before = NULL;
-	node->redirs_after = NULL;
 	node->left = NULL;
 	node->right = NULL;
 	return (node);
 }
 
-void	add_to_index(t_redir *after, int index)
+static char	**cmd_array_utils(t_token **input, int *count)
 {
-	while (after)
+	t_token	*temp;
+
+	*count = 0;
+	temp = *input;
+	while (temp && temp->type != 1 && temp->type != 2 && temp->type != 3)
 	{
-		after->index = index +1;
-		index++;
-		after = after->next;
+		if (temp->type >= 5 && temp->type <= 8)
+		{
+			if (temp->next)
+				temp = temp->next->next;
+			else
+				break ;
+		}
+		else
+		{
+			if (temp->type == 0 || temp->type == 16
+				|| temp->type == 17 || temp->type == 18)
+				(*count)++;
+			temp = temp->next;
+		}
 	}
+	return (NULL);
 }
 
-t_redir	*concat_redirs(t_redir *before, t_redir *after, t_tool *tool)
+static t_token	*process_token(t_token *current,
+	char **array, int *i, t_tool *tool)
 {
-	t_redir	*new_list;
-	t_redir	*curr;
-
-	new_list = NULL;
-	curr = before;
-	while (before && before->next)
-		before = before->next;
-	if (before)
+	if (current->type >= 5 && current->type <= 8)
 	{
-		add_to_index(after, before->index);
-		before->next = after;
-		new_list = curr;
+		if (current->next)
+			return (current->next->next);
+		return (NULL);
 	}
-	else
-		new_list = after;
-	return (new_list);
+	else if (current->type == 0 || current->type == 16
+		|| current->type == 17 || current->type == 18)
+		array[(*i)++] = ft_strdup_pars(current->value, tool);
+	return (current->next);
 }
 
 char	**create_cmd_array(t_token **input, t_tool *tool)
 {
 	t_token	*current;
-	int		count;
 	char	**array;
+	int		count;
 	int		i;
 
-	current = (*input)->next;
-	count = 1;
-	i = 0;
-	while (current && (current->type != 1 && current->type != 2 && current->type != 3))
-	{
-		if (current->type == 0 || current->type == 16
-			|| current->type == 17 || current->type == 18)
-			count++;
-		current = current->next;
-	}
+	cmd_array_utils(input, &count);
 	array = (char **)malloc((count + 1) * sizeof(char *));
 	if (!array)
 		return (NULL);
 	add_to_grbg(&tool->grbg, array);
-	array[i++] = ft_strdup_pars((*input)->value, tool);
-	current = (*input)->next;
-	while (i < count && current && (current->type != 1 && current->type != 2 && current->type != 3))
+	current = *input;
+	i = 0;
+	while (i < count && current && current->type != 1
+		&& current->type != 2 && current->type != 3)
 	{
-		if (current->type == 0 || current->type == 16
-			|| current->type == 17 || current->type == 18)
-			array[i++] = ft_strdup_pars(current->value, tool);
-		current = current->next;
+		current = process_token(current, array, &i, tool);
+		if (!current)
+			break ;
 	}
 	array[i] = NULL;
 	*input = current;

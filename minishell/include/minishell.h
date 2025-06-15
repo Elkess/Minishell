@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/15 11:09:01 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/15 14:39:43 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,44 +171,37 @@ void	disable_echoctl(struct termios *orig_termios);
 void	restore_terminal(struct termios *orig_termios);
 
 // Parser functions
-t_tree	*parsing_input(char *line, t_tool *tool);
-t_token	*tokens_lst(char *cmd, t_tool *tool);
-void	init_quote_token(t_token *token);
-t_token	*update_token(t_token **token);
-int		pars_err_utils(t_token *token, t_tool *tool);
-t_token	*lst_new(void *str, t_tool *tool);
-t_token	*lastone(t_token *head);
-void	lst_add_back(t_token **head, t_token *token);
-void	hundel_quotes_paren(t_tool *tool, char cmd);
-int		is_delimter(char c, char d);
-void	init_redir_file_tokens(t_token *token);
-void	add_to_grbg(t_garbcoll **head, void *value);
-void	clear_garbcoll(t_garbcoll *head);
-int		pars_err(t_token **token, t_tool *tool);
-t_tree	*node_command(t_token **input, t_tool *tool);
-t_tree	*node_command_utils(t_token **input, t_tool *tool, t_redir *before);
-t_tree	*ft_tree(t_token **control, t_tool *tool);
-t_redir	*create_redir(t_token *token, t_tool *tool, size_t index);
-
-t_redir	*last_node(t_redir *redirs);
-void	add_redir(t_redir **redirs, t_redir *new_redir);
-t_redir	*redir(t_token **input, t_tool *tool);
-t_tree	*create_tree_node(t_node_type type, t_tool *tool);
-t_redir	*concat_redirs(t_redir *before, t_redir *after, t_tool *tool);
-
-// expand 
-char	*expand_quote_file(char *delimiter, t_tool *tool);
-// char	*strjoin_str(char *s1, char *s2, t_tool *tool);
-char	*strjoin_char(char *str, char c, t_tool *tool);
-char	**handel_expand(t_tree *tree, int exit_status, t_tool *tool);
-char	**create_cmd_array_2(t_token *token, t_tool *tool);
-int		has_space(const char *str);
-int		valid_char(char c);
-void	expand_redir(t_tree *tree, t_tool *tool, int status);
-
-// char	*ft_strdup_exc(const char *s1, t_tool *tool);
-t_token	*new_lst(void *content, t_tool *tool);
+t_tree    *parsing_input(char *line, t_tool *tool);
+t_tree    *ft_tree(t_token **control, t_tool *tool);
+t_tree    *create_tree_node(t_node_type type, t_tool *tool);
+t_token    *tokens_lst(char *cmd, t_tool *tool);
+t_token    *update_token(t_token **token);
+t_token    *lst_new(void *str, t_tool *tool);
+t_token    *lastone(t_token *head);
+t_redir    *create_redir(t_token *token, t_tool *tool, size_t index);
+t_redir    *last_node(t_redir *redirs);
+t_redir    *redir(t_token **input, t_tool *tool);
+void    init_quote_token(t_token *token);
+void    init_redir_file_tokens(t_token *token);
+void    lst_add_back(t_token **head, t_token *token);
+void    hundel_quotes_paren(t_tool *tool, char cmd);
+void    add_redir(t_redir **redirs, t_redir *new_redir);
+void    add_to_grbg(t_garbcoll **head, void *value);
+void    clear_garbcoll(t_garbcoll *head);
+int        is_delimter(char c, char d);
+int        pars_err(t_token **token, t_tool *tool);
+// char    *strjoin_str(char *s1, char *s2);
+char    *strjoin_char(char *str, char c, t_tool *tool);
+char    **handel_expand(t_tree *tree, int exit_status, t_tool *tool);
+char    **create_cmd_array_2(t_token *token, t_tool *tool);
+int        has_space(const char *str);
+int        valid_char(char c);
+void    expand_redir(t_tree *tree, t_tool *tool, int status);
+// char    *ft_strdup_exc(const char *s1, t_tool *tool);
+t_token    *new_lst(void *content, t_tool *tool);
 char **expand_wildcard(char *buff_exp, t_tool *tool);
+int    get_list_match(char *str, char *wildcard, t_tool *tool);
+int    one_wildcard(char *str);
 
 // Parser-specific libft functions
 size_t	ft_strlen(const char *s);

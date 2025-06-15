@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/15 10:12:18 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/15 14:59:15 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -425,12 +425,73 @@ int	execute_cmd(t_tree *tree, t_env *envh, int status, t_tool *tool)
 	return (status);
 }
 
-void	read_from_heredoc(t_redir *red, t_tool *tool)
+char	*expand_herdoc_content(char *line, t_tool *tool, int status)
+{
+	char	*var_name;
+	t_env	*expand_line;
+	char	*result;
+	int		i;
+	int j;
+
+	i = 0;
+	expand_line = NULL;
+	result = NULL; 
+	while (line[i])
+	{
+		if (line[i] == '$' && line[i + 1])
+		{
+			var_name = NULL;
+			i++;
+
+			if (line[i] == '?')
+			{
+				result = ft_strjoin(result, ft_itoa(status, tool), tool);
+				i++;
+			}
+			else if (line[i] == '$')
+			{
+				result = strjoin_char(result, '$', tool);
+				i++;
+			}
+			else if (line[i] == '0')
+			{
+				result = ft_strjoin(result, "minishell", tool);
+				i++;
+			}
+			else if (valid_char(line[i]))
+			{
+				j = i;
+				while (line[i] && valid_char(line[i]))
+					i++;
+
+				var_name = ft_substr(line, j, i - j, tool);
+
+				if (var_name)
+				{
+					expand_line = search_for_defaults(tool->envh, var_name);
+					if (expand_line && expand_line->value)
+						result = ft_strjoin(result, expand_line->value, tool); 
+					// free(var_name);
+				}
+			}
+			else
+				result = strjoin_char(result, '$', tool);
+		}
+		else
+		{
+			result = strjoin_char(result, line[i], tool);
+			i++;
+		}
+	}
+	return (result); 
+}
+
+void	read_from_heredoc(t_redir *red, t_tool *tool, int status)
 {
 	char	*file;
 	char	*line;
 	int		fd;
-	
+
 	while (red)
 	{
 		if (red->type == REDIR_HEREDOC)
@@ -439,23 +500,27 @@ void	read_from_heredoc(t_redir *red, t_tool *tool)
 			write(red->fd, red->content, ft_strlen(red->content));
 			close(red->fd);
 			red->fd = open(file, O_CREAT | O_RDWR , 0644);
-			if (red->fd == -1) 
+			if (red->fd == -1)
 				(perror("Open failed in 272:"));
 			unlink(file);
 			if (red->flag)
 			{
-				fd = open(file, O_CREAT | O_RDWR | O_TRUNC , 0644);
-				if (fd == -1) 
+				fd = open(file, O_CREAT | O_RDWR , 0644);
+				if (fd == -1)
 					(perror("Open failed in 469:"));
 				line = get_next_line(red->fd);
 				while (line)
 				{
 					add_to_grbg(&tool->grbg, line);
-					// line = expand_herdoc_content();
-					write(fd, line, ft_strlen(line) +1);
+					line = expand_herdoc_content(line, tool, status);
+					write(fd, line, ft_strlen(line) + 1);
 					line = get_next_line(red->fd);
 				}
-				red->fd = fd;
+				close(red->fd);
+				close(fd);
+				red->fd = open(file, O_CREAT | O_RDWR , 0644);
+				if (red->fd == -1)
+					(perror("Open failed in 469:"));
 			}
 		}
 		red = red->next;
@@ -471,7 +536,7 @@ int	executor(t_tree *tree, t_env *envh, t_tool	*tool)
 
 	status = tool->err;
 	tool->envh = envh;
-	if (!tree || tree->type != NODE_COMMAND && tree->type != NODE_PARENTHS)
+	if (!tool || !tree || tree->type != NODE_COMMAND && tree->type != NODE_PARENTHS)
 		return (1);
 	expanded_cmd = handel_expand(tree, status, tool);
     tree->cmd = expanded_cmd;
@@ -479,7 +544,7 @@ int	executor(t_tree *tree, t_env *envh, t_tool	*tool)
 	ft_dup(fds, 1);
 	if (tree->redirs)
 	{
-		read_from_heredoc(tree->redirs, tool);
+		read_from_heredoc(tree->redirs, tool, status);
 		redir_status = ft_redir(tree);
 	}
 	if (!redir_status && tree->type == NODE_COMMAND)

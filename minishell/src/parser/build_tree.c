@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 09:20:22 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/13 14:49:41 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/15 11:17:02 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,70 +16,50 @@ t_redir	*redir(t_token **input, t_tool *tool)
 {
 	t_redir	*redir;
 	size_t	redir_index;
+	t_token	*current;
+	t_token	*redir_token;
 
 	redir = NULL;
 	redir_index = 0;
-	while (*input && ((*input)->type == 5 || (*input)->type == 6
-			|| (*input)->type == 7 || (*input)->type == 8))
+	current = *input;
+	while (current)
 	{
-		add_redir(&redir, create_redir(*input, tool, redir_index));
-		*input = (*input)->next;
-		if (*input)
-			*input = (*input)->next;
-		redir_index++;
+		if (current->type == 1 || current->type == 2 || current->type == 3)
+			break ;
+		if (current->type >= 5 && current->type <= 8)
+		{
+			redir_token = current;
+			add_redir(&redir, create_redir(redir_token, tool, redir_index));
+			redir_index++;
+			current = current->next->next;
+		}
+		else
+			current = current->next;
 	}
 	return (redir);
 }
 
-t_tree	*node_command_utils(t_token **input, t_tool *tool, t_redir *before)
+static t_tree	*node_command(t_token **input, t_tool *tool)
 {
 	t_tree	*node;
 
-	node = create_tree_node(0, tool);
-	if (!node)
-		return (NULL);
-	node->redirs_before = before;
-	node->cmd = create_cmd_array(input, tool);
-	if (!node->cmd)
-		return (NULL);
-	node->redirs_after = redir(input, tool);
-	node->redirs = concat_redirs(node->redirs_before, node->redirs_after, tool);
-	return (node);
-}
-
-t_tree	*node_command(t_token **input, t_tool *tool)
-{
-	t_redir	*before;
-	t_tree	*node;
-
-	before = redir(input, tool);
 	if (*input && (*input)->type == 9)
 	{
 		*input = (*input)->next;
 		node = create_tree_node(4, tool);
-		node->redirs_before = before;
+		node->redirs = redir(input, tool);
 		node->left = ft_tree(input, tool);
 		if (*input && (*input)->type == 10)
 			*input = (*input)->next;
-		node->redirs_after = redir(input, tool);
-		node->redirs = concat_redirs(node->redirs_before,
-				node->redirs_after, tool);
 		return (node);
 	}
-	if (!*input || ((*input)->type != 17 && (*input)->type != 18
-			&& (*input)->type != 16 && (*input)->type != 0))
-	{
-		node = create_tree_node(0, tool);
-		node->redirs_before = before;
-		node->redirs_after = NULL;
-		node->redirs = concat_redirs(node->redirs_before,
-				node->redirs_after, tool);
-		return (node);
-	}
-	return (node_command_utils(input, tool, before));
+	node = create_tree_node(0, tool);
+	node->redirs = redir(input, tool);
+	node->cmd = create_cmd_array(input, tool);
+	return (node);
 }
 
-t_tree	*node_pipe(t_token **input, t_tool *tool)
+static t_tree	*node_pipe(t_token **input, t_tool *tool)
 {
 	t_tree	*left;
 	t_tree	*right;
