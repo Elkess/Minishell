@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/15 14:59:15 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/15 15:35:14 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ void	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
 		is_dir(path, cmd->cmd[0]);
-		if ((!access(cmd->cmd[0], X_OK)))
+		if ((!access(cmd->cmd[0], X_OK) && !path) || (!access(cmd->cmd[0], X_OK) && ft_strchr(cmd->cmd[0], '/')))
 			if (execve(cmd->cmd[0], cmd->cmd, env) == -1)
 				(perror("Execve1 Failed:"), exit(1));// SHoud it be exit and free_ evnh ??? exit
 		exec_helper(cmd->cmd, env, tool, path);

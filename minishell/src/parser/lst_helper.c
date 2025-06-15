@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lst_helper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:23:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/05/23 08:12:18 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/15 15:05:28 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ t_token	*lst_new(void *str, t_tool *tool)
 
 	if (!str)
 		return (NULL);
+	token = NULL;
 	token = (t_token *) malloc(sizeof(t_token));
 	if (!token)
 		return (NULL);
