@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/15 15:27:27 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/16 09:23:35 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,6 +207,9 @@ void    expand_redir(t_tree *tree, t_tool *tool, int status);
 t_token    *new_lst(void *content, t_tool *tool);
 char **expand_wildcard(char *buff_exp, t_tool *tool);
 int    get_list_match(char *str, char *wildcard, t_tool *tool);
+
+
+t_redir	*concat_redirs(t_redir *before, t_redir *after, t_tool *tool);
 int    one_wildcard(char *str);
 
 // Parser-specific libft functions

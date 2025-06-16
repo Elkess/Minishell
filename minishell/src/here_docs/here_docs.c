@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_docs.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 18:17:26 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/15 14:31:01 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/16 18:02:06 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ static char	*expand_quote_file(char *delimiter, t_tool *tool)
 		{
 			quote_char = delimiter[i];
 			i++;
+			if (delimiter[i + 1] == '\0')
+				return (strdup(""));
 		}
 		else if (delimiter[i] == quote_char)
 		{
@@ -36,6 +38,8 @@ static char	*expand_quote_file(char *delimiter, t_tool *tool)
 		else
 			result = strjoin_char(result, delimiter[i++], tool);
 	}
+	if (!result)
+		return (strdup(""));
 	return (result);
 }
 
