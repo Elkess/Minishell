@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 13:08:39 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/15 11:47:58 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/17 16:38:38 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,13 @@ t_env	*fill_env(char **envp)
 			key = extract_data(envp[i], 0);
 			if (!ft_strcmp(key, "SHLVL"))
 				val = handle_shlvl(val);
+			if (!ft_strcmp(key, "OLDPWD"))
+			{
+				char *tmp = val;
+				
+				val = NULL;
+				free(tmp);
+			}
 			envh = append_node(envh, key, val);
 			i++;
 		}

@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/17 14:11:25 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/17 15:50:00 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,19 +50,21 @@ char	**struct_to_darr(t_env *envh, t_tool *tool)
 	return (env);
 }
 
-void	is_dir(char **p, char *path)
+int	is_dir(char **p, char *path)
 {
 	struct stat	s;
 
 	if (!ft_strcmp(path, "."))
-		(print_err(NULL, path, "command not found"), exit(127)); // SHoud it be exit and free_ evnh exit YES
+		(print_err(NULL, path, "5command not found"), exit(127)); // SHoud it be exit and free_ evnh exit YES
 	if (!stat(path, &s) && S_ISDIR(s.st_mode))
 	{
-		if ((p && *p && !ft_strcmp(path, "..")) || !ft_strchr(path, '/'))
-			(print_err(NULL, path, "command not found"),exit(127)); // SHoud it be exit and free_ evnh exit YES
-		else
+		if ((p && *p && !ft_strcmp(path, "..")) || (!ft_strchr(path, '/') && p && *p))
+			(print_err(NULL, path, "6command not found"), exit(127)); // SHoud it be exit and free_ evnh exit YES
+		else if (!p || !*p || ft_strchr(path, '/'))
 			(print_err(NULL, path, "is a directory"), exit(126)); // SHoud it be exit and free_ evnh exit YES
+		return (1);
 	}
+	return (0);
 }
 
 void	exec_helper(char **cmd, char **env, t_tool *tool, char **path)
@@ -114,16 +116,18 @@ int	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
 		tool->inside_pipe = 0;
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
-		is_dir(path, cmd->cmd[0]);
-		if ((!access(cmd->cmd[0], X_OK) && (!path || !*path)) || (!access(cmd->cmd[0], X_OK) && ft_strchr(cmd->cmd[0], '/')))
-			if (execve(cmd->cmd[0], cmd->cmd, env) == -1)
-				(perror("Execve1 Failed:"), exit(1));// SHoud it be exit and free_ evnh ??? exit
-		exec_helper(cmd->cmd, env, tool, path);
+		if (!is_dir(path, cmd->cmd[0]))
+		{	
+			if ((!access(cmd->cmd[0], X_OK) && (!path || !*path)) || (!access(cmd->cmd[0], X_OK) && ft_strchr(cmd->cmd[0], '/')))
+				if (execve(cmd->cmd[0], cmd->cmd, env) == -1)
+					(perror("Execve1 Failed:"), exit(1));// SHoud it be exit and free_ evnh ??? exit
+			exec_helper(cmd->cmd, env, tool, path);
+		}
 		if (errno == 13)
 			(print_err(NULL, cmd->cmd[0], strerror(errno)), exit (126));
-		if (((errno == 20 || errno == 2) && ft_strchr(cmd->cmd[0], '/')) || !path)
+		if (((errno == 20 || errno == 2) && ft_strchr(cmd->cmd[0], '/')) || !path || !*path)
 			(print_err(NULL, cmd->cmd[0], strerror(errno)), exit (126 * (errno != 2) + 127 * (errno == 2)));
-		(print_err(NULL, cmd->cmd[0], "command not found"), exit(127));// SHoud it be exit and free_ evnh ??? exit
+		(print_err(NULL, cmd->cmd[0], "2command not found"), exit(127));// SHoud it be exit and free_ evnh ??? exit
 	}
 	return (0);
 	// (free_twod(path), free_twod(env));

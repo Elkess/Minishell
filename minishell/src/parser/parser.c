@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 13:35:16 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/17 10:01:56 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/17 14:46:35 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -311,6 +311,6 @@ t_tree	*parsing_input(char *line, t_tool *tool)
 	if (pars_err(&token, tool))
 		return (NULL);
 	tree = ft_tree(&token, tool);
-	print_tree(tree);
+	// print_tree(tree);
 	return (tree);
 }

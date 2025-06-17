@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/17 14:14:03 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/17 16:33:28 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,6 @@ void	main_helper(t_tool *tool, char *line)
 	else if (tool->signal == SIGQUIT)
 		ft_putstr_fd("Quit: 3\n", 2);
 	tool->inside_pipe = 0;
-	
 	free(line);
 	clear_garbcoll(tool->grbg);
 	colse_all();

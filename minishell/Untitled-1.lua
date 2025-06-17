@@ -76,3 +76,19 @@
 -- -------------------
 -- pwd | cd  (../../minishell when dir is deleted) segfault      CD && PWD
 -- -------------------
+
+-- cat | cat | cat | ls  => leaks
+
+-- << '' => leak
+
+-- unset USER -> unset MallocNanoZone => leaks
+
+-- [
+--     ➜  minishell$ unset PWD OLDPWD
+--     ➜  minishell$ echo $PWD
+
+--     ➜  minishell$ cd ,,.
+--     minishell: cd: ,,. No such file or directory
+--     ➜  minishell$ cd ..
+--     [1]    21459 segmentation fault  ./minishell
+-- ]    
