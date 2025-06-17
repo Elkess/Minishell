@@ -3,27 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/17 08:45:29 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/17 14:14:03 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void disable_echoctl(struct termios *orig_termios)
+void	disable_echoctl(struct termios *orig_termios)
 {
 	struct termios term;
 
 	tcgetattr(STDIN_FILENO, &term);
-	*orig_termios = term; // 11011  &  11011
- 	term.c_lflag = term.c_lflag & ~ECHOCTL; // booooring 536872399 536872335
-	// term.c_lflag -= 64;
+	*orig_termios = term;
+	term.c_lflag &= ~ECHOCTL;
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }
 
-void restore_terminal(struct termios *orig_termios)
+void	restore_terminal(struct termios *orig_termios)
 {
 	tcsetattr(STDIN_FILENO, TCSANOW, orig_termios);
 }
@@ -32,6 +31,7 @@ void	ft_handle_signals(int sig)
 {
 	if (sig == SIGINT)
 	{
+		g_signal = SIGINT;
 		write(1, "\n", 1);
 		rl_replace_line("", 0);
 		rl_on_new_line();
@@ -45,14 +45,13 @@ void	setup_signals(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-char	*ft_get_prompt(int exit_status)
+char	*ft_get_prompt(int exit_status, t_tool *tool)
 {
 	char	*prompt;
-	struct termios orig_termios;
 
-	disable_echoctl(&orig_termios);
+	disable_echoctl(&tool->orig_termios);
 	prompt = readline("➜  minishell$ ");
-	restore_terminal(&orig_termios);
+	restore_terminal(&tool->orig_termios);
 	if (prompt && prompt[0])
 		add_history(prompt);
 	if (!prompt)
@@ -68,9 +67,9 @@ void	fun_help(void)
 	char	*line;
 
 	line = getcwd(0, 0);
-	if (!isatty(0) || !isatty(1)|| !line)
+	if (!isatty(0) || !isatty(1))
 	{
-		ft_putstr_fd("ERROR\n", 2);
+		ft_putstr_fd("minishell error: you are not in a tty \n", 2);
 		if (line)
 			(free(line), line = NULL);
 		exit(1);
@@ -83,11 +82,12 @@ void	init_struct_tool_exec(t_tool *tool)
 {
 	tool->herdoc_err = 0;
 	tool->err = 0;
-	tool->signal = -1;
-	tool->fork = 0;
+	tool->signal = -2;
+	tool->inside_pipe = 0;
+	tcgetattr(STDIN_FILENO, &tool->orig_termios);
 }
 
-void	colse_all()
+void	colse_all(void)
 {
 	int	i;
 
@@ -98,10 +98,13 @@ void	colse_all()
 
 void	main_helper(t_tool *tool, char *line)
 {
+	tcsetattr(STDIN_FILENO, TCSANOW, &tool->orig_termios);
 	if (tool->signal == SIGINT)
-		ft_putstr_fd("\n", 1);
+		ft_putstr_fd("\n", 2);
 	else if (tool->signal == SIGQUIT)
-		ft_putstr_fd("Quit: 3\n", 1);
+		ft_putstr_fd("Quit: 3\n", 2);
+	tool->inside_pipe = 0;
+	
 	free(line);
 	clear_garbcoll(tool->grbg);
 	colse_all();
@@ -119,9 +122,11 @@ int	main(int ac, char **av, char **env)
 	envh = fill_env(env);
 	while (av || ac)
 	{
-		tool.signal = -1;
-		(tool.fork = 0, setup_signals());
-		line = ft_get_prompt(tool.err);
+		tool.signal = -2;
+		(tool.inside_pipe = 0, setup_signals());
+		line = ft_get_prompt(tool.err, &tool);
+		if (g_signal)
+			(tool.err = 1, g_signal = 0);
 		tree = parsing_input(line, &tool);
 		handle_herdocs(tree, envh, &tool);
 		if (tool.herdoc_err == 1)
@@ -130,7 +135,7 @@ int	main(int ac, char **av, char **env)
 			continue ;
 		}
 		else if (tree && line && *line)
-			tool.err = execute_tree(tree, envh, &tool);
+			tool.err = execute_tree(tree, &envh, &tool);
 		main_helper(&tool, line);
 	}
 }

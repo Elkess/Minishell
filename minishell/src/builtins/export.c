@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:34:29 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/15 11:38:03 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/17 08:55:19 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ int	manipulate_export(t_env **envh, t_tree *cmd1, char *key, char *val)
 				return (print_err("export: `", cmd1->cmd[i],
 					"': not a valid identifier"), free(key), 1); // free attrs
 		}
-		else if (is_valid_key(key))
+		else if (key && *key && is_valid_key(key))
 			*envh = edit_env(key, val, *envh, 0);
 		else
 			return(print_err("export: `", cmd1->cmd[i],

@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 08:39:55 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/15 15:30:45 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/17 14:11:25 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ t_pid	*add_to_pids_list(t_pid *head, int val)
 	return (backup);
 }
 
-int	execute_pipes(t_tree *tree, t_env *envh, t_tool	*tool)
+int	execute_pipes(t_tree *tree, t_env **envh, t_tool	*tool)
 {
 	static t_pid	*pid;
 	int				pipefd[2];
@@ -51,7 +51,7 @@ int	execute_pipes(t_tree *tree, t_env *envh, t_tool	*tool)
 
 	if (tree->type != NODE_PIPE)
 		return (-1);
-	tool->fork = 1;
+	tool->inside_pipe = 1;
 	if (pipe(pipefd) == -1)
 		return (perror("Pipe error"), 1);
 	pids[0] = fork();
@@ -78,8 +78,7 @@ int	execute_pipes(t_tree *tree, t_env *envh, t_tool	*tool)
 	tool->err = 0;
 	pids[1] = fork();
 	if (pids[1] == -1)
-	{
-		perror("Fork failed");
+	{		perror("Fork failed");
 		while (pid)
 		{
 			kill(pid->value, SIGKILL);
@@ -94,6 +93,7 @@ int	execute_pipes(t_tree *tree, t_env *envh, t_tool	*tool)
 		pid = add_to_pids_list(pid, pids[1]);
 	if (pids[1] == 0)
 	{
+		
 		(close(pipefd[1]), dup2(pipefd[0], 0));
 		(close(pipefd[0]), exit(execute_tree(tree->right, envh, tool))); // SHoud it be exit and free_ evnh
 	}
@@ -109,10 +109,11 @@ int	execute_pipes(t_tree *tree, t_env *envh, t_tool	*tool)
 	}
 	if (WIFSIGNALED(status[0]) && !WIFSIGNALED(status[1]) && WTERMSIG(status[0]) == SIGQUIT)
 		tool->signal = -3;
+	tool->inside_pipe = 0;
 	return (WEXITSTATUS(status[1]));
 }
 
-int	execute_tree(t_tree *tree, t_env *envh, t_tool	*tool)
+int	execute_tree(t_tree *tree, t_env **envh, t_tool	*tool)
 {
 	int	status;
 

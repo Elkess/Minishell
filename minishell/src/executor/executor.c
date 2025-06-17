@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/15 16:31:27 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/17 14:11:25 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void print_err(char *msg1, char *arg, char *msg2)
 	if (!msg1)
 		printf("minishell: %s: %s\n", arg, msg2);
 	else
-		printf("minishell: %s%s: %s\n", msg1, arg, msg2);
+		printf("minishell: %s%s %s\n", msg1, arg, msg2);
 	dup2(fd, 1);
 }
 
@@ -88,7 +88,7 @@ void	exec_helper(char **cmd, char **env, t_tool *tool, char **path)
 	}
 }
 
-void	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
+int	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
 {
 	pid_t		pid;
 	char		**env;
@@ -102,16 +102,20 @@ void	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
 		path = ft_split(search_for_defaults(envh, "PATH")->value, ':', tool);
 	env = struct_to_darr(envh, tool);
 	pid = 0;
-	if (!tool->fork)
+	if (!tool->inside_pipe)
 		pid = fork();
 	if (pid == -1)
-		(perror("Fork1 Failed"), exit(1)); // SHoud it be exit and free_ evnh ??? exit
-	if (pid == 0 || tool->fork)
 	{
+		print_err(NULL, "Fork1 Failed", strerror(errno));
+		return (1); // SHoud it be exit and free_ evnh ??? exit
+	}
+	if (pid == 0 || tool->inside_pipe)
+	{
+		tool->inside_pipe = 0;
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
 		is_dir(path, cmd->cmd[0]);
-		if ((!access(cmd->cmd[0], X_OK) && !path) || (!access(cmd->cmd[0], X_OK) && ft_strchr(cmd->cmd[0], '/')))
+		if ((!access(cmd->cmd[0], X_OK) && (!path || !*path)) || (!access(cmd->cmd[0], X_OK) && ft_strchr(cmd->cmd[0], '/')))
 			if (execve(cmd->cmd[0], cmd->cmd, env) == -1)
 				(perror("Execve1 Failed:"), exit(1));// SHoud it be exit and free_ evnh ??? exit
 		exec_helper(cmd->cmd, env, tool, path);
@@ -121,6 +125,7 @@ void	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
 			(print_err(NULL, cmd->cmd[0], strerror(errno)), exit (126 * (errno != 2) + 127 * (errno == 2)));
 		(print_err(NULL, cmd->cmd[0], "command not found"), exit(127));// SHoud it be exit and free_ evnh ??? exit
 	}
+	return (0);
 	// (free_twod(path), free_twod(env));
 }
 
@@ -322,7 +327,7 @@ void	here_docs(t_redir *red, t_env *envh, t_tool *tool)
 			if (red->type == REDIR_HEREDOC)
 			{
 				while (1)
-				{						
+				{
 					disable_echoctl(&orig_termios);
 					line = readline("> ");
 					if (line)
@@ -377,31 +382,31 @@ void	here_docs(t_redir *red, t_env *envh, t_tool *tool)
 	setup_signals();
 }
 
-int	is_builtin(t_tree *tree, char	*cmd, t_env *envh, t_tool *tool)
+int	is_builtin(t_tree *tree, char	*cmd, t_env **envh, t_tool *tool)
 {
 	static char	*pwd_backup;
 
 	if (!ft_strcmp(cmd, "echo"))
 		return(ft_echo(tree, tool));
 	else if (!ft_strcmp(cmd, "cd"))
-		return(cd(&envh, tree, &pwd_backup, tool));
+		return(cd(envh, tree, &pwd_backup, tool));
 	else if (!ft_strcmp(cmd, "export"))
-		return(ft_export(&envh, tree, tool));
+		return(ft_export(envh, tree, tool));
 	else if (!ft_strcmp(cmd, "unset"))
-		return(unset(&envh, tree->cmd));
+		return(unset(envh, tree->cmd));
 	else if (!ft_strcmp(cmd, "env"))
-		return(env(envh, tool));
+		return(env(*envh, tool));
 	else if (!ft_strcmp(cmd, "pwd"))
 		return(pwd(&pwd_backup));
 	else if (!ft_strcmp(cmd, "exit"))
-		return (ft_exit(tree, 0, envh, tool));
+		return (ft_exit(tree, 0, *envh, tool));
 	return (-1);
 }
 
-int	execute_cmd(t_tree *tree, t_env *envh, int status, t_tool *tool)
+int	execute_cmd(t_tree *tree, t_env **envh, int status, t_tool *tool)
 {
-	char	*cmd;
-	int		data[2];
+	char		*cmd;
+	int			data[2];
 
 	if (tree && tree->cmd)
 	{
@@ -411,9 +416,9 @@ int	execute_cmd(t_tree *tree, t_env *envh, int status, t_tool *tool)
 		status = is_builtin(tree, cmd, envh, tool);
 		if (status == -1)
 		{
-			execute_one(tree, envh, tool);
+			status = execute_one(tree, *envh, tool);
 			waitpid(0, &status, 0);
-			if (WIFEXITED(status))
+			if (WIFEXITED(status))			
 				status = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
 			{
@@ -501,13 +506,13 @@ void	read_from_heredoc(t_redir *red, t_tool *tool, int status)
 			close(red->fd);
 			red->fd = open(file, O_CREAT | O_RDWR , 0644);
 			if (red->fd == -1)
-				(perror("Open failed in 272:"));
+				(perror("Open failed in 524:"));
 			unlink(file);
 			if (red->flag)
 			{
 				fd = open(file, O_CREAT | O_RDWR , 0644);
 				if (fd == -1)
-					(perror("Open failed in 469:"));
+					(perror("Open failed in 530:"));
 				line = get_next_line(red->fd);
 				while (line)
 				{
@@ -521,13 +526,14 @@ void	read_from_heredoc(t_redir *red, t_tool *tool, int status)
 				red->fd = open(file, O_CREAT | O_RDWR , 0644);
 				if (red->fd == -1)
 					(perror("Open failed in 469:"));
+				unlink(file);
 			}
 		}
 		red = red->next;
 	}
 }
 
-int	executor(t_tree *tree, t_env *envh, t_tool	*tool)
+int	executor(t_tree *tree, t_env **envh, t_tool	*tool)
 {
 	int		fds[2];
 	int		redir_status = 0;
@@ -535,7 +541,7 @@ int	executor(t_tree *tree, t_env *envh, t_tool	*tool)
 	char **expanded_cmd;
 
 	status = tool->err;
-	tool->envh = envh;
+	tool->envh = *envh;
 	if (!tool || !tree || tree->type != NODE_COMMAND && tree->type != NODE_PARENTHS)
 		return (1);
 	expanded_cmd = handel_expand(tree, status, tool);

@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 14:12:29 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/15 13:04:22 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/17 12:23:08 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ t_env	*delete_var(t_env *envh, char *key)
 	head = envh;
 	while (head)
 	{
-		if (!ft_strcmp(head->key, key))
+		if (head->key && !ft_strcmp(head->key, key))
 		{
 			if (head && head->prev)
 			{
@@ -71,7 +71,6 @@ int	unset(t_env **envh, char **args)
 				// puts("2");
 				*envh = delete_var(*envh, args[i]);
 				// puts("3");
-			
 			}
 		}
 		else

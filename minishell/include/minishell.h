@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/16 09:23:35 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/17 14:17:59 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@
 // #include <curses.h>
 // #include <term.h>
 
-// int g_signal;
+int g_signal;
+
 # define BUFFER_SIZE 1
 
 typedef enum e_token_type
@@ -96,10 +97,11 @@ typedef struct s_tool
 	int			err;
 	int			herdoc_err;
 	int			signal;
-	int			fork;
 	int			flag;
+	int			inside_pipe;
 	t_env		*envh;
 	t_garbcoll	*grbg;
+	struct termios	orig_termios;
 }	t_tool;
 
 typedef enum e_priority
@@ -233,8 +235,8 @@ void		free_envh(t_env *envh);
 void		free_twod(char **s);
 
 // Executor functions 
-int			execute_tree(t_tree *tree, t_env *envh, t_tool	*tool);
-int			executor(t_tree *tree, t_env *envh, t_tool	*tool);
+int			execute_tree(t_tree *tree, t_env **envh, t_tool	*tool);
+int			executor(t_tree *tree, t_env **envh, t_tool	*tool);
 
 // Built-in commands 
 int			ft_echo(t_tree *cmd1, t_tool *tool);
