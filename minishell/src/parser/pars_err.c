@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars_err.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 08:46:52 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/15 10:24:00 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/17 09:01:00 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int	pars_err_utils(t_token *token, t_tool *tool)
 		err_code = condition(token);
 		if (err_code)
 		{
-			write(2, "minishell$> : syntax error near unexpected token `", 51);
+			write(2, "minishell: syntax error near unexpected token `", 48);
 			if (err_code == 1)
 				ft_putstr_fd(token->value, 2);
 			else if (err_code == 2 && token->next)
@@ -92,7 +92,7 @@ int	pars_err(t_token **token, t_tool *tool)
 	tmp = *token;
 	if (tmp && (tmp->type == 1 || tmp->type == 2 || tmp->type == 3))
 	{
-		write(2, "minishell$> : syntax error near unexpected token `", 50);
+		write(2, "minishell: syntax error near unexpected token `", 48);
 		ft_putstr_fd(tmp->value, 2);
 		write(2, "'\n", 2);
 		return (tool->err = 258, 1);
@@ -101,12 +101,12 @@ int	pars_err(t_token **token, t_tool *tool)
 	{
 		if (tool->paren)
 			write(2,
-				"minishell$> : syntax error near unexpected token `)'\n", 53);
+				"minishell: syntax error near unexpected token `)'\n", 51);
 		else if (tool->anderr == 1)
 			write(2,
-				"minishell$> : syntax error near unexpected token `&'\n", 53);
+				"minishell: syntax error near unexpected token `&'\n", 51);
 		else
-			write(2, "minishell$> : syntax error quotes\n", 35);
+			write(2, "minishell: syntax error quotes\n", 32);
 		return (tool->err = 258, 1);
 	}
 	if (pars_err_utils(tmp, tool))

@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 08:56:07 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/16 17:54:51 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/17 08:06:40 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,12 @@ static int	handle_special(t_expand *expand, t_tool *tool, char *str, int status)
 	{
 		lst_add_back(&expand->token, new_lst(ft_strdup("minishell", tool), tool));
 		expand->j++;
+		return (1);
+	}
+	else if (!ft_isalnum(str[expand->j]) && str[expand->j] != '_')
+	{
+		expand->buff_exp = strjoin_char(expand->buff_exp, '$', tool);
+		expand->is_char = 1;
 		return (1);
 	}
 	return (0);

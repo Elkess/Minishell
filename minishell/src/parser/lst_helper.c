@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lst_helper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:23:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/15 15:05:28 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/17 08:54:06 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	lst_add_back(t_token **head, t_token *token)
 	if (!head || !token)
 	{
 		if (!token)
-			write(2, "minishell$> : malloc error\n", 27);
+			print_err(NULL, "malloc err", strerror(errno));
 		return ;
 	}
 	if (!*head)

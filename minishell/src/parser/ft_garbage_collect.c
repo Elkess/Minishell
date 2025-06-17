@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_garbage_collect.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:29:32 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/15 10:43:17 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/17 08:52:36 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	add_to_grbg(t_garbcoll **head, void *value)
 	if (!head || !token)
 	{
 		if (!token)
-			write(2, "minishell$> : malloc error\n", 27);
+			print_err(NULL, "malloc err", strerror(errno));
 		return ;
 	}
 	if (!*head)

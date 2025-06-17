@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/15 16:03:37 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/17 08:45:29 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ char	*ft_get_prompt(int exit_status)
 	struct termios orig_termios;
 
 	disable_echoctl(&orig_termios);
-	prompt = readline("minishell$> ");
+	prompt = readline("➜  minishell$ ");
 	restore_terminal(&orig_termios);
 	if (prompt && prompt[0])
 		add_history(prompt);

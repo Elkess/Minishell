@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wildcards.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 14:56:56 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/15 14:47:10 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/17 08:21:33 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,7 @@ static char	**convert_list_to_array(t_token *lst, int match_count, t_tool *tool)
 	list_wld = (char **)malloc(sizeof(char *) * (match_count + 1));
 	if (!list_wld)
 		return (NULL);
+	add_to_grbg(&tool->grbg, list_wld);
 	current = lst;
 	i = 0;
 	while (current)
