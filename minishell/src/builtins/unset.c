@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 14:12:29 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/17 12:23:08 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/17 18:13:48 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,24 +29,22 @@ void	free_attributes(t_env *node)
 t_env	*delete_var(t_env *envh, char *key)
 {
 	t_env	*head;
+	t_env	*prev;
 
 	head = envh;
+	prev = NULL;
 	while (head)
 	{
-		if (head->key && !ft_strcmp(head->key, key))
+		if (!ft_strcmp(head->key, key))
 		{
-			if (head && head->prev)
-			{
-				head->prev->next = head->next;
-				free_attributes(head);
-			}
+			if (prev)
+				prev->next = head->next; 
 			else
-			{
 				envh = head->next;
-				free_attributes(head);
-			}
+			free_attributes(head);
 			break;
 		}
+		prev = head;
 		head = head->next;
 	}
 	return (envh);
@@ -55,8 +53,6 @@ t_env	*delete_var(t_env *envh, char *key)
 int	unset(t_env **envh, char **args)
 {
 	size_t	i;
-	char	*key;
-	char	*val;
 	int		n;
 
 	i = 0;
@@ -65,13 +61,8 @@ int	unset(t_env **envh, char **args)
 	{
 		if (is_valid_key(args[i]))
 		{
-				// puts("1");
 			if (search_for_defaults(*envh, args[i]))
-			{
-				// puts("2");
 				*envh = delete_var(*envh, args[i]);
-				// puts("3");
-			}
 		}
 		else
 		{
@@ -80,6 +71,5 @@ int	unset(t_env **envh, char **args)
 		}
 		i++;
 	}
-	
 	return (n);
 }
