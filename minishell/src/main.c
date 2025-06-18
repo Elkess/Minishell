@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/17 16:33:28 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/18 08:56:30 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,10 @@ char	*ft_get_prompt(int exit_status, t_tool *tool)
 	char	*prompt;
 
 	disable_echoctl(&tool->orig_termios);
-	prompt = readline("➜  minishell$ ");
+	if (exit_status == 0)
+		prompt = readline("\033[0m\033[0;32m➜\033[0m  minishell$ ");
+	else
+		prompt = readline("\033[0;32m\033[0;31m➜\033[0m  minishell$ ");
 	restore_terminal(&tool->orig_termios);
 	if (prompt && prompt[0])
 		add_history(prompt);
@@ -109,6 +112,22 @@ void	main_helper(t_tool *tool, char *line)
 	colse_all();
 }
 
+int is_only_space(char *str)
+{
+    int i;
+    
+    if (!str)
+        return (1);
+    i = 0;
+    while (str[i])
+    {
+        if (str[i] != ' ' && str[i] != '\t' && str[i] != '\n' && str[i] != '\r')
+            return (0);
+        i++;
+    }
+    return (1);
+}
+
 int	main(int ac, char **av, char **env)
 {//TODO: leaks, fd 
 	char	*line;
@@ -126,6 +145,8 @@ int	main(int ac, char **av, char **env)
 		line = ft_get_prompt(tool.err, &tool);
 		if (g_signal)
 			(tool.err = 1, g_signal = 0);
+		if (is_only_space(line))
+			continue;
 		tree = parsing_input(line, &tool);
 		handle_herdocs(tree, envh, &tool);
 		if (tool.herdoc_err == 1)

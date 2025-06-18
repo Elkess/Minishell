@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 14:56:56 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/17 08:21:33 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/18 08:44:36 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ int get_list(t_token **list_matches, char *wildcard, t_tool *tool)
 	entry_name = readdir(dir);
 	while (entry_name != NULL)
 	{
-		if (entry_name->d_name[0] != '.' && get_list_match(entry_name->d_name, wildcard, tool))
+		if ((wildcard[0] == '.' || entry_name->d_name[0] != '.') && get_list_match(entry_name->d_name, wildcard, tool))
 		{
 			lst_add_back(list_matches, new_lst(ft_strdup(entry_name->d_name, tool), tool));
 			found_match = 1;
