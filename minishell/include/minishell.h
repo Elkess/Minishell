@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/17 14:17:59 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/17 18:14:57 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,6 @@ typedef struct s_env
 	char			*key;
 	char			*value;
 	struct s_env	*next;
-	struct s_env	*prev;
 }	t_env;
 
 typedef struct s_pid

@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 07:50:25 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/15 13:00:36 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/17 18:14:15 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,12 @@ t_env	*append_node(t_env *head, char *key, char *val)
 	node->key = key;
 	node->value = val;
 	node->next = NULL;
-	node->prev = NULL;
 	if (!head)
 		return (node);
 	tmp = head;
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = node;
-	node->prev = tmp;
 	return (head);
 }
 
