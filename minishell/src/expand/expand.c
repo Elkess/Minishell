@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 08:56:07 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/18 21:02:56 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/18 21:38:45 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,8 @@ static void	expand_env_variable(t_expand *expand, t_tool *tool, t_env *env_node)
 	if (expand->flg != '"' && !expand->is_there_export && has_space(env_node->value))
 	{
 		words = ft_split(env_node->value, ' ', tool);
+		if (!words || !words[0])
+            return ;
 		
 		if (has_space(words[0]) == 2)
 			handle_multiple_spaces(expand, tool, words);
