@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 10:01:34 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/17 23:52:24 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/18 09:52:06 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,16 +85,34 @@ int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup, t_tool *tool)
 		{
 			new_arg = ft_strjoin("/", splited_arg[i], tool);
 			i++;
-			while (splited_arg[i +1])
+			if (!ft_strcmp(splited_arg[ft_dstrlen((const char**)splited_arg) -1], ".."))
 			{
-				if (!ft_strcmp(splited_arg[i], "."))
-					i++;
-				else
+
+				while (splited_arg[i +1])
 				{
-					char *tmp = ft_strjoin("/", splited_arg[i], tool);
-					char *joined = ft_strjoin(new_arg, tmp, tool);
-					new_arg = joined;
-					i++;
+					if (!ft_strcmp(splited_arg[i], "."))
+						i++;
+					else
+					{
+						char *tmp = ft_strjoin("/", splited_arg[i], tool);
+						char *joined = ft_strjoin(new_arg, tmp, tool);
+						new_arg = joined;
+						i++;
+					}
+			}
+			}
+			else{
+				while (splited_arg[i])
+				{
+					if (!ft_strcmp(splited_arg[i], "."))
+						i++;
+					else
+					{
+						char *tmp = ft_strjoin("/", splited_arg[i], tool);
+						char *joined = ft_strjoin(new_arg, tmp, tool);
+						new_arg = joined;
+						i++;
+					}
 				}
 			}
 		}
@@ -111,6 +129,7 @@ int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup, t_tool *tool)
 			closedir(tmp);
 		}
 		new_path = NULL;
+		// dprintf(2, "%d - %d\n", i,ft_dstrlen((const char **)splited_path));
 		if (i +1 != ft_dstrlen((const char **)splited_path))
 			return (print_err("4cd: ", cmd->cmd[0], "Permission denied"), 1);
 		if (!ft_strcmp(splited_arg[ft_dstrlen((const char **)splited_arg) -1], ".."))
@@ -126,6 +145,7 @@ int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup, t_tool *tool)
 				i++;
 			}
 		}
+		// puts(ft_strjoin(new_path, new_arg, tool));
 		if (chdir(ft_strjoin(new_path, new_arg, tool)))
 			return (print_err("3cd: ", cmd->cmd[0], strerror(errno)), 1);
 	}
