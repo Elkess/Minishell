@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 08:56:07 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/17 08:06:40 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/18 21:02:56 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,14 +93,12 @@ static void	handle_multiple_spaces(t_expand *expand, t_tool *tool, char **words)
 		lst_add_back(&expand->token, new_lst(ft_strdup(words[i], tool), tool));
 		i++;
 	}
+	return ;
 }
 
 static void	handle_space_expansion(t_expand *expand, t_tool *tool, char **words)
 {
 	int	i;
-
-	if (has_space(words[0]) == 2)
-		handle_multiple_spaces(expand, tool, words);
 
 	if (!expand->buff_exp)
 	{
@@ -122,6 +120,7 @@ static void	handle_space_expansion(t_expand *expand, t_tool *tool, char **words)
 		else
 			expand->buff_exp = NULL;
 	}
+	return ;
 }
 
 static void	expand_env_variable(t_expand *expand, t_tool *tool, t_env *env_node)
@@ -134,6 +133,10 @@ static void	expand_env_variable(t_expand *expand, t_tool *tool, t_env *env_node)
 	if (expand->flg != '"' && !expand->is_there_export && has_space(env_node->value))
 	{
 		words = ft_split(env_node->value, ' ', tool);
+		
+		if (has_space(words[0]) == 2)
+			handle_multiple_spaces(expand, tool, words);
+			
 		handle_space_expansion(expand, tool, words);
 	}
 	else
