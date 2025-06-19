@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 10:42:17 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/15 11:00:39 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/19 11:09:32 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 static int	resullt_tab(char **dp, int str_len, int wildcard_len)
 {
 	int	result;
-	int	i;
 
 	if (dp[str_len][wildcard_len] == '1')
 		result = 1;

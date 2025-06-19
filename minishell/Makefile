@@ -1,7 +1,7 @@
 NAME = minishell
 
 C_Compiler = cc
-CFLAGS = -Iinclude #-g3 -fsanitize=address #-Wall -Wextra -Werror # 
+CFLAGS = -Iinclude -Wall -Wextra -Werror #  #-g3 -fsanitize=address
 
 READLINEFLAG = -lreadline
 

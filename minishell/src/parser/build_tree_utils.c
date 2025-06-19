@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 09:22:22 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/16 10:32:18 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/19 11:07:01 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void	add_to_index(t_redir *after, int index)
 	}
 }
 
-t_redir	*concat_redirs(t_redir *before, t_redir *after, t_tool *tool)
+t_redir	*concat_redirs(t_redir *before, t_redir *after)
 {
 	t_redir	*new_list;
 	t_redir	*curr;

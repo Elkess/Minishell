@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 09:20:22 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/16 11:47:52 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/19 11:07:47 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ t_tree	*node_command_utils(t_token **input, t_tool *tool, t_redir *before)
 	if (!node->cmd)
 		return (NULL);
 	node->redirs_after = redir(input, tool);
-	node->redirs = concat_redirs(node->redirs_before, node->redirs_after, tool);
+	node->redirs = concat_redirs(node->redirs_before, node->redirs_after);
 	return (node);
 }
 
@@ -87,8 +87,7 @@ t_tree	*node_command(t_token **input, t_tool *tool)
 		if (*input && (*input)->type == 10)
 			*input = (*input)->next;
 		node->redirs_after = redir(input, tool);
-		node->redirs = concat_redirs(node->redirs_before,
-				node->redirs_after, tool);
+		node->redirs = concat_redirs(node->redirs_before, node->redirs_after);
 		return (node);
 	}
 	if (!*input || ((*input)->type != 17 && (*input)->type != 18
@@ -97,8 +96,7 @@ t_tree	*node_command(t_token **input, t_tool *tool)
 		node = create_tree_node(0, tool);
 		node->redirs_before = before;
 		node->redirs_after = NULL;
-		node->redirs = concat_redirs(node->redirs_before,
-				node->redirs_after, tool);
+		node->redirs = concat_redirs(node->redirs_before, node->redirs_after);
 		return (node);
 	}
 	return (node_command_utils(input, tool, before));

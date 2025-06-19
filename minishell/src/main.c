@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/18 08:56:30 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/19 08:18:40 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,12 +146,16 @@ int	main(int ac, char **av, char **env)
 		if (g_signal)
 			(tool.err = 1, g_signal = 0);
 		if (is_only_space(line))
+		{
+			free(line);
 			continue;
+		}
 		tree = parsing_input(line, &tool);
 		handle_herdocs(tree, envh, &tool);
 		if (tool.herdoc_err == 1)
 		{
 			(tool.herdoc_err = 0, tool.err = 1);
+			free(line);
 			continue ;
 		}
 		else if (tree && line && *line)

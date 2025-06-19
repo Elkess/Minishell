@@ -6,13 +6,13 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 08:56:07 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/18 21:38:45 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/19 11:09:25 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static void	expand_quote(t_expand *expand, char *str, int status, t_tool *tool)
+static void	expand_quote(t_expand *expand, char *str, t_tool *tool)
 {
 	if (expand->flg == 0)
 	{
@@ -98,8 +98,6 @@ static void	handle_multiple_spaces(t_expand *expand, t_tool *tool, char **words)
 
 static void	handle_space_expansion(t_expand *expand, t_tool *tool, char **words)
 {
-	int	i;
-
 	if (!expand->buff_exp)
 	{
 		if (words[0])
@@ -127,6 +125,9 @@ static void	expand_env_variable(t_expand *expand, t_tool *tool, t_env *env_node)
 {
 	char	**words;
 
+	if (!env_node->value || env_node->value[0] == '\0')
+		return ;
+	
 	if (env_node->value && ft_strchr(env_node->value, '*'))
 		expand->is_wildcard = 1;
 
@@ -232,7 +233,7 @@ static void	cmd_arg(t_expand *expand, char *cmd_arg, int exit_status, t_tool *to
 	{
 		if (cmd_arg[expand->j] == '"' || cmd_arg[expand->j] == '\'')
 		{
-			expand_quote(expand, cmd_arg, exit_status, tool);
+			expand_quote(expand, cmd_arg, tool);
 			expand->j++;
 		}
 		else if (cmd_arg[expand->j] == '$' && expand->flg != '\'')
