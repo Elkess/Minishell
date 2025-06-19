@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 10:01:34 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/19 13:15:51 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 15:42:56 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,23 @@ int	cd_helper(t_env **envh, char *cmd, char	**pwd_backup ,t_tool *tool)
 	return (0);
 }
 
+int	is_full_of_dots(char *str)
+{
+	size_t	i;
+
+	puts(str);
+	i = 0;
+	while (str && str[i] && str[i] == '.' && (str[i +1] == '/' || str[i +1] == '\0'))
+		i++;
+	if (i == ft_strlen(str))
+		return (1);
+	return (0);
+}
+
 int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup, t_tool *tool)
 {
 	char	*dir;
-	puts("DDD");
+
 	tool->flag = 0;
 	cmd->cmd++;
 	if (!cmd->cmd[0])
@@ -81,52 +94,40 @@ int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup, t_tool *tool)
 	else
 	{
 		DIR		*tmp;
+		int		has_doubl_dots = 0;
 		char	**splited_arg = ft_split(cmd->cmd[0], '/', tool);
 		char	**splited_path = ft_split(*pwd_backup, '/', tool);
 		char	*new_path = NULL;
 		char	*new_arg = NULL;
 		size_t	i;
 		i = 0;
+		while (splited_arg[i])
+		{
+			if (!ft_strcmp(splited_arg[i], ".."))
+				has_doubl_dots = 1;
+			i++;
+		}
+		i = 0;
 		if (splited_arg && splited_arg[i] && splited_arg[1])
 		{
 			if (ft_strcmp(splited_arg[i], "."))
 				new_arg = ft_strjoin("/", splited_arg[i], tool);
 			i++;
-			if (!ft_strcmp(splited_arg[ft_dstrlen((const char**)splited_arg) -1], ".."))
+			while (splited_arg[i])
 			{
-
-				while (splited_arg[i +1])
+				if (!ft_strcmp(splited_arg[i], "..") && has_doubl_dots)
 				{
-					if (!ft_strcmp(splited_arg[i], "."))
-						i++;
-					else
-					{
-						char *tmp = ft_strjoin("/", splited_arg[i], tool);
-						char *joined = ft_strjoin(new_arg, tmp, tool);
-						new_arg = joined;
-						i++;
-					}
-			}
-			}
-			else
-			{
-				i = 0;
-				while (splited_arg[i])
-				{
-					dprintf(2, "%s\n", splited_arg[i++]);
+					puts("kkk");
+					i++;
+					has_doubl_dots = 0;
 				}
-				i = 0;
-				while (splited_arg[i])
+				else if (!ft_strcmp(splited_arg[i], "."))
+					i++;
+				else
 				{
-					if (!ft_strcmp(splited_arg[i], "."))
-						i++;
-					else
-					{
-						char *tmp = ft_strjoin("/", splited_arg[i], tool);
-						char *joined = ft_strjoin(new_arg, tmp, tool);
-						new_arg = joined;
-						i++;
-					}
+					char *tmp = ft_strjoin("/", splited_arg[i], tool);
+					new_arg = ft_strjoin(new_arg, tmp, tool);
+					i++;
 				}
 			}
 		}
@@ -134,35 +135,33 @@ int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup, t_tool *tool)
 		while (splited_path && splited_path[i] )
 		{
 			new_path = ft_strjoin(new_path, "/", tool);
-			new_path = ft_strjoin(new_path, splited_path[i], tool);
-			tmp = opendir(new_path);
+			tmp = opendir(ft_strjoin(new_path, splited_path[i], tool));
 			if (tmp)
+			{
+				new_path = ft_strjoin(new_path, splited_path[i], tool);
 				i++;
+			}
 			else
 				break;
 			closedir(tmp);
 		}
-		new_path = NULL;
 		if (i +1 != ft_dstrlen((const char **)splited_path))
 			return (print_err("4cd: ", cmd->cmd[0], strerror(errno)), 1);
-		if (!ft_strcmp(splited_arg[ft_dstrlen((const char **)splited_arg) -1], ".."))
+		if (!is_full_of_dots(cmd->cmd[0]))
 		{
-			i = 0;
-			while (splited_path[i + 1])
+			if (chdir(ft_strjoin(new_path, new_arg, tool)))
 			{
-				char *tmp = ft_strjoin("/", splited_path[i], tool);
-				char *joined = ft_strjoin(new_path, tmp, tool);
-				new_path = joined;
-				i++;
+				getcwd(0, 0);
+				return (print_err("5cd: ", cmd->cmd[0], strerror(errno)), 1);
 			}
 		}
-		puts(new_path);
-		puts(new_arg);
-		puts(ft_strjoin(new_path, new_arg, tool));
-		if (chdir(ft_strjoin(new_path, new_arg, tool)))
+		else
 		{
-			getcwd(0, 0);
-			return (print_err("3cd: ", cmd->cmd[0], strerror(errno)), 1);
+			if (chdir(cmd->cmd[0]))
+			{
+				getcwd(0, 0);
+				return (print_err("6cd: ", cmd->cmd[0], strerror(errno)), 1);
+			}
 		}
 	}
 	if (search_for_defaults(*envh, "PWD"))
