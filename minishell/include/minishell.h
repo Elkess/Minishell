@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/19 11:07:11 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/19 11:29:10 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,7 +239,7 @@ int			executor(t_tree *tree, t_env **envh, t_tool	*tool);
 
 // Built-in commands 
 int			ft_echo(t_tree *cmd1, t_tool *tool);
-int			pwd(char **cd_path);
+int			pwd(char *cd_path);
 int			env(t_env *envh, t_tool *tool);
 int			cd(t_env **envh, t_tree *cmd, char **fake_pwd, t_tool *tool);
 int			ft_export(t_env **envh, t_tree *tree, t_tool *tool);

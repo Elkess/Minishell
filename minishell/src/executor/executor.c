@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/17 15:50:00 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 10:40:03 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -383,6 +383,7 @@ void	here_docs(t_redir *red, t_env *envh, t_tool *tool)
 		}
 		red = red->next;
 	}
+	close(fd[0]);
 	setup_signals();
 }
 
@@ -390,6 +391,8 @@ int	is_builtin(t_tree *tree, char	*cmd, t_env **envh, t_tool *tool)
 {
 	static char	*pwd_backup;
 
+	if (getcwd(0,0))
+		pwd_backup = getcwd(0, 0);
 	if (!ft_strcmp(cmd, "echo"))
 		return(ft_echo(tree, tool));
 	else if (!ft_strcmp(cmd, "cd"))
@@ -401,7 +404,7 @@ int	is_builtin(t_tree *tree, char	*cmd, t_env **envh, t_tool *tool)
 	else if (!ft_strcmp(cmd, "env"))
 		return(env(*envh, tool));
 	else if (!ft_strcmp(cmd, "pwd"))
-		return(pwd(&pwd_backup));
+		return(pwd(pwd_backup));
 	else if (!ft_strcmp(cmd, "exit"))
 		return (ft_exit(tree, 0, *envh, tool));
 	return (-1);
@@ -420,6 +423,7 @@ int	execute_cmd(t_tree *tree, t_env **envh, int status, t_tool *tool)
 		status = is_builtin(tree, cmd, envh, tool);
 		if (status == -1)
 		{
+			dprintf(2, "HERE\n");
 			status = execute_one(tree, *envh, tool);
 			waitpid(0, &status, 0);
 			if (WIFEXITED(status))			
