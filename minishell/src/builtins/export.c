@@ -6,13 +6,11 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:34:29 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/19 15:48:37 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 15:57:15 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-//TODO: Export need more search and testing Cases
 
 char	**sorting_str(char **str)
 {
@@ -109,18 +107,18 @@ int	manipulate_export(t_env **envh, t_tree *cmd1, char *key, char *val)
 	i = 0;
 	while (cmd1->cmd[i])
 	{
-		key = extract_data(cmd1->cmd[i], 0); //leaks
-		val = extract_data(cmd1->cmd[i], 1); //leaks
+		key = extract_data(cmd1->cmd[i], 0);
+		val = extract_data(cmd1->cmd[i], 1);
 		if (key && *key  && *key != '+' && key[ft_strlen(key) -1] == '+' )
 		{
 			tmp = key;
-			key = ft_substr_env(key, 0, ft_strlen(key) -1);//free old key
+			key = ft_substr_env(key, 0, ft_strlen(key) -1);
 			free(tmp);
 			if (is_valid_key(key))
 				*envh = edit_env(key, val, *envh, 1);
 			else
 				(print_err("export: `", cmd1->cmd[i],
-					"': not a valid identifier"), free(key)); // free attrs
+					"': not a valid identifier"), free(key));
 		}
 		else if (key && *key && is_valid_key(key))
 			*envh = edit_env(key, val, *envh, 0);

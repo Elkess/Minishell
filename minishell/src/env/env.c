@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 13:08:39 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/19 13:36:51 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/19 15:56:09 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,9 @@ char	*extract_data(char *line, int flag)
 	{
 		if (!line[i])
 			return (NULL);
-		return (ft_substr_env(line, ++i, ft_strlen(line))); // no leaks it is going to env
+		return (ft_substr_env(line, ++i, ft_strlen(line)));
 	}
-	return (ft_substr_env(line, 0, i)); // no leaks it is going to env
+	return (ft_substr_env(line, 0, i));
 }
 
 int	handle_defaults(t_env **envh)
@@ -99,14 +99,39 @@ int	handle_defaults(t_env **envh)
 	}
 	return (0);
 }
+long long	ft_atoll(const char *str)
+{
+	long long	result;
+	int			sign;
 
+	if (!str || !*str)
+		return (1);
+	result = 0;
+	sign = 1;
+	while (*str == ' ' || (*str >= 9 && *str <= 13))
+		str++;
+
+	if (*str == '-' || *str == '+')
+	{
+		if (*str == '-')
+			sign = -1;
+		str++;
+	}
+	while (*str >= '0' && *str <= '9')
+	{
+		result = result * 10 + (*str - '0');
+		str++;
+	}
+
+	return (result * sign);
+}
 char	*handle_shlvl(char *val)
 {	// TODO: Test it more; you are NOT fully understand how it works 
 	long long		raw_input;
 	unsigned int	wrapped;
 	int				parsed;
 
-	raw_input = atoll(val); //TODO : make ur atoll
+	raw_input = ft_atoll(val);
 	free(val);
 	if (raw_input == 999)
 		return (ft_strdup_env("", 0));

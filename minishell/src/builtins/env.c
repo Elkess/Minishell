@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:33:52 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/15 10:25:09 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 15:51:41 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,5 @@ int	env(t_env *envh, t_tool *tool)
 		i++;
 	}
 	ft_putstr_fd(env_join, 1);
-	// free(env_join);
-	// free_twod(env);
 	return (0);
 }

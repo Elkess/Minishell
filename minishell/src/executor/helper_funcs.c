@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:39:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/15 10:25:53 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 15:59:45 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,13 @@ void	print_rest(char **s, int n, t_tool *tool)
 	i = 0;
 	while (s[i])
 	{
-		buffer = ft_strjoin(buffer, s[i++], tool); // leaks
+		buffer = ft_strjoin(buffer, s[i++], tool);
 		if (s[i])
-			buffer= ft_strjoin(buffer, " ", tool); //TODO: handle tabs // leaks
+			buffer= ft_strjoin(buffer, " ", tool);
 	}
 	if (!n)
-		buffer= ft_strjoin(buffer, "\n", tool); // leaks
+		buffer= ft_strjoin(buffer, "\n", tool);
 	write(1, buffer, ft_strlen(buffer));
-	// free(buffer);
 }
 
 void	free_twod(char **s)

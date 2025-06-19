@@ -6,20 +6,20 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 16:52:06 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/19 13:17:21 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 15:57:04 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-// TODO : add clear grb 
+
 char	*filter_arg(char *s,int *sign, t_env *envh, t_tool *tool)
 {
 	char	**args;
 	size_t	i;
 
-	args = ft_split(s, 32, tool); // maybe s need free
+	args = ft_split(s, 32, tool);
 	if (!args || !args[0] || (args && args[1]))
-		(print_err("exit: ", s, ": numeric Filter Range argument required\n"), free_envh(envh), exit(255)); // free s and args
+		(print_err("exit: ", s, ": numeric Filter Range argument required\n"), free_envh(envh), exit(255));
 	i = 0;
 	if (args[0] && (args[0][i] == '-' || args[0][i] == '+'))
 		i++;
@@ -27,7 +27,7 @@ char	*filter_arg(char *s,int *sign, t_env *envh, t_tool *tool)
 		*sign = -1;
 	while (args[0] && args[0][i] && args[0][i] == '0')
 		i++;
-	return ((args[0] +i)); // the future me figure it out hihihihihihi
+	return ((args[0] +i));
 }
 
 void	check_range(char *s, int sign, t_env *envh)
@@ -45,14 +45,14 @@ void	check_range(char *s, int sign, t_env *envh)
 		if (sign == 1)
 		{
 			if (s[i] > exit_max[i])
-				(print_err("exit: ", s, ":48 numeric argument required"),free_envh(envh), exit(255)); // free s
+				(print_err("exit: ", s, ":48 numeric argument required"),free_envh(envh), exit(255));
 			if (s[i] < exit_max[i])
 				break ;
 		}
 		if (sign == -1)
 		{
 			if (s[i] > exit_min[i])
-				(print_err("exit: ", s, ":55 numeric argument required\n"),free_envh(envh), exit(255)); // free s
+				(print_err("exit: ", s, ":55 numeric argument required\n"),free_envh(envh), exit(255));
 		}
 		i++;
 	}
@@ -64,7 +64,9 @@ int	ft_exit(t_tree *cmd, int status, t_env *envh, t_tool *tool)
 	char		*s;
 	long long	n;
 	int			sign;
-//TODO: write exit when no args 
+
+	if (isatty(0) && isatty(1))
+		ft_putstr_fd("exit\n", 2);
 	if (!cmd)
 		(free_envh(envh), exit (status));
 	cmd->cmd++;
@@ -72,20 +74,18 @@ int	ft_exit(t_tree *cmd, int status, t_env *envh, t_tool *tool)
 		(free_envh(envh), exit(tool->err));
 	sign = 1;
 	i = 0;
-	if (isatty(0) && isatty(1))
-		ft_putstr_fd("exit\n", 2);
 	if (!cmd || !cmd->cmd[0])
 		(free_envh(envh), exit (0));
 	while (cmd && cmd->cmd[i])
 		i++;
 	s = filter_arg(cmd->cmd[0], &sign, envh, tool);
 	if (sign == -1)
-		s = ft_strjoin("-", s, tool); // free s
+		s = ft_strjoin("-", s, tool);
 	if ((sign == -1 && ft_strlen(s) > 20) || (sign == 1 && ft_strlen(s) > 19))
-		(print_err("exit: ", s, ":83 numeric  argument required"), free_envh(envh),exit(255)); // free s
+		(print_err("exit: ", s, ":83 numeric  argument required"), free_envh(envh),exit(255));
 	if ((sign == -1 && ft_strlen(s) == 20) || (sign == 1 && ft_strlen(s) == 19))
 		check_range(s, sign, envh);
-	n = ft_atol_ex(s, sign, i) % 256; // free s
+	n = ft_atol_ex(s, sign, i) % 256;
 	if (i == 1)
 		(free_envh(envh), exit (n));
 	else

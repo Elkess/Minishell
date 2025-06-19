@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_garbage_collect.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:29:32 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/17 08:52:36 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/19 16:00:14 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ void	add_to_grbg(t_garbcoll **head, void *value)
 	}
 }
 
-// check if duble free issu
 void	clear_garbcoll(t_garbcoll *head)
 {
 	t_garbcoll	*token;
@@ -65,9 +64,5 @@ void	clear_garbcoll(t_garbcoll *head)
 		token = head;
 		head = head->next;
 		free(token);
-		// if (token)
-		// 	free(token->ptr);
-		// free(token);
-		// token = head;
 	}
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atol.c                                          :+:      :+:    :+:   */
+/*   ft_atol_ex.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 11:29:09 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/14 16:47:20 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 15:56:34 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,6 @@ long long	ft_atol_ex(char *str, int sign, int count)
 	if (i != ft_strlen(str))
 		(print_err("exit: ", str, "Atol numeric  argument required"), exit(255));
 	if (count > 1)
-		return (ft_putstr_fd("minishell: exit: too many arguments\n", 2), 1); // handle exit status, free s
+		return (ft_putstr_fd("minishell: exit: too many arguments\n", 2), 1);
 	return (result * sign);
 }

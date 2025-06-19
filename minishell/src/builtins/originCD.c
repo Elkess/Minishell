@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 10:01:34 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/19 10:23:08 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 15:53:30 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	cd_helper(t_env **envh, char *cmd, char	**pwd_backup ,t_tool *tool)
 	if (tool->flag)
 	{
 		*pwd_backup = getcwd(0, 0);
-		// add_to_grbg(&tool->grbg, *pwd_backup);
+		add_to_grbg(&tool->grbg, *pwd_backup);
 	}
 	else
 	{
@@ -66,7 +66,7 @@ int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup, t_tool *tool)
 	{
 		tool->flag = 1;
 		*pwd_backup = dir;
-		// add_to_grbg(&tool->grbg, *pwd_backup);
+		add_to_grbg(&tool->grbg, *pwd_backup);
 	}
 	if (!chdir(cmd->cmd[0]))
 		cd_helper(envh, cmd->cmd[0], pwd_backup, tool);

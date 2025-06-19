@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/19 13:19:06 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 15:59:27 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void print_err(char *msg1, char *arg, char *msg2)
 {
-	// store backup first
 	int	fd = dup(1);
 	dup2(2, 1);
 	if (!msg1)
@@ -54,13 +53,13 @@ int	is_dir(char **p, char *path)
 	struct stat	s;
 
 	if (!ft_strcmp(path, "."))
-		(print_err(NULL, path, "5command not found"), exit(127)); // SHoud it be exit and free_ evnh exit YES
+		(print_err(NULL, path, "5command not found"), exit(127));
 	if (!stat(path, &s) && S_ISDIR(s.st_mode))
 	{
 		if ((p && *p && !ft_strcmp(path, "..")) || (!ft_strchr(path, '/') && p && *p))
-			(print_err(NULL, path, "6command not found"), exit(127)); // SHoud it be exit and free_ evnh exit YES
+			(print_err(NULL, path, "6command not found"), exit(127));
 		else if (!p || !*p || ft_strchr(path, '/'))
-			(print_err(NULL, path, "is a directory"), exit(126)); // SHoud it be exit and free_ evnh exit YES
+			(print_err(NULL, path, "is a directory"), exit(126));
 		return (1);
 	}
 	return (0);
@@ -82,7 +81,7 @@ void	exec_helper(char **cmd, char **env, t_tool *tool, char **path)
 			if (!access(new_path, X_OK))
 			{
 				if (execve(new_path, cmd, env) == -1)
-					(perror("Execve2 Failed:"), exit(1)); // SHoud it be exit and free_ evnh ??? exit
+					(perror("Execve2 Failed:"), exit(1));
 			}
 			i++;
 		}
@@ -108,7 +107,7 @@ int	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
 	if (pid == -1)
 	{
 		print_err(NULL, "Fork1 Failed", strerror(errno));
-		return (1); // SHoud it be exit and free_ evnh ??? exit
+		return (1);
 	}
 	if (pid == 0 || tool->inside_pipe)
 	{
@@ -119,17 +118,16 @@ int	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
 		{	
 			if ((!access(cmd->cmd[0], X_OK) && (!path || !*path)) || (!access(cmd->cmd[0], X_OK) && ft_strchr(cmd->cmd[0], '/')))
 				if (execve(cmd->cmd[0], cmd->cmd, env) == -1)
-					(perror("Execve1 Failed:"), exit(1));// SHoud it be exit and free_ evnh ??? exit
+					(perror("Execve1 Failed:"), exit(1));
 			exec_helper(cmd->cmd, env, tool, path);
 		}
 		if (errno == 13)
 			(print_err(NULL, cmd->cmd[0], strerror(errno)), exit (126));
 		if (((errno == 20 || errno == 2) && ft_strchr(cmd->cmd[0], '/')) || !path || !*path)
 			(print_err(NULL, cmd->cmd[0], strerror(errno)), exit (126 * (errno != 2) + 127 * (errno == 2)));
-		(print_err(NULL, cmd->cmd[0], "2command not found"), exit(127));// SHoud it be exit and free_ evnh ??? exit
+		(print_err(NULL, cmd->cmd[0], "2command not found"), exit(127));
 	}
 	return (0);
-	// (free_twod(path), free_twod(env));
 }
 
 void	ft_dup(int *io, int flag)
@@ -179,28 +177,9 @@ int	handle_lastredir(t_redir *redirs)
 {
 	t_redir	*lastin;
 	t_redir	*lastout;
+
 	lastin = find_lastredir(redirs, REDIR_IN);
 	lastout = find_lastredir(redirs, REDIR_OUT);
-
-	// if (lastin && lastin->type != REDIR_HEREDOC && (!lastout ||
-	// 	(lastout && lastin->index < lastout->index)))
-	// {
-	// 	lastin->fd = open(lastin->file, O_RDONLY);
-	// 	if (lastin->fd == -1)
-	// 		return (print_err(NULL, lastin->file, strerror(errno)), 1);
-	// }
-	// if (lastout && lastout->type == REDIR_OUT)
-	// 	lastout->fd = open(lastout->file, O_CREAT | O_TRUNC | O_WRONLY, 0644);
-	// else if (lastout && lastout->type == REDIR_APPEND)
-	// 	lastout->fd = open(lastout->file, O_CREAT | O_APPEND | O_WRONLY, 0644);
-	// if (lastout && lastout->fd == -1)
-	// 	return (print_err(NULL, lastout->file, strerror(errno)), 1);
-	// if (lastin && lastin->type != REDIR_HEREDOC && lastout && lastin->index > lastout->index)
-	// {
-	// 	lastin->fd = open(lastin->file, O_RDONLY);
-	// 	if (lastin->fd == -1)
-	// 		return (print_err(NULL, lastin->file, strerror(errno)), 1);
-	// }
 	if (lastin)
 		dup2(lastin->fd, 0);
 	if (lastout)
@@ -218,23 +197,20 @@ int	ft_redir(t_tree *tree)
 	red = tree->redirs;
 	while (red)
 	{
-		// if (red != find_lastredir(tree->redirs, red->type) && red->type != REDIR_HEREDOC)
-		// {
-			if (red->is_ambiguous)
-				return (print_err(NULL, red->file, " ambiguous redirect"), 1);
-			if (red->type == REDIR_IN)
-				red->fd = open(red->file, O_RDONLY);
-			else if (red->type == REDIR_OUT)
-				red->fd = open(red->file, O_CREAT | O_TRUNC | O_WRONLY, 0644);
-			else if (red->type == REDIR_APPEND)
-				red->fd = open(red->file, O_CREAT | O_APPEND | O_WRONLY, 0644);
-			if (red->fd == -1 && red->type != REDIR_HEREDOC)
-			{
-				print_err(NULL, red->file, strerror(errno));
-				return (1);
-			}
-		// }
-		if (red != find_lastredir(tree->redirs, REDIR_OUT) && // opened fd
+		if (red->is_ambiguous)
+			return (print_err(NULL, red->file, " ambiguous redirect"), 1);
+		if (red->type == REDIR_IN)
+			red->fd = open(red->file, O_RDONLY);
+		else if (red->type == REDIR_OUT)
+			red->fd = open(red->file, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+		else if (red->type == REDIR_APPEND)
+			red->fd = open(red->file, O_CREAT | O_APPEND | O_WRONLY, 0644);
+		if (red->fd == -1 && red->type != REDIR_HEREDOC)
+		{
+			print_err(NULL, red->file, strerror(errno));
+			return (1);
+		}
+		if (red != find_lastredir(tree->redirs, REDIR_OUT) &&
 			red != find_lastredir(tree->redirs, REDIR_IN))
 			close(red->fd);
 		red = red->next;
@@ -243,7 +219,7 @@ int	ft_redir(t_tree *tree)
 }
 
 char	*generate_file(t_redir *red, t_tool *tool)
-{// USE STATIC instead 
+{
 	char	*str;
 	size_t	i;
 
@@ -251,7 +227,7 @@ char	*generate_file(t_redir *red, t_tool *tool)
 	i = 0;
 	while (1)
 	{
-		str = ft_strjoin("/tmp/.here_doc", ft_itoa(i, tool), tool); //leaks
+		str = ft_strjoin("/tmp/.here_doc", ft_itoa(i, tool), tool);
 		red->fd = open(str, O_CREAT | O_RDWR | O_APPEND | O_EXCL, 0644);
 		if (red->fd != -1)
 			break ;
@@ -337,7 +313,7 @@ void	here_docs(t_redir *red, t_tool *tool)
 						add_to_grbg(&tool->grbg, line);
 					if (!line || !ft_strcmp(line, red->file))
 						break;
-					line = ft_strjoin(line, "\n", tool);// TODO: need to understand how it works as in child 
+					line = ft_strjoin(line, "\n", tool);
 					lines = ft_strjoin(lines, line, tool);
 				}
 				if (lines)
@@ -481,7 +457,6 @@ char	*expand_herdoc_content(char *line, t_tool *tool, int status)
 					expand_line = search_for_defaults(tool->envh, var_name);
 					if (expand_line && expand_line->value)
 						result = ft_strjoin(result, expand_line->value, tool); 
-					// free(var_name);
 				}
 			}
 			else

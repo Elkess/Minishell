@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 08:39:55 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/19 13:17:43 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 15:57:41 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ int	execute_pipes(t_tree *tree, t_env **envh, t_tool	*tool)
 		if (pids[0] == 0)
 		{
 			(close(pipefd[0]), dup2(pipefd[1], 1));
-			(close(pipefd[1]), exit(execute_tree(tree->left, envh, tool))); // SHoud it be exit and free_ evnh ???
+			(close(pipefd[1]), exit(execute_tree(tree->left, envh, tool)));
 		}
 		tool->err = 0;
 		pids[1] = fork();
@@ -120,7 +120,7 @@ int	execute_pipes(t_tree *tree, t_env **envh, t_tool	*tool)
 		if (pids[1] == 0)
 		{
 			(close(pipefd[1]), dup2(pipefd[0], 0));
-			(close(pipefd[0]), exit(execute_tree(tree->right, envh, tool))); // SHoud it be exit and free_ evnh
+			(close(pipefd[0]), exit(execute_tree(tree->right, envh, tool)));
 		}
 		signal(SIGINT, SIG_IGN);
 		(close(pipefd[0]), close(pipefd[1]));

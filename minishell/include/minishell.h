@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/19 13:15:39 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 15:59:51 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@
 # include <errno.h>
 #include <termios.h> 
 #include <dirent.h>
-// #include <curses.h>
-// #include <term.h>
 
 int g_signal;
 
