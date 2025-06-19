@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 13:23:47 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/19 10:25:41 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 15:49:51 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ int	pwd(char *pwd_backup)
 	pwd = getcwd(NULL, 0);
 	if (!pwd)
 	{
-		perror("1");
 		printf("%s\n", pwd_backup);
 		return (0);
 	}

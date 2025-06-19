@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:34:29 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/17 08:55:19 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 15:48:37 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,6 @@ void	print_export(t_env *envh, t_tool *tool)
 		envh = holder;
 		i++;
 	}
-	// free_twod(str);
 }
 
 int	manipulate_export(t_env **envh, t_tree *cmd1, char *key, char *val)
@@ -120,14 +119,14 @@ int	manipulate_export(t_env **envh, t_tree *cmd1, char *key, char *val)
 			if (is_valid_key(key))
 				*envh = edit_env(key, val, *envh, 1);
 			else
-				return (print_err("export: `", cmd1->cmd[i],
-					"': not a valid identifier"), free(key), 1); // free attrs
+				(print_err("export: `", cmd1->cmd[i],
+					"': not a valid identifier"), free(key)); // free attrs
 		}
 		else if (key && *key && is_valid_key(key))
 			*envh = edit_env(key, val, *envh, 0);
 		else
-			return(print_err("export: `", cmd1->cmd[i],
-				"': not a valid identifier"), free(key), 1);
+			(print_err("export: `", cmd1->cmd[i],
+				"': not a valid identifier"), free(key));
 		i++;
 	}
 	return (0);
