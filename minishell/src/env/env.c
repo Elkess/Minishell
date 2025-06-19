@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 13:08:39 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/19 10:11:01 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 13:19:19 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,8 @@
 
 t_env	*edit_env(char *key, char *val, t_env *envh, int should_concat)
 {
-	t_env	*newnode;
 	t_env	*tmp;
 	int		exist;
-	char	*tmp_val;
 
 	exist = 0;
 	tmp = envh;

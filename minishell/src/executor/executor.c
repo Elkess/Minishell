@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/19 10:40:03 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 13:19:06 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void print_err(char *msg1, char *arg, char *msg2)
 char	**struct_to_darr(t_env *envh, t_tool *tool)
 {
 	size_t	len;
-	t_env	*tmp;
 	char	**env;
 
 	len = ft_envlen(envh);
@@ -298,7 +297,7 @@ t_redir	*find_lasthd(t_redir *redirs)
 	return (last);
 }
 
-void	here_docs(t_redir *red, t_env *envh, t_tool *tool)
+void	here_docs(t_redir *red, t_tool *tool)
 {
 	char			*line;
 	char			*lines;
@@ -413,7 +412,6 @@ int	is_builtin(t_tree *tree, char	*cmd, t_env **envh, t_tool *tool)
 int	execute_cmd(t_tree *tree, t_env **envh, int status, t_tool *tool)
 {
 	char		*cmd;
-	int			data[2];
 
 	if (tree && tree->cmd)
 	{
@@ -423,7 +421,6 @@ int	execute_cmd(t_tree *tree, t_env **envh, int status, t_tool *tool)
 		status = is_builtin(tree, cmd, envh, tool);
 		if (status == -1)
 		{
-			dprintf(2, "HERE\n");
 			status = execute_one(tree, *envh, tool);
 			waitpid(0, &status, 0);
 			if (WIFEXITED(status))			
@@ -550,7 +547,7 @@ int	executor(t_tree *tree, t_env **envh, t_tool	*tool)
 
 	status = tool->err;
 	tool->envh = *envh;
-	if (!tool || !tree || tree->type != NODE_COMMAND && tree->type != NODE_PARENTHS)
+	if (!tool || !tree || (tree->type != NODE_COMMAND && tree->type != NODE_PARENTHS))
 		return (1);
 	expanded_cmd = handel_expand(tree, status, tool);
     tree->cmd = expanded_cmd;

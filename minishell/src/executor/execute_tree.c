@@ -6,17 +6,11 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 08:39:55 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/19 10:45:01 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 13:17:43 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-void static handle_ctrbackslash(int sig)
-{
-	write(1, "^\\Quit: 3\n", 11);
-	exit(131);
-}
 
 t_pid	*add_to_pids_list(t_pid *head, int val)
 {
@@ -77,7 +71,6 @@ int	execute_pipes(t_tree *tree, t_env **envh, t_tool	*tool)
 	int				pipefd[2];
 	pid_t			pids[2];
 	int				status[2];
-	int				exit_stat;
 	t_pid			*tmp;
 
 	if (can_we_fork(tree))

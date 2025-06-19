@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/19 11:29:10 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/19 13:15:39 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,7 +256,7 @@ t_env		*edit_env(char *key, char *val, t_env *envh, int should_concat);
 void		print_rest(char **s, int n, t_tool *tool);
 size_t		ft_envlen(t_env *envh);
 char		**struct_to_darr(t_env *envh, t_tool *tool);
-void		here_docs(t_redir *redirs, t_env *envh, t_tool *tool);
+void		here_docs(t_redir *redirs, t_tool *tool);
 void		handle_herdocs(t_tree *tree, t_env *envh, t_tool *tool);
 
 // Libft functions for executor 

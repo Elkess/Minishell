@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 10:01:34 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/19 12:15:34 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 13:15:51 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,6 @@ int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup, t_tool *tool)
 		return (cd_helper(envh, cmd->cmd[0], pwd_backup, tool));
 	else
 	{
-		size_t	counter = 0;
 		DIR		*tmp;
 		char	**splited_arg = ft_split(cmd->cmd[0], '/', tool);
 		char	**splited_path = ft_split(*pwd_backup, '/', tool);
