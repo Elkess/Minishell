@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 08:46:52 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/19 11:26:43 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/19 13:27:57 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,12 +59,8 @@ static int	condition(t_token *token)
 
 int	pars_err_utils(t_token *token, t_tool *tool)
 {
-	int	has_command;
-	int	expecting_redirection_arg;
 	int	err_code;
 
-	has_command = 0;
-	expecting_redirection_arg = 0;
 	while (token)
 	{
 		err_code = condition(token);

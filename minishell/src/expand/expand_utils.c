@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 14:54:25 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/15 10:26:08 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 13:28:36 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,7 @@ char	*strjoin_char(char *str, char c, t_tool *tool)
 	size_t	len;
 	size_t	i;
 	char	*new_str;
-	char	*old_str;
 
-	old_str = str;
 	if (!str)
 	{
 		new_str = malloc(sizeof(char) * 2);
@@ -43,7 +41,6 @@ char	*strjoin_char(char *str, char c, t_tool *tool)
 	}
 	new_str[i] = c;
 	new_str[i + 1] = '\0';
-	// free(old_str);
 	return (new_str);
 }
 
