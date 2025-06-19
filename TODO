@@ -1,0 +1,30 @@
+-------------------------------
+➜  minishell$ << end DONE
+> 
+> 
+> 
+> 
+> ls
+> cntrl + C
+➜  minishell$  
+-------------------------------
+➜  minishell$ $x
+minishell: : 2command not found
+
+bash-3.2$ export x=""
+bash-3.2$ $x
+bash-3.2$ 
+-------------------------------
+➜  minishell$ << $$$$$""
+> $$$$$""
+> 
+➜  minishell$ 
+-------------------------------
+➜  minishell$ exit 3 4 5    DONE
+exit
+minishell: exit: too many arguments
+➜  minishell$ echo $?
+1
+➜  minishell$ clear
+[1]    21847 segmentation fault  ./minishell
+-------------------------------
