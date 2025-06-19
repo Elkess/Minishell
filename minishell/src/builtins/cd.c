@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 10:01:34 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/19 10:40:32 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 12:15:34 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,13 @@ int	cd_helper(t_env **envh, char *cmd, char	**pwd_backup ,t_tool *tool)
 	{
 		dprintf(2, "1{%p}\n", *pwd_backup);
 		dprintf(2, "1[%s]\n", *pwd_backup);
-		if (*pwd_backup && (*pwd_backup)[ft_strlen(*pwd_backup) -1] != '/')
-			*pwd_backup = ft_strjoin(*pwd_backup, ft_strjoin("/", cmd, tool), tool);
+		if (*pwd_backup && (*pwd_backup)[ft_strlen(*pwd_backup) - 1] != '/')
+		{
+			char *tmp = ft_strjoin_env("/", cmd, 0);
+			*pwd_backup = ft_strjoin_env(*pwd_backup, tmp, 3);
+		}
 		else
-			*pwd_backup = ft_strjoin(*pwd_backup, cmd, tool);
-		dprintf(2, "3{%p}\n", *pwd_backup);
-		dprintf(2, "3[%s]\n", *pwd_backup);
+			*pwd_backup = ft_strjoin_env(*pwd_backup, cmd, 1);
 		ft_putstr_fd("5cd: error retrieving current directory: getcwd:"
 		" cannot access parent directories: No such file or directory\n", 2);
 		return (0);
@@ -89,7 +90,8 @@ int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup, t_tool *tool)
 		i = 0;
 		if (splited_arg && splited_arg[i] && splited_arg[1])
 		{
-			new_arg = ft_strjoin("/", splited_arg[i], tool);
+			if (ft_strcmp(splited_arg[i], "."))
+				new_arg = ft_strjoin("/", splited_arg[i], tool);
 			i++;
 			if (!ft_strcmp(splited_arg[ft_dstrlen((const char**)splited_arg) -1], ".."))
 			{
@@ -107,7 +109,14 @@ int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup, t_tool *tool)
 					}
 			}
 			}
-			else{
+			else
+			{
+				i = 0;
+				while (splited_arg[i])
+				{
+					dprintf(2, "%s\n", splited_arg[i++]);
+				}
+				i = 0;
 				while (splited_arg[i])
 				{
 					if (!ft_strcmp(splited_arg[i], "."))
@@ -135,17 +144,11 @@ int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup, t_tool *tool)
 			closedir(tmp);
 		}
 		new_path = NULL;
-		// dprintf(2, "{%ld - %ld}\n", i, ft_dstrlen((const char **)splited_path));
 		if (i +1 != ft_dstrlen((const char **)splited_path))
 			return (print_err("4cd: ", cmd->cmd[0], strerror(errno)), 1);
 		if (!ft_strcmp(splited_arg[ft_dstrlen((const char **)splited_arg) -1], ".."))
 		{
 			i = 0;
-			if (ft_strcmp(splited_path[i], "."))
-				new_path = ft_strjoin("/", splited_path[i], tool);
-			else
-			i++;
-				new_path = ft_strjoin(new_path, splited_path[i], tool);
 			while (splited_path[i + 1])
 			{
 				char *tmp = ft_strjoin("/", splited_path[i], tool);
@@ -158,9 +161,11 @@ int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup, t_tool *tool)
 		puts(new_arg);
 		puts(ft_strjoin(new_path, new_arg, tool));
 		if (chdir(ft_strjoin(new_path, new_arg, tool)))
+		{
+			getcwd(0, 0);
 			return (print_err("3cd: ", cmd->cmd[0], strerror(errno)), 1);
+		}
 	}
-	puts("SSS");
 	if (search_for_defaults(*envh, "PWD"))
 		*envh = edit_env(ft_strdup_env("PWD", 0), ft_strdup_env(*pwd_backup, 0), *envh, 0);
 	return (0);
