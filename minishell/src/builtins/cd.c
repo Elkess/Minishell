@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 10:01:34 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/19 15:42:56 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 15:44:43 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ int	is_full_of_dots(char *str)
 {
 	size_t	i;
 
-	puts(str);
 	i = 0;
 	while (str && str[i] && str[i] == '.' && (str[i +1] == '/' || str[i +1] == '\0'))
 		i++;
@@ -117,7 +116,6 @@ int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup, t_tool *tool)
 			{
 				if (!ft_strcmp(splited_arg[i], "..") && has_doubl_dots)
 				{
-					puts("kkk");
 					i++;
 					has_doubl_dots = 0;
 				}
