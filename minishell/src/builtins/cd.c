@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 10:01:34 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/20 10:16:49 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/20 22:18:14 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ char	*get_home_dir(t_env *envh)
 	char	*s;
 
 	s = NULL;
-	if (search_for_defaults(envh, "HOME"))
+	if (sh_env(envh, "HOME"))
 	{
-		s = search_for_defaults(envh, "HOME")->value;
+		s = sh_env(envh, "HOME")->value;
 		if (s)
 		{
 			if (chdir(s))
@@ -31,19 +31,16 @@ char	*get_home_dir(t_env *envh)
 	return (s);
 }
 
-int	cd_helper(t_env **envh, char *cmd, char	**pwd_backup ,t_tool *tool)
+int	cd_helper(t_env **envh, char *cmd, char	**pwd_backup, t_tool *tool)
 {
-	char *tmp;
+	char	*tmp;
 
 	tmp = NULL;
-	if (search_for_defaults(*envh, "OLDPWD"))
-		*envh = edit_env(ft_strdup_env("OLDPWD", 0), ft_strdup_env(*pwd_backup, 0), *envh, 0);
+	if (sh_env(*envh, "OLDPWD"))
+		*envh = edit_env(ft_strdup_env("OLDPWD", 0),
+				ft_strdup_env(*pwd_backup, 0), *envh, 0);
 	if (tool->flag)
-	{
-		free(*pwd_backup);
-		*pwd_backup = getcwd(0, 0);
-		// add_to_grbg(&tool->grbg, *pwd_backup);
-	}
+		1 && (free(*pwd_backup), *pwd_backup = getcwd(0, 0));
 	else
 	{
 		if (*pwd_backup && (*pwd_backup)[ft_strlen(*pwd_backup) - 1] != '/')
@@ -55,27 +52,29 @@ int	cd_helper(t_env **envh, char *cmd, char	**pwd_backup ,t_tool *tool)
 			*pwd_backup = ft_strjoin_env(*pwd_backup, cmd, 1);
 		tmp = getcwd(0, 0);
 		if (!tmp)
-			ft_putstr_fd("5cd: error retrieving current directory: getcwd:"
+			ft_putstr_fd("cd: error retrieving current directory: getcwd:" \
 		" cannot access parent directories: No such file or directory\n", 2);
-		free(tmp);
-		return (0);
+		return (free(tmp), 0);
 	}
 	return (0);
 }
 
-int	is_full_of_dots(char *str)
-{
-	size_t	i;
+// int	is_full_of_dots(char **str)
+// {
+// 	size_t	i;
 
-	i = 0;
-	while (str && str[i] && str[i] == '.' && (str[i +1] == '/' || str[i +1] == '\0'))
-		i++;
-	if (i == ft_strlen(str))
-		return (1);
-	return (0);
-}
+// 	i = 0;
+// 	if (!ft_strcmp(str, "./") || !ft_strcmp(str, "."))
+// 		return (1);
+// 	while (str && str[i] && str[i] == '.' 
+// 			&& (str[i + 1] == '/' || str[i +1] == '\0'))
+// 		i += 2;
+// 	if (i == ft_strlen(str))
+// 		return (1);
+// 	return (0);
+// }
 
-int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup, t_tool *tool)
+int	cd(t_env **envh, t_tree *cmd, char **pwd_backup, t_tool *tool)
 {
 	char	*dir;
 
@@ -93,84 +92,8 @@ int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup, t_tool *tool)
 		tool->flag = 1;
 		free(*pwd_backup);
 		*pwd_backup = dir;
-		// add_to_grbg(&tool->grbg, dir);
-		
 	}
 	if (!chdir(cmd->cmd[0]))
 		return (cd_helper(envh, cmd->cmd[0], pwd_backup, tool));
-	else
-	{
-		DIR		*tmp;
-		int		has_doubl_dots = 0;
-		char	**splited_arg = ft_split(cmd->cmd[0], '/', tool);
-		char	**splited_path = ft_split(*pwd_backup, '/', tool);
-		char	*new_path = NULL;
-		char	*new_arg = NULL;
-		size_t	i;
-		i = 0;
-		while (splited_arg[i])
-		{
-			if (!ft_strcmp(splited_arg[i], ".."))
-				has_doubl_dots = 1;
-			i++;
-		}
-		i = 0;
-		if (splited_arg && splited_arg[i] && splited_arg[1])
-		{
-			if (ft_strcmp(splited_arg[i], "."))
-				new_arg = ft_strjoin("/", splited_arg[i], tool);
-			i++;
-			while (splited_arg[i])
-			{
-				if (!ft_strcmp(splited_arg[i], "..") && has_doubl_dots)
-				{
-					i++;
-					has_doubl_dots = 0;
-				}
-				else if (!ft_strcmp(splited_arg[i], "."))
-					i++;
-				else
-				{
-					char *tmp = ft_strjoin("/", splited_arg[i], tool);
-					new_arg = ft_strjoin(new_arg, tmp, tool);
-					i++;
-				}
-			}
-		}
-		i = 0;
-		while (splited_path && splited_path[i] )
-		{
-			new_path = ft_strjoin(new_path, "/", tool);
-			tmp = opendir(ft_strjoin(new_path, splited_path[i], tool));
-			if (tmp)
-			{
-				new_path = ft_strjoin(new_path, splited_path[i], tool);
-				i++;
-			}
-			else
-				break;
-			closedir(tmp);
-		}
-		if (i +1 != ft_dstrlen((const char **)splited_path))
-			return (print_err("4cd: ", cmd->cmd[0], strerror(errno)), 1);
-		if (!is_full_of_dots(cmd->cmd[0]))
-		{
-			if (chdir(ft_strjoin(new_path, new_arg, tool)))
-			{
-				add_to_grbg(&tool->grbg, getcwd(0, 0));
-				return (print_err("5cd: ", cmd->cmd[0], strerror(errno)), 1);
-			}
-		}
-		else
-		{
-			if (chdir(cmd->cmd[0]))
-			{
-				add_to_grbg(&tool->grbg, getcwd(0, 0));
-				return (print_err("6cd: ", cmd->cmd[0], strerror(errno)), 1);
-			}
-		}
-	}
-	if (search_for_defaults(*envh, "PWD"))
-		*envh = edit_env(ft_strdup_env("PWD", 0), ft_strdup_env(*pwd_backup, 0), *envh, 0);
-	return (0);
+	return (cd_complex(envh, cmd, pwd_backup, tool));
 }

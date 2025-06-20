@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 14:12:29 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/17 18:13:48 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/20 23:31:45 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	free_attributes(t_env *node)
 {
-	if (node) 
+	if (node)
 	{
 		free(node->key);
 		node->key = NULL;
@@ -38,11 +38,11 @@ t_env	*delete_var(t_env *envh, char *key)
 		if (!ft_strcmp(head->key, key))
 		{
 			if (prev)
-				prev->next = head->next; 
+				prev->next = head->next;
 			else
 				envh = head->next;
 			free_attributes(head);
-			break;
+			break ;
 		}
 		prev = head;
 		head = head->next;
@@ -61,7 +61,7 @@ int	unset(t_env **envh, char **args)
 	{
 		if (is_valid_key(args[i]))
 		{
-			if (search_for_defaults(*envh, args[i]))
+			if (sh_env(*envh, args[i]))
 				*envh = delete_var(*envh, args[i]);
 		}
 		else

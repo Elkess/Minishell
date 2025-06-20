@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 07:50:25 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/17 18:14:15 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/20 23:14:11 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ t_env	*append_node(t_env *head, char *key, char *val)
 	return (head);
 }
 
-t_env	*search_for_defaults(t_env *envh, char *key)
+t_env	*sh_env(t_env *envh, char *key)
 {
 	if (!key)
 		return (NULL);
@@ -57,4 +57,17 @@ void	free_envh(t_env *envh)
 		envh = envh->next;
 		free(tmp);
 	}
+}
+
+size_t	ft_envlen(t_env *envh)
+{
+	size_t	i;
+
+	i = 0;
+	while (envh)
+	{
+		i++;
+		envh = envh->next;
+	}
+	return (i);
 }

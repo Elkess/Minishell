@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/20 11:03:37 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/20 23:40:16 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 # include <termios.h> 
 # include <dirent.h>
 
-int g_signal;
+int	g_signal;
 
 # define BUFFER_SIZE 1
 
@@ -88,16 +88,24 @@ typedef struct s_pid
 
 typedef struct s_tool
 {
-	int			paren;
-	int			quoted;
-	int			anderr;
-	int			err;
-	int			herdoc_err;
-	int			signal;
-	int			flag;
-	int			inside_pipe;
-	t_env		*envh;
-	t_garbcoll	*grbg;
+	int				paren;
+	int				quoted;
+	int				anderr;
+	int				err;
+	int				herdoc_err;
+	int				signal;
+	int				flag;
+	int				inside_pipe;
+	int				status;
+	char			**path;
+	char			*tmp;
+	char			*pwd_backup;
+	t_env			*envh;
+	t_garbcoll		*grbg;
+	int				status_exp;
+	char			*new_arg;
+	char			*new_path;
+	size_t			dot_counter;
 	struct termios	orig_termios;
 }	t_tool;
 
@@ -223,7 +231,6 @@ char		*ft_strchr(const char *s, int c);
 int			ft_strcmp(const char *s1, const char *s2);
 void		print_err(char *msg1, char *arg, char *msg2);
 void		free_envh(t_env *envh);
-void		free_twod(char **s);
 int			execute_tree(t_tree *tree, t_env **envh, t_tool	*tool);
 int			executor(t_tree *tree, t_env **envh, t_tool	*tool);
 int			ft_echo(t_tree *cmd1, t_tool *tool);
@@ -234,9 +241,9 @@ int			ft_export(t_env **envh, t_tree *tree, t_tool *tool);
 int			unset(t_env **envh, char **args);
 int			ft_exit(t_tree *cmd, int status, t_env *envh, t_tool *tool);
 t_env		*fill_env(char **envp);
-char		*extract_data(char *line, int flag);
+char		*ext_data(char *line, int flag);
 t_env		*append_node(t_env *head, char *key, char *val);
-t_env		*search_for_defaults(t_env *envh, char *key);
+t_env		*sh_env(t_env *envh, char *key);
 int			is_valid_key(char *key);
 t_env		*edit_env(char *key, char *val, t_env *envh, int should_concat);
 void		print_rest(char **s, int n, t_tool *tool);
@@ -256,6 +263,7 @@ char		*ft_strdup(const char *s1, t_tool *tool);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 int			ft_isalpha(int a);
 int			ft_isdigit(int n);
+long long	ft_atoll(const char *str);
 int			ft_isalnum(int c);
 char		*ft_itoa(int n, t_tool *tool);
 void		ft_putnbr_fd(int n, int fd);
@@ -263,8 +271,8 @@ char		*ft_substr_env(char const *s, unsigned int start, size_t len);
 char		*ft_strdup_env(const char *s1, int flag);
 char		*ft_itoa_env(int n);
 char		*ft_strjoin_env(char *s1, char *s2, int flag);
-
-
+void		print_err(char *msg1, char *arg, char *msg2);
+char		*expand_herdoc_content(char *line, t_tool *tool, int status);
 int			handle_special(t_expand *exp, t_tool *tool, char *str, int status);
 char		*extract_var_name(t_expand *expand, t_tool *tool, char *str);
 void		expand_env_variable(t_expand *exp, t_tool *tool, t_env *env_node);
@@ -274,7 +282,14 @@ void		process_wildcard_expansion(t_expand *expand, t_tool *tool);
 int			is_break_token(int type);
 void		update_links(t_token **input, t_token *prev, t_token *target);
 void		add_to_index(t_redir *after, int index);
-
-
+void		ft_dup(int *io, int flag);
+void		read_from_heredoc(t_redir *red, t_tool *tool, int status);
+void		handle_child(t_redir *red, t_tool *tool, int fd[2]);
+size_t		there_is_herdoc(t_redir *red);
+int			execute_one(t_tree *cmd, t_env *envh, t_tool *tool);
+int			cd_complex(t_env **envh, t_tree *cmd,
+				char **pwd_backup, t_tool *tool);
+int			count_heredocs(t_tree *tree);
+int			manipulate_export(t_env **envh, t_tree *cmd, char *key, char *val);
 
 #endif

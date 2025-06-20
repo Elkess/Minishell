@@ -1,41 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
+/*   ft_atoll.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/21 13:35:16 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/20 15:32:55 by melkess          ###   ########.fr       */
+/*   Created: 2025/06/20 23:39:57 by melkess           #+#    #+#             */
+/*   Updated: 2025/06/20 23:40:08 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void	init_struct_tool(t_tool *tool)
+long long	ft_atoll(const char *str)
 {
-	tool->quoted = 0;
-	tool->anderr = 0;
-	tool->paren = 0;
-	tool->grbg = NULL;
-}
+	long long	result;
+	int			sign;
 
-t_tree	*parsing_input(char *line, t_tool *tool)
-{
-	t_token	*token;
-	t_tree	*tree;
-	int		i;
-
-	i = 0;
-	init_struct_tool(tool);
-	while (line && line[i])
+	if (!str || !*str)
+		return (1);
+	result = 0;
+	sign = 1;
+	while (*str == ' ' || (*str >= 9 && *str <= 13))
+		str++;
+	if (*str == '-' || *str == '+')
 	{
-		hundel_quotes_paren(tool, line[i]);
-		i++;
+		if (*str == '-')
+			sign = -1;
+		str++;
 	}
-	token = tokens_lst(line, tool);
-	if (pars_err(&token, tool))
-		return (NULL);
-	tree = ft_tree(&token, tool);
-	return (tree);
+	while (*str >= '0' && *str <= '9')
+	{
+		result = result * 10 + (*str - '0');
+		str++;
+	}
+	return (result * sign);
 }

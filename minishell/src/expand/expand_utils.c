@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 14:54:25 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/20 14:51:22 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/20 15:34:37 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@ char	*strjoin_char(char *str, char c, t_tool *tool)
 	if (!new_str)
 		return (NULL);
 	add_to_grbg(&tool->grbg, new_str);
-	i = -1;
-	while (i++ < len)
-		new_str[i] = str[i];
+	i = 0;
+	while (i < len)
+		1 && (new_str[i] = str[i], i++);
 	new_str[i] = c;
 	new_str[i + 1] = '\0';
 	return (new_str);

@@ -6,37 +6,18 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 08:39:55 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/20 12:09:46 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/20 15:37:08 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-t_pid	*add_to_pids_list(t_pid *head, int val)
+int	can_we_fork(t_tree *tree)
 {
-	t_pid	*node;
-	t_pid	*backup;
-
-	node = malloc(sizeof(t_pid));
-	if (!node)
-		(perror(""), exit (1));
-	node->value = val;
-	node->next = NULL;
-	if (!head)
-		return (node);
-	else
-	{
-		backup = head;
-		while (head->next)
-			head = head->next;
-		head->next = node;
-	}
-	return (backup);
-}
-
-int can_we_fork(t_tree *tree)
-{
-	pid_t pid;
+	pid_t	pid;
+	int		status;
+	int		left_ok;
+	int		right_ok;
 
 	if (!tree)
 		return (1);
@@ -44,75 +25,62 @@ int can_we_fork(t_tree *tree)
 	{
 		pid = fork();
 		if (pid < 0)
-		{
-			perror("fork");
-			return (0);
-		}
+			return (perror("fork"), 0);
 		if (pid == 0)
 		{
-			int left_ok = can_we_fork(tree->left);
-			int right_ok = can_we_fork(tree->right);
+			left_ok = can_we_fork(tree->left);
+			right_ok = can_we_fork(tree->right);
 			exit(!(left_ok && right_ok));
 		}
-		else
-		{
-			int status;
-			waitpid(pid, &status, 0);
-			if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-				return (0);
-		}
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+			return (0);
 	}
 	return (1);
 }
 
-int	execute_pipes(t_tree *tree, t_env **envh, t_tool	*tool)
+int	failed_fork(t_tool *tool)
 {
-	int				pipefd[2];
-	pid_t			pids[2];
-	int				status[2];
+	perror("Fork failed");
+	if (tool->inside_pipe == 1)
+		exit (1);
+	else
+		return (1);
+}
 
+int	execute_pipes(t_tree *tree, t_env **envh, t_tool *tool)
+{
+	int		pipefd[2];
+	pid_t	pids[2];
+
+	if (tree->type != NODE_PIPE)
+		return (-1);
+	if (pipe(pipefd) == -1)
+		return (perror("Pipe error"), 1);
+	pids[0] = fork();
+	if (pids[0] == -1)
+		return (failed_fork(tool));
+	tool->inside_pipe = 1;
+	if (pids[0] == 0)
+		(close(pipefd[0]), dup2(pipefd[1], 1),
+			close(pipefd[1]), exit (execute_tree(tree->left, envh, tool)));
+	1 && (tool->err = 0, pids[1] = fork());
+	if (pids[1] < 0)
+		return (failed_fork(tool));
+	if (pids[1] == 0)
+		(close(pipefd[1]), dup2(pipefd[0], 0), close(pipefd[0]),
+			exit(execute_tree(tree->right, envh, tool)));
+	(signal(SIGINT, SIG_IGN), close(pipefd[0]),
+		close(pipefd[1]), waitpid(pids[1], &tool->status, 0));
+	while (wait(NULL) != -1)
+		;
+	return (WEXITSTATUS(tool->status));
+}
+
+int	exec_tree_helper(t_tree *tree, t_env **envh, t_tool	*tool)
+{
 	if (can_we_fork(tree))
-	{
-		if (tree->type != NODE_PIPE)
-			return (-1);
-		if (pipe(pipefd) == -1)
-			return (perror("Pipe error"), 1);
-		pids[0] = fork();
-		if (pids[0] == -1)
-		{
-			perror("Fork failed");
-			if (tool->inside_pipe == 1)
-				exit (1);
-			else
-				return (1);
-		}
-		tool->inside_pipe = 1;
-		if (pids[0] == 0)
-		{
-			(close(pipefd[0]), dup2(pipefd[1], 1));
-			(close(pipefd[1]), exit(execute_tree(tree->left, envh, tool)));
-		}
-		tool->err = 0;
-		pids[1] = fork();
-		if (pids[1] < 0)
-		{
-			perror("Fork failed");
-			if (tool->inside_pipe == 1)
-				exit (1);
-			else
-				return (1);
-		}
-		if (pids[1] == 0)
-		{
-			(close(pipefd[1]), dup2(pipefd[0], 0));
-			(close(pipefd[0]), exit(execute_tree(tree->right, envh, tool)));
-		}
-		signal(SIGINT, SIG_IGN);
-		(close(pipefd[0]), close(pipefd[1]));
-		waitpid(pids[1], &status[1], 0);
-		while (wait(NULL) != -1);
-		return (WEXITSTATUS(status[1]));
-	}
+		return (execute_pipes(tree, envh, tool));
 	return (1);
 }
 
@@ -123,25 +91,23 @@ int	execute_tree(t_tree *tree, t_env **envh, t_tool	*tool)
 	status = 1;
 	if (!tree)
 		return (status);
-	if (tree->type == NODE_COMMAND)
+	else if (tree->type == NODE_COMMAND)
 		return (executor(tree, envh, tool));
-	if (tree->type == NODE_PARENTHS)
+	else if (tree->type == NODE_PARENTHS)
 		return (executor(tree, envh, tool));
-	if (tree->type == NODE_PIPE)
-		return (execute_pipes(tree, envh, tool));
-	if (tree->type == NODE_AND)
+	else if (tree->type == NODE_PIPE)
+		return (exec_tree_helper(tree, envh, tool));
+	else if (tree->type == NODE_AND)
 	{
 		status = execute_tree(tree->left, envh, tool);
 		if (status == 0)
 			return (execute_tree(tree->right, envh, tool));
-		return (status);
 	}
-	if (tree->type == NODE_OR)
+	else if (tree->type == NODE_OR)
 	{
 		status = execute_tree(tree->left, envh, tool);
 		if (status != 0)
 			return (execute_tree(tree->right, envh, tool));
-		return (status);
 	}
 	return (status);
 }

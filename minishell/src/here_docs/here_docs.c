@@ -3,14 +3,79 @@
 /*                                                        :::      ::::::::   */
 /*   here_docs.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 18:17:26 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/20 10:33:32 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/20 23:00:20 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+void	read_from_pipe(t_redir *red, int status, t_tool *tool, int fd)
+{
+	char	*lines;
+	char	buff[2];
+
+	while (red && !WIFSIGNALED(status))
+	{
+		if (red->type == REDIR_HEREDOC)
+		{
+			red->content = NULL;
+			lines = NULL;
+			while (1)
+			{
+				if (read(fd, buff, 1) <= 0)
+					break ;
+				if (buff[0] == '\0')
+					break ;
+				buff[1] = '\0';
+				lines = ft_strjoin(lines, buff, tool);
+			}
+			red->content = lines;
+		}
+		red = red->next;
+	}
+}
+
+void	handle_parent(t_redir *red, t_tool *tool, pid_t pid, int fd[2])
+{
+	int	status;
+	int	sig;
+
+	signal(SIGINT, SIG_IGN);
+	waitpid(pid, &status, 0);
+	if (WIFSIGNALED(status))
+	{
+		sig = WTERMSIG(status);
+		if (sig == SIGINT)
+		{
+			printf("\n");
+			tool->herdoc_err = 1;
+		}
+	}
+	close(fd[1]);
+	read_from_pipe(red, status, tool, fd[0]);
+	close(fd[0]);
+	setup_signals();
+}
+
+void	here_docs(t_redir *red, t_tool *tool)
+{
+	int		fd[2];
+	size_t	n_herdocs;
+	pid_t	pid;
+
+	if (pipe(fd) == -1)
+		print_err(NULL, "pipe failed :", strerror(errno));
+	n_herdocs = there_is_herdoc(red);
+	pid = 0;
+	if (n_herdocs)
+		pid = fork();
+	if (pid == 0 && n_herdocs)
+		handle_child(red, tool, fd);
+	handle_parent(red, tool, pid, fd);
+}
 
 static char	*expand_quote_file(char *delimiter, t_tool *tool)
 {

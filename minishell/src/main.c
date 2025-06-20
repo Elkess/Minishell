@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/20 12:13:57 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/20 23:04:18 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	disable_echoctl(struct termios *orig_termios)
 {
-	struct termios term;
+	struct termios	term;
 
 	tcgetattr(STDIN_FILENO, &term);
 	*orig_termios = term;
@@ -90,6 +90,7 @@ void	init_struct_tool_exec(t_tool *tool)
 	tool->err = 0;
 	tool->signal = -2;
 	tool->inside_pipe = 0;
+	tool->pwd_backup = NULL;
 	tcgetattr(STDIN_FILENO, &tool->orig_termios);
 }
 
@@ -151,9 +152,11 @@ int	main(int ac, char **av, char **env)
 		if (is_only_space(line))
 		{
 			free(line);
-			continue;
+			continue ;
 		}
 		tree = parsing_input(line, &tool);
+		if (count_heredocs(tree) > 16)
+			(ft_putstr_fd("minishell: maximum here-document count exceeded", 2), exit(2));
 		handle_herdocs(tree, envh, &tool);
 		if (tool.herdoc_err == 1)
 		{

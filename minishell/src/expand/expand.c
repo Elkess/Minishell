@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 08:56:07 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/20 09:47:21 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/20 18:06:34 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static void	expand_dollar(t_expand *expand, t_tool *tool, char *str, int status)
 	var_name = extract_var_name(expand, tool, str);
 	if (!var_name)
 		return ;
-	env_node = search_for_defaults(tool->envh, var_name);
+	env_node = sh_env(tool->envh, var_name);
 	if (env_node && env_node->value)
 		expand_env_variable(expand, tool, env_node);
 	else

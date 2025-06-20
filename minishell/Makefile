@@ -26,8 +26,11 @@ Funs =	src/main.c \
 		src/expand/expand_redir.c \
 		src/expand/lst_helper.c \
 		src/builtins/cd.c \
+		src/builtins/cd_utils.c \
 		src/builtins/echo.c \
 		src/builtins/env.c \
+		src/builtins/env_helper.c \
+		src/builtins/export_cu.c \
 		src/builtins/exit.c \
 		src/builtins/export.c \
 		src/builtins/pwd.c \
@@ -35,7 +38,8 @@ Funs =	src/main.c \
 		src/executor/execute_tree.c\
 		src/executor/executor.c \
 		src/executor/helper_funcs.c \
-		src/env/env.c  \
+		src/executor/exec_utils.c \
+		src/env/env.c \
 		src/env/ft_strdup_env.c  \
 		src/env/ft_substr_env.c  \
 		src/env/ft_itoa_env.c \
@@ -43,6 +47,7 @@ Funs =	src/main.c \
 		src/env/env_utils.c \
 		library/gnl/get_next_line.c   \
 		library/libft/ft_atoi.c       \
+		library/libft/ft_atoll.c \
 		library/libft/ft_isalnum.c    \
 		library/libft/ft_itoa.c       \
 		library/libft/ft_split.c      \
@@ -61,6 +66,8 @@ Funs =	src/main.c \
 		library/libft/ft_strcmp.c     \
 		library/libft/ft_strlen.c \
 		src/here_docs/here_docs.c \
+		src/here_docs/here_doc_utils.c \
+		src/here_docs/read_heredoc.c \
 		src/expand/expand_dollar.c \
 		src/expand/expand_help.c \
 		src/parser/tree_help.c \

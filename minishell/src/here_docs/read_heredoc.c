@@ -1,0 +1,76 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   read_herdoc.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/20 16:34:19 by melkess           #+#    #+#             */
+/*   Updated: 2025/06/20 17:13:12 by melkess          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../include/minishell.h"
+
+char	*generate_file(t_redir *red, t_tool *tool)
+{
+	char	*str;
+	size_t	i;
+
+	str = NULL;
+	i = 0;
+	while (1)
+	{
+		str = ft_strjoin("/tmp/.here_doc", ft_itoa(i, tool), tool);
+		red->fd = open(str, O_CREAT | O_RDWR | O_APPEND | O_EXCL, 0644);
+		if (red->fd != -1)
+			break ;
+		i++;
+	}
+	return (str);
+}
+
+void	write_helper(char *file, t_redir *red, t_tool *tool, int status)
+{
+	char	*line;
+	int		fd;
+
+	fd = open(file, O_CREAT | O_RDWR, 0644);
+	if (fd == -1)
+		(perror("Open failed in 530:"));
+	line = get_next_line(red->fd);
+	while (line)
+	{
+		add_to_grbg(&tool->grbg, line);
+		line = expand_herdoc_content(line, tool, status);
+		write(fd, line, ft_strlen(line) + 1);
+		line = get_next_line(red->fd);
+	}
+	(close(red->fd), close(fd));
+	red->fd = open(file, O_CREAT | O_RDWR, 0644);
+	if (red->fd == -1)
+		(perror("Open failed in 469:"));
+	unlink(file);
+}
+
+void	read_from_heredoc(t_redir *red, t_tool *tool, int status)
+{
+	char	*file;
+
+	while (red)
+	{
+		if (red->type == REDIR_HEREDOC)
+		{
+			file = generate_file(red, tool);
+			write(red->fd, red->content, ft_strlen(red->content));
+			close(red->fd);
+			red->fd = open(file, O_CREAT | O_RDWR, 0644);
+			if (red->fd == -1)
+				(perror("Open failed in 524:"));
+			unlink(file);
+			if (red->flag)
+				write_helper(file, red, tool, status);
+		}
+		red = red->next;
+	}
+}

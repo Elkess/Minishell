@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 10:28:42 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/15 10:48:48 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/20 23:49:22 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,6 @@ char	*ft_strdup_env(const char *s1, int flag)
 	}
 	s[i] = '\0';
 	if (flag)
-		free((void*)s1);
+		free ((void *)s1);
 	return (s);
 }
