@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_dollar.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 09:40:55 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/20 09:54:02 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/20 14:58:17 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,6 @@ void	expand_env_variable(t_expand *exp, t_tool *tool, t_env *env_node)
 		return ;
 	if (env_node->value && ft_strchr(env_node->value, '*'))
 		exp->is_wildcard = 1;
-
 	if (exp->flg != '"' && !exp->is_there_export
 		&& has_space(env_node->value))
 	{
@@ -121,7 +120,3 @@ void	expand_env_variable(t_expand *exp, t_tool *tool, t_env *env_node)
 		exp->buff_exp = ft_strjoin(exp->buff_exp, env_node->value, tool);
 	}
 }
-
-
-
-

@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 07:51:00 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/15 10:35:05 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/20 14:59:53 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ char	*ft_itoa(int n, t_tool *tool)
 	len = ft_counter(n, &isnegative);
 	str = (char *)malloc(len +1);
 	if (!str)
-		return (NULL);	
+		return (NULL);
 	add_to_grbg(&tool->grbg, str);
 	str[len] = '\0';
 	if (n == -2147483648)

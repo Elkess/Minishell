@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 08:57:56 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/13 15:31:35 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/20 14:44:31 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	is_delimter(char c, char d)
 		return (TOKEN_REDIR_IN);
 	if (c == '|' && d == '|')
 		return (TOKEN_OR);
-	if (c == '|') 
+	if (c == '|')
 		return (TOKEN_PIPE);
 	if (c == '&' && d == '&')
 		return (TOKEN_AND);

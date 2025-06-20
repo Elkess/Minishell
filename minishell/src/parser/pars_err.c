@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars_err.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 08:46:52 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/20 09:56:58 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/20 14:57:19 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,8 @@ static int	condition(t_token *token)
 	}
 	if (token->priority > 0 && !token->next && token->type != 10)
 		return (1);
-
 	if (token->next && (token->type >= 1 && token->type <= 3)
-		&& ((token->next->type >= 1 && token->next->type <= 3) 
+		&& ((token->next->type >= 1 && token->next->type <= 3)
 			|| token->next->type == 10))
 		return (2);
 	return (condition_utils(token));
