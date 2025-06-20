@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/20 10:32:53 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/20 12:14:51 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,14 +102,14 @@ int	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
 		path = ft_split(search_for_defaults(envh, "PATH")->value, ':', tool);
 	env = struct_to_darr(envh, tool);
 	pid = 0;
-	if (!tool->inside_pipe)
-		pid = fork();
+	pid = fork();
 	if (pid == -1)
 	{
-		print_err(NULL, "Fork1 Failed", strerror(errno));
+		print_err(NULL, "Fork Failed", strerror(errno));
 		return (1);
 	}
-	if (pid == 0 || tool->inside_pipe)
+	//  || tool->inside_pipe
+	if (pid == 0)
 	{
 		tool->inside_pipe = 0;
 		signal(SIGINT, SIG_DFL);
@@ -118,14 +118,14 @@ int	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
 		{	
 			if ((!access(cmd->cmd[0], X_OK) && (!path || !*path)) || (!access(cmd->cmd[0], X_OK) && ft_strchr(cmd->cmd[0], '/')))
 				if (execve(cmd->cmd[0], cmd->cmd, env) == -1)
-					(perror("Execve1 Failed:"), exit(1));
+					(perror("Execve Failed:"), exit(1));
 			exec_helper(cmd->cmd, env, tool, path);
 		}
 		if (errno == 13)
 			(print_err(NULL, cmd->cmd[0], strerror(errno)), exit (126));
 		if (((errno == 20 || errno == 2) && ft_strchr(cmd->cmd[0], '/')) || !path || !*path)
 			(print_err(NULL, cmd->cmd[0], strerror(errno)), exit (126 * (errno != 2) + 127 * (errno == 2)));
-		(print_err(NULL, cmd->cmd[0], "2command not found"), exit(127));
+		(print_err(NULL, cmd->cmd[0], "command not found"), exit(127));
 	}
 	return (0);
 }
@@ -374,7 +374,7 @@ int	is_builtin(t_tree *tree, char	*cmd, t_env **envh, t_tool *tool)
 
 int	execute_cmd(t_tree *tree, t_env **envh, int status, t_tool *tool)
 {
-	char		*cmd;
+	char	*cmd;
 
 	if (tree && tree->cmd)
 	{

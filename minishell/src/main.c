@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/20 09:15:22 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/20 12:13:57 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,10 +105,10 @@ void	colse_all(void)
 void	main_helper(t_tool *tool, char *line)
 {
 	tcsetattr(STDIN_FILENO, TCSANOW, &tool->orig_termios);
-	if (tool->signal == SIGINT)
-		ft_putstr_fd("\n", 2);
-	else if (tool->signal == SIGQUIT)
-		ft_putstr_fd("Quit: 3\n", 2);
+	// if (tool->signal == SIGINT)
+	// 	ft_putstr_fd("\n", 2);
+	// else if (tool->signal == SIGQUIT)
+	// 	ft_putstr_fd("Quit: 3\n", 2);
 	tool->inside_pipe = 0;
 	free(line);
 	clear_garbcoll(tool->grbg);

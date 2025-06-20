@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 08:39:55 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/19 15:57:41 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/20 12:09:46 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ t_pid	*add_to_pids_list(t_pid *head, int val)
 	}
 	return (backup);
 }
+
 int can_we_fork(t_tree *tree)
 {
 	pid_t pid;
@@ -44,7 +45,7 @@ int can_we_fork(t_tree *tree)
 		pid = fork();
 		if (pid < 0)
 		{
-			perror("Fork failed during can_we_fork check");
+			perror("fork");
 			return (0);
 		}
 		if (pid == 0)
@@ -64,38 +65,28 @@ int can_we_fork(t_tree *tree)
 	return (1);
 }
 
-
 int	execute_pipes(t_tree *tree, t_env **envh, t_tool	*tool)
 {
-	static t_pid	*pid;
 	int				pipefd[2];
 	pid_t			pids[2];
 	int				status[2];
-	t_pid			*tmp;
 
 	if (can_we_fork(tree))
 	{
 		if (tree->type != NODE_PIPE)
 			return (-1);
-		tool->inside_pipe = 1;
 		if (pipe(pipefd) == -1)
 			return (perror("Pipe error"), 1);
 		pids[0] = fork();
-		if (pids[0] > 0)
-			pid = add_to_pids_list(pid, pids[0]);
 		if (pids[0] == -1)
 		{
 			perror("Fork failed");
-			while (pid)
-			{
-				kill(pid->value, SIGKILL);
-				tmp = pid;
-				pid = pid->next;
-				free(pid);
-				pid = NULL;
-			}
-			return (1);
+			if (tool->inside_pipe == 1)
+				exit (1);
+			else
+				return (1);
 		}
+		tool->inside_pipe = 1;
 		if (pids[0] == 0)
 		{
 			(close(pipefd[0]), dup2(pipefd[1], 1));
@@ -103,20 +94,14 @@ int	execute_pipes(t_tree *tree, t_env **envh, t_tool	*tool)
 		}
 		tool->err = 0;
 		pids[1] = fork();
-		if (pids[1] == -1)
-		{		perror("Fork failed");
-			while (pid)
-			{
-				kill(pid->value, SIGKILL);
-				tmp = pid;
-				pid = pid->next;
-				free(pid);
-				pid = NULL;
-			}
-			return (1);
+		if (pids[1] < 0)
+		{
+			perror("Fork failed");
+			if (tool->inside_pipe == 1)
+				exit (1);
+			else
+				return (1);
 		}
-		if (pids[1] > 0)
-			pid = add_to_pids_list(pid, pids[1]);
 		if (pids[1] == 0)
 		{
 			(close(pipefd[1]), dup2(pipefd[0], 0));
@@ -124,17 +109,8 @@ int	execute_pipes(t_tree *tree, t_env **envh, t_tool	*tool)
 		}
 		signal(SIGINT, SIG_IGN);
 		(close(pipefd[0]), close(pipefd[1]));
-		(waitpid(pids[0], &status[0], 0), waitpid(pids[1], &status[1], 0));
-		if(WIFSIGNALED(status[0]))
-			tool->signal = WTERMSIG(status[0]);
-		if(WIFSIGNALED(status[1]))
-		{
-			tool->signal = WTERMSIG(status[1]);
-			return (tool->signal + 128);
-		}
-		if (WIFSIGNALED(status[0]) && !WIFSIGNALED(status[1]) && WTERMSIG(status[0]) == SIGQUIT)
-			tool->signal = -3;
-		tool->inside_pipe = 0;
+		waitpid(pids[1], &status[1], 0);
+		while (wait(NULL) != -1);
 		return (WEXITSTATUS(status[1]));
 	}
 	return (1);
