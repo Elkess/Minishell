@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 10:01:34 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/19 20:19:53 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/20 10:16:49 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,26 +33,31 @@ char	*get_home_dir(t_env *envh)
 
 int	cd_helper(t_env **envh, char *cmd, char	**pwd_backup ,t_tool *tool)
 {
+	char *tmp;
+
+	tmp = NULL;
 	if (search_for_defaults(*envh, "OLDPWD"))
 		*envh = edit_env(ft_strdup_env("OLDPWD", 0), ft_strdup_env(*pwd_backup, 0), *envh, 0);
 	if (tool->flag)
 	{
+		free(*pwd_backup);
 		*pwd_backup = getcwd(0, 0);
-		add_to_grbg(&tool->grbg, *pwd_backup);
+		// add_to_grbg(&tool->grbg, *pwd_backup);
 	}
 	else
 	{
-		dprintf(2, "1{%p}\n", *pwd_backup);
-		dprintf(2, "1[%s]\n", *pwd_backup);
 		if (*pwd_backup && (*pwd_backup)[ft_strlen(*pwd_backup) - 1] != '/')
 		{
-			char *tmp = ft_strjoin_env("/", cmd, 0);
+			tmp = ft_strjoin_env("/", cmd, 0);
 			*pwd_backup = ft_strjoin_env(*pwd_backup, tmp, 3);
 		}
 		else
 			*pwd_backup = ft_strjoin_env(*pwd_backup, cmd, 1);
-		ft_putstr_fd("5cd: error retrieving current directory: getcwd:"
+		tmp = getcwd(0, 0);
+		if (!tmp)
+			ft_putstr_fd("5cd: error retrieving current directory: getcwd:"
 		" cannot access parent directories: No such file or directory\n", 2);
+		free(tmp);
 		return (0);
 	}
 	return (0);
@@ -86,8 +91,9 @@ int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup, t_tool *tool)
 	if (dir)
 	{
 		tool->flag = 1;
+		free(*pwd_backup);
 		*pwd_backup = dir;
-		add_to_grbg(&tool->grbg, *pwd_backup);
+		// add_to_grbg(&tool->grbg, dir);
 		
 	}
 	if (!chdir(cmd->cmd[0]))
@@ -151,7 +157,7 @@ int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup, t_tool *tool)
 		{
 			if (chdir(ft_strjoin(new_path, new_arg, tool)))
 			{
-				getcwd(0, 0);
+				add_to_grbg(&tool->grbg, getcwd(0, 0));
 				return (print_err("5cd: ", cmd->cmd[0], strerror(errno)), 1);
 			}
 		}
@@ -159,7 +165,7 @@ int	cd(t_env **envh, t_tree *cmd, char	**pwd_backup, t_tool *tool)
 		{
 			if (chdir(cmd->cmd[0]))
 			{
-				getcwd(0, 0);
+				add_to_grbg(&tool->grbg, getcwd(0, 0));
 				return (print_err("6cd: ", cmd->cmd[0], strerror(errno)), 1);
 			}
 		}

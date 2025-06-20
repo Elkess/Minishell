@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/20 07:25:36 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/20 10:32:53 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -340,13 +340,25 @@ void	here_docs(t_redir *red, t_tool *tool)
 int	is_builtin(t_tree *tree, char	*cmd, t_env **envh, t_tool *tool)
 {
 	static char	*pwd_backup;
+	char		*tmp;
 
-	if (getcwd(0,0))
-		pwd_backup = getcwd(0, 0);
+
 	if (!ft_strcmp(cmd, "echo"))
 		return(ft_echo(tree, tool));
 	else if (!ft_strcmp(cmd, "cd"))
+	{
+
+		tmp = getcwd(0,0);
+		add_to_grbg(&tool->grbg, tmp);
+		if (tmp)
+		{
+			if (pwd_backup)
+				(free(pwd_backup), pwd_backup = NULL);
+			pwd_backup = getcwd(0, 0);
+		}
+		// add_to_grbg(&tool->grbg, pwd_backup);
 		return(cd(envh, tree, &pwd_backup, tool));
+	}
 	else if (!ft_strcmp(cmd, "export"))
 		return(ft_export(envh, tree, tool));
 	else if (!ft_strcmp(cmd, "unset"))
@@ -513,7 +525,7 @@ int	executor(t_tree *tree, t_env **envh, t_tool	*tool)
 	else if (!redir_status && tree->type == NODE_PARENTHS)
 		status = execute_tree(tree->left, envh, tool);
 	ft_dup(fds, 0);
-	if (!tree->cmd && tree->type == NODE_COMMAND)
+	if (redir_status)
 		return (redir_status);
 	return (status);
 }
