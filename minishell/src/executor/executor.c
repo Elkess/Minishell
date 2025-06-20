@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/19 15:59:27 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/20 07:25:36 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ char	**struct_to_darr(t_env *envh, t_tool *tool)
 	len = ft_envlen(envh);
 	env = malloc((len +1) * sizeof(char *));
 	if (!env)
-		(free_envh(envh), exit (2));
+		(perror(""), free_envh(envh), exit (2));
 	add_to_grbg(&tool->grbg, env);
 	len = 0;
 	while (envh)
@@ -147,43 +147,25 @@ void	ft_dup(int *io, int flag)
 	}
 }
 
-t_redir	*find_lastredir(t_redir *redirs, t_redir_type type)
+int	apply_dup2(t_redir *redirs)
 {
-	t_redir	*last;
+	t_redir *current = redirs;
 
-	last = NULL;
-	if (type == REDIR_OUT || type == REDIR_APPEND)
+	while (current)
 	{
-		while (redirs)
+		if ((current->type == REDIR_IN || current->type == REDIR_HEREDOC) && !isatty(current->fd))
 		{
-			if (redirs->type == REDIR_OUT || redirs->type == REDIR_APPEND)
-				last = redirs;
-			redirs = redirs->next;
+			if (dup2(current->fd, STDIN_FILENO) == -1)
+				return (-1);
 		}
-	}
-	if (type == REDIR_IN || type == REDIR_HEREDOC)
-	{
-		while (redirs)
+		else if ((current->type == REDIR_OUT || current->type == REDIR_APPEND) && !isatty(current->fd))
 		{
-			if (redirs->type == REDIR_IN || redirs->type == REDIR_HEREDOC)
-				last = redirs;
-			redirs = redirs->next;
+			if (dup2(current->fd, STDOUT_FILENO) == -1)
+				return (-1);
 		}
+		close(current->fd);
+		current = current->next;
 	}
-	return (last);
-}
-
-int	handle_lastredir(t_redir *redirs)
-{
-	t_redir	*lastin;
-	t_redir	*lastout;
-
-	lastin = find_lastredir(redirs, REDIR_IN);
-	lastout = find_lastredir(redirs, REDIR_OUT);
-	if (lastin)
-		dup2(lastin->fd, 0);
-	if (lastout)
-		dup2(lastout->fd, 1);
 	return (0);
 }
 
@@ -192,8 +174,7 @@ int	ft_redir(t_tree *tree)
 	t_redir	*red;
 
 	if (!tree || !tree->redirs)
-        return (0);
-		
+		return (0);
 	red = tree->redirs;
 	while (red)
 	{
@@ -206,16 +187,10 @@ int	ft_redir(t_tree *tree)
 		else if (red->type == REDIR_APPEND)
 			red->fd = open(red->file, O_CREAT | O_APPEND | O_WRONLY, 0644);
 		if (red->fd == -1 && red->type != REDIR_HEREDOC)
-		{
-			print_err(NULL, red->file, strerror(errno));
-			return (1);
-		}
-		if (red != find_lastredir(tree->redirs, REDIR_OUT) &&
-			red != find_lastredir(tree->redirs, REDIR_IN))
-			close(red->fd);
+			return (print_err(NULL, red->file, strerror(errno)), 1);
 		red = red->next;
 	}
-	return (handle_lastredir(tree->redirs));
+	return (apply_dup2(tree->redirs));
 }
 
 char	*generate_file(t_redir *red, t_tool *tool)
@@ -525,7 +500,7 @@ int	executor(t_tree *tree, t_env **envh, t_tool	*tool)
 	if (!tool || !tree || (tree->type != NODE_COMMAND && tree->type != NODE_PARENTHS))
 		return (1);
 	expanded_cmd = handel_expand(tree, status, tool);
-    tree->cmd = expanded_cmd;
+	tree->cmd = expanded_cmd;
 	expand_redir(tree, tool, status);
 	ft_dup(fds, 1);
 	if (tree->redirs)

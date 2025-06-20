@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/19 11:29:19 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/20 09:15:22 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,9 +70,12 @@ void	fun_help(void)
 	char	*line;
 
 	line = getcwd(0, 0);
-	if (!isatty(0) || !isatty(1))
+	if (!isatty(0) || !isatty(1) || !line)
 	{
-		ft_putstr_fd("minishell error: you are not in a tty \n", 2);
+		if (!line)
+			ft_putstr_fd("minishell error: the program cannot run in orphan path\n", 2);
+		else
+			ft_putstr_fd("minishell error: you are not in a tty \n", 2);
 		if (line)
 			(free(line), line = NULL);
 		exit(1);

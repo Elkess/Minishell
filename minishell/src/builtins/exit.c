@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 16:52:06 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/19 15:57:04 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/20 07:20:28 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	ft_exit(t_tree *cmd, int status, t_env *envh, t_tool *tool)
 	long long	n;
 	int			sign;
 
-	if (isatty(0) && isatty(1))
+	if (!tool->inside_pipe)
 		ft_putstr_fd("exit\n", 2);
 	if (!cmd)
 		(free_envh(envh), exit (status));

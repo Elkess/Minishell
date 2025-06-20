@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 10:01:34 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/19 15:49:43 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/19 20:19:53 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,14 @@ char	*get_home_dir(t_env *envh)
 	if (search_for_defaults(envh, "HOME"))
 	{
 		s = search_for_defaults(envh, "HOME")->value;
-		if (!s)
+		if (s)
 		{
-			ft_putstr_fd("minishell: HOME not set\n", 2);
-			return (NULL);
+			if (chdir(s))
+				perror("");
 		}
 	}
+	else
+		ft_putstr_fd("minishell: HOME not set\n", 2);
 	return (s);
 }
 
