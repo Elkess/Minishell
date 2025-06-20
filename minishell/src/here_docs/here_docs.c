@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_docs.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 18:17:26 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/19 13:15:25 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/20 10:33:32 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,7 @@ static char	*expand_quote_file(char *delimiter, t_tool *tool)
 	char	quote_char;
 	int		i;
 
-	result = NULL;
-	i = 0;
-	quote_char = 0;
+	1 && (result = NULL, i = 0, quote_char = 0);
 	while (delimiter[i])
 	{
 		if ((delimiter[i] == '"' || delimiter[i] == '\'') && quote_char == 0)

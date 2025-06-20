@@ -6,39 +6,26 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 14:56:56 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/18 08:44:36 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/20 09:36:23 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int one_wildcard(char *str)
+void	sort_list_matches(t_token **list_matches)
 {
-	while (*str)
-	{
-		if (*str != '*')
-			return (0);
-		str++;
-	}
-	return (1);
-}
-
-void sort_list_matches(t_token **list_matches)
-{
-	t_token *current;
-	t_token *next;
-	char *temp;
-	int swapped;
+	t_token	*current;
+	t_token	*next;
+	char	*temp;
+	int		swapped;
 
 	if (!list_matches || !*list_matches)
-		return;
-
+		return ;
 	swapped = 1;
 	while (swapped)
 	{
 		swapped = 0;
 		current = *list_matches;
-
 		while (current && current->next)
 		{
 			next = current->next;
@@ -54,7 +41,7 @@ void sort_list_matches(t_token **list_matches)
 	}
 }
 
-void list_one_wildcard(t_token **list_matches, t_tool *tool)
+void	list_one_wildcard(t_token **list_matches, t_tool *tool)
 {
 	DIR				*dir;
 	struct dirent	*entry_name;
@@ -63,7 +50,7 @@ void list_one_wildcard(t_token **list_matches, t_tool *tool)
 	if (dir == NULL)
 	{
 		perror("Error");
-		return;
+		return ;
 	}
 	entry_name = readdir(dir);
 	while (entry_name != NULL)
@@ -77,7 +64,7 @@ void list_one_wildcard(t_token **list_matches, t_tool *tool)
 		perror("Error");
 }
 
-int get_list(t_token **list_matches, char *wildcard, t_tool *tool)
+int	get_list(t_token **list_matches, char *wildcard, t_tool *tool)
 {
 	DIR				*dir;
 	struct dirent	*entry_name;
@@ -86,16 +73,15 @@ int get_list(t_token **list_matches, char *wildcard, t_tool *tool)
 	found_match = 0;
 	dir = opendir(".");
 	if (dir == NULL)
-	{
-		perror("Error");
-		return (0);
-	}
+		return (perror("Error"), 0);
 	entry_name = readdir(dir);
 	while (entry_name != NULL)
 	{
-		if ((wildcard[0] == '.' || entry_name->d_name[0] != '.') && get_list_match(entry_name->d_name, wildcard, tool))
+		if ((wildcard[0] == '.' || entry_name->d_name[0] != '.')
+			&& get_list_match(entry_name->d_name, wildcard, tool))
 		{
-			lst_add_back(list_matches, new_lst(ft_strdup(entry_name->d_name, tool), tool));
+			lst_add_back(list_matches,
+				new_lst(ft_strdup(entry_name->d_name, tool), tool));
 			found_match = 1;
 		}
 		entry_name = readdir(dir);

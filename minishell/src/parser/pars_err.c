@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 08:46:52 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/19 13:27:57 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/20 09:56:58 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ static int	condition(t_token *token)
 		return (1);
 
 	if (token->next && (token->type >= 1 && token->type <= 3)
-    	&& ((token->next->type >= 1 && token->next->type <= 3) 
-        || token->next->type == 10))
+		&& ((token->next->type >= 1 && token->next->type <= 3) 
+			|| token->next->type == 10))
 		return (2);
 	return (condition_utils(token));
 }

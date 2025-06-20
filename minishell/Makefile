@@ -61,6 +61,9 @@ Funs =	src/main.c \
 		library/libft/ft_strcmp.c     \
 		library/libft/ft_strlen.c \
 		src/here_docs/here_docs.c \
+		src/expand/expand_dollar.c \
+		src/expand/expand_help.c \
+		src/parser/tree_help.c \
 
 OFuns = $(Funs:.c=.o)
 

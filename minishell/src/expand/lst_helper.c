@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lst_helper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 08:14:34 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/15 09:57:05 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/20 09:36:27 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,4 +25,15 @@ t_token	*new_lst(void *content, t_tool *tool)
 	new_node->value = content;
 	new_node->next = NULL;
 	return (new_node);
+}
+
+int	one_wildcard(char *str)
+{
+	while (*str)
+	{
+		if (*str != '*')
+			return (0);
+		str++;
+	}
+	return (1);
 }

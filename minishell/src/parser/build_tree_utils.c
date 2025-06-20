@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 09:22:22 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/19 11:07:01 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/20 11:04:16 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,16 +55,6 @@ t_tree	*create_tree_node(t_node_type type, t_tool *tool)
 	return (node);
 }
 
-void	add_to_index(t_redir *after, int index)
-{
-	while (after)
-	{
-		after->index = index +1;
-		index++;
-		after = after->next;
-	}
-}
-
 t_redir	*concat_redirs(t_redir *before, t_redir *after)
 {
 	t_redir	*new_list;
@@ -85,6 +75,25 @@ t_redir	*concat_redirs(t_redir *before, t_redir *after)
 	return (new_list);
 }
 
+int	count_tokens(t_token *start)
+{
+	t_token	*current;
+	int		count;
+
+	current = start->next;
+	count = 1;
+	while (current && current->type != 1 && current->type != 2
+		&& current->type != 3 && current->type != 5 && current->type != 6
+		&& current->type != 7 && current->type != 8)
+	{
+		if (current->type == 0 || current->type == 16
+			|| current->type == 17 || current->type == 18)
+			count++;
+		current = current->next;
+	}
+	return (count);
+}
+
 char	**create_cmd_array(t_token **input, t_tool *tool)
 {
 	t_token	*current;
@@ -92,25 +101,17 @@ char	**create_cmd_array(t_token **input, t_tool *tool)
 	char	**array;
 	int		i;
 
-	current = (*input)->next;
-	count = 1;
 	i = 0;
-	while (current && current->type != 1 && current->type != 2 && current->type != 3
-		&& current->type != 5 && current->type != 6 && current->type != 7 && current->type != 8)
-	{
-		if (current->type == 0 || current->type == 16
-			|| current->type == 17 || current->type == 18)
-			count++;
-		current = current->next;
-	}
+	count = count_tokens(*input);
 	array = (char **)malloc((count + 1) * sizeof(char *));
 	if (!array)
 		return (NULL);
 	add_to_grbg(&tool->grbg, array);
 	array[i++] = ft_strdup_pars((*input)->value, tool);
 	current = (*input)->next;
-	while (i < count && current && current->type != 1 && current->type != 2 && current->type != 3
-		&& current->type != 5 && current->type != 6 && current->type != 7 && current->type != 8)
+	while (i < count && current && current->type != 1
+		&& current->type != 2 && current->type != 3 && current->type != 5
+		&& current->type != 6 && current->type != 7 && current->type != 8)
 	{
 		if (current->type == 0 || current->type == 16
 			|| current->type == 17 || current->type == 18)

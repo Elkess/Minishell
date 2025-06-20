@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 13:35:16 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/19 10:59:21 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/20 11:08:02 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -311,6 +311,6 @@ t_tree	*parsing_input(char *line, t_tool *tool)
 	if (pars_err(&token, tool))
 		return (NULL);
 	tree = ft_tree(&token, tool);
-	//print_tree(tree);
+	print_tree(tree);
 	return (tree);
 }
