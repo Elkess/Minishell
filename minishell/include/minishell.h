@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/20 23:40:16 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/21 08:17:42 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,7 +250,7 @@ void		print_rest(char **s, int n, t_tool *tool);
 size_t		ft_envlen(t_env *envh);
 char		**struct_to_darr(t_env *envh, t_tool *tool);
 void		here_docs(t_redir *redirs, t_tool *tool);
-void		handle_herdocs(t_tree *tree, t_env *envh, t_tool *tool);
+void		handle_herdocs(t_tree *tree, t_tool *tool);
 int			ft_atoi(const char *str);
 long long	ft_atol_ex(char *str, int sign, int i);
 size_t		ft_dstrlen(const char **s);
@@ -291,5 +291,11 @@ int			cd_complex(t_env **envh, t_tree *cmd,
 				char **pwd_backup, t_tool *tool);
 int			count_heredocs(t_tree *tree);
 int			manipulate_export(t_env **envh, t_tree *cmd, char *key, char *val);
-
+int			is_only_space(char *str);
+void		init_struct_tool_exec(t_tool *tool, t_env **envh, char **env);
+void		fun_help(void);
+void		init_struct_tool_exec(t_tool *tool, t_env **envh, char **env);
+void		colse_all(void);
+void		main_helper(t_tool *tool, char *line);
+void		main_sigs(t_tool *tool);
 #endif

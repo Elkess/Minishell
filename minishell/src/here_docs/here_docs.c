@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_docs.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 18:17:26 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/20 23:00:20 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/21 08:00:18 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ static char	*expand_quote_file(char *delimiter, t_tool *tool)
 	return (result);
 }
 
-void	handle_herdocs(t_tree *tree, t_env *envh, t_tool *tool)
+void	handle_herdocs(t_tree *tree, t_tool *tool)
 {
 	t_redir	*red;
 
@@ -129,6 +129,6 @@ void	handle_herdocs(t_tree *tree, t_env *envh, t_tool *tool)
 	if (tool->herdoc_err == 1)
 		return ;
 	here_docs(tree->redirs, tool);
-	handle_herdocs(tree->left, envh, tool);
-	handle_herdocs(tree->right, envh, tool);
+	handle_herdocs(tree->left, tool);
+	handle_herdocs(tree->right, tool);
 }

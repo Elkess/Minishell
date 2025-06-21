@@ -3,47 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/20 23:04:18 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/21 08:18:46 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-
-void	disable_echoctl(struct termios *orig_termios)
-{
-	struct termios	term;
-
-	tcgetattr(STDIN_FILENO, &term);
-	*orig_termios = term;
-	term.c_lflag &= ~ECHOCTL;
-	tcsetattr(STDIN_FILENO, TCSANOW, &term);
-}
-
-void	restore_terminal(struct termios *orig_termios)
-{
-	tcsetattr(STDIN_FILENO, TCSANOW, orig_termios);
-}
-
-void	ft_handle_signals(int sig)
-{
-	if (sig == SIGINT)
-	{
-		g_signal = SIGINT;
-		write(1, "\n", 1);
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		rl_redisplay();
-	}
-}
-
-void	setup_signals(void)
-{
-	signal(SIGINT, ft_handle_signals);
-	signal(SIGQUIT, SIG_IGN);
-}
 
 char	*ft_get_prompt(int exit_status, t_tool *tool)
 {
@@ -65,103 +32,48 @@ char	*ft_get_prompt(int exit_status, t_tool *tool)
 	return (prompt);
 }
 
-void	fun_help(void)
+void	main_g_sig(t_tool *tool)
 {
-	char	*line;
-
-	line = getcwd(0, 0);
-	if (!isatty(0) || !isatty(1) || !line)
-	{
-		if (!line)
-			ft_putstr_fd("minishell error: the program cannot run in orphan path\n", 2);
-		else
-			ft_putstr_fd("minishell error: you are not in a tty \n", 2);
-		if (line)
-			(free(line), line = NULL);
-		exit(1);
-	}
-	if (line)
-		(free(line), line = NULL);
+	tool->err = 1;
+	g_signal = 0;
 }
 
-void	init_struct_tool_exec(t_tool *tool)
+void	setup_herdocs(t_tree *tree, t_tool *tool)
+{
+	if (count_heredocs(tree) > 16)
+		(ft_putstr_fd(
+				"minishell: maximum here-document count exceeded", 2), exit(2));
+	handle_herdocs(tree, tool);
+}
+
+void	main_err(t_tool *tool, char *line)
 {
 	tool->herdoc_err = 0;
-	tool->err = 0;
-	tool->signal = -2;
-	tool->inside_pipe = 0;
-	tool->pwd_backup = NULL;
-	tcgetattr(STDIN_FILENO, &tool->orig_termios);
-}
-
-void	colse_all(void)
-{
-	int	i;
-
-	i = 3;
-	while (i < OPEN_MAX)
-		close(i++);
-}
-
-void	main_helper(t_tool *tool, char *line)
-{
-	tcsetattr(STDIN_FILENO, TCSANOW, &tool->orig_termios);
-	// if (tool->signal == SIGINT)
-	// 	ft_putstr_fd("\n", 2);
-	// else if (tool->signal == SIGQUIT)
-	// 	ft_putstr_fd("Quit: 3\n", 2);
-	tool->inside_pipe = 0;
+	tool->err = 1;
 	free(line);
-	clear_garbcoll(tool->grbg);
-	colse_all();
-}
-
-int is_only_space(char *str)
-{
-    int i;
-    
-    if (!str)
-        return (1);
-    i = 0;
-    while (str[i])
-    {
-        if (str[i] != ' ' && str[i] != '\t' && str[i] != '\n' && str[i] != '\r')
-            return (0);
-        i++;
-    }
-    return (1);
 }
 
 int	main(int ac, char **av, char **env)
-{//TODO: leaks, fd 
+{
 	char	*line;
 	t_tree	*tree;
 	t_tool	tool;
 	t_env	*envh;
 
-	init_struct_tool_exec(&tool);
-	fun_help();
-	envh = fill_env(env);
+	init_struct_tool_exec(&tool, &envh, env);
 	while (av || ac)
 	{
-		tool.signal = -2;
-		(tool.inside_pipe = 0, setup_signals());
+		main_sigs(&tool);
 		line = ft_get_prompt(tool.err, &tool);
 		if (g_signal)
-			(tool.err = 1, g_signal = 0);
+			main_g_sig(&tool);
 		if (is_only_space(line))
-		{
-			free(line);
 			continue ;
-		}
 		tree = parsing_input(line, &tool);
-		if (count_heredocs(tree) > 16)
-			(ft_putstr_fd("minishell: maximum here-document count exceeded", 2), exit(2));
-		handle_herdocs(tree, envh, &tool);
+		setup_herdocs(tree, &tool);
 		if (tool.herdoc_err == 1)
 		{
-			(tool.herdoc_err = 0, tool.err = 1);
-			free(line);
+			main_err(&tool, line);
 			continue ;
 		}
 		else if (tree && line && *line)
