@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   read_herdoc.c                                      :+:      :+:    :+:   */
+/*   read_heredoc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 16:34:19 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/20 17:13:12 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/21 11:44:01 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	write_helper(char *file, t_redir *red, t_tool *tool, int status)
 
 	fd = open(file, O_CREAT | O_RDWR, 0644);
 	if (fd == -1)
-		(perror("Open failed in 530:"));
+		(perror("Open failed"));
 	line = get_next_line(red->fd);
 	while (line)
 	{
@@ -49,7 +49,7 @@ void	write_helper(char *file, t_redir *red, t_tool *tool, int status)
 	(close(red->fd), close(fd));
 	red->fd = open(file, O_CREAT | O_RDWR, 0644);
 	if (red->fd == -1)
-		(perror("Open failed in 469:"));
+		(perror("Open failed"));
 	unlink(file);
 }
 
@@ -66,7 +66,7 @@ void	read_from_heredoc(t_redir *red, t_tool *tool, int status)
 			close(red->fd);
 			red->fd = open(file, O_CREAT | O_RDWR, 0644);
 			if (red->fd == -1)
-				(perror("Open failed in 524:"));
+				(perror("Open failed"));
 			unlink(file);
 			if (red->flag)
 				write_helper(file, red, tool, status);

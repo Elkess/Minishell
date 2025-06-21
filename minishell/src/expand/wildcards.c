@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wildcards.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 14:56:56 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/20 09:36:23 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/21 09:56:04 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,7 @@ char	**expand_wildcard(char *buff_exp, t_tool *tool)
 		if (!get_list(&list_matches, buff_exp, tool))
 			lst_add_back(&list_matches,
 				new_lst(ft_strdup(buff_exp, tool), tool));
+		sort_list_matches(&list_matches);
 	}
 	current = list_matches;
 	while (current)

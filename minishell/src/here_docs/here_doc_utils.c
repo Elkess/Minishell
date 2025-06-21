@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 16:37:47 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/20 22:59:37 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/21 10:46:12 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,11 @@ void	here_doc(t_tool *tool, t_redir *red, int fd)
 		if (line)
 			add_to_grbg(&tool->grbg, line);
 		if (!line || !ft_strcmp(line, red->file))
+		{
+			if (!lines)
+				write(fd, "\0", 1);
 			break ;
+		}
 		line = ft_strjoin(line, "\n", tool);
 		lines = ft_strjoin(lines, line, tool);
 	}

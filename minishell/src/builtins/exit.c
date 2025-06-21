@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 16:52:06 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/20 23:31:08 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/21 11:42:34 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	check_range(char *s, int sign, t_env *envh)
 		if (sign == 1)
 		{
 			if (s[i] > exit_max[i])
-				(print_err("exit: ", s, ":48 numeric argument required"),
+				(print_err("exit: ", s, ": numeric argument required"),
 					free_envh(envh), exit(255));
 			if (s[i] < exit_max[i])
 				break ;
@@ -53,7 +53,7 @@ void	check_range(char *s, int sign, t_env *envh)
 		if (sign == -1)
 		{
 			if (s[i] > exit_min[i])
-				(print_err("exit: ", s, ":55 numeric argument required\n"),
+				(print_err("exit: ", s, ": numeric argument required\n"),
 					free_envh(envh), exit(255));
 		}
 		i++;
@@ -81,7 +81,6 @@ int	ft_exit(t_tree *cmd, int status, t_env *envh, t_tool *tool)
 	int			sign;
 
 	exit_helper(tool, envh, status, cmd);
-	cmd->cmd++;
 	i = 0;
 	sign = 1;
 	while (cmd && cmd->cmd[i])
@@ -90,7 +89,7 @@ int	ft_exit(t_tree *cmd, int status, t_env *envh, t_tool *tool)
 	if (sign == -1)
 		s = ft_strjoin("-", s, tool);
 	if ((sign == -1 && ft_strlen(s) > 20) || (sign == 1 && ft_strlen(s) > 19))
-		(print_err("exit: ", s, ":83 numeric  argument required"),
+		(print_err("exit: ", s, ": numeric  argument required"),
 			free_envh(envh), exit(255));
 	if ((sign == -1 && ft_strlen(s) == 20) || (sign == 1 && ft_strlen(s) == 19))
 		check_range(s, sign, envh);

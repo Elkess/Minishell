@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:39:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/20 18:04:18 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/21 11:43:40 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void	ft_dup(int *io, int flag)
 		if (io[0] == -1 || io[1] == -1)
 		{
 			(close(io[0]), close(io[1]));
-			(perror("1dup failed"), exit (1));
+			(perror("dup failed"), exit (1));
 		}
 	}
 	else
@@ -107,7 +107,7 @@ void	ft_dup(int *io, int flag)
 		if (dup2(io[0], 0) < 0 || dup2(io[1], 1) < 0)
 		{
 			(close(io[0]), close(io[1]));
-			(perror("2dup failed"), exit (1));
+			(perror("dup failed"), exit (1));
 		}
 		(close(io[0]), close(io[1]));
 	}

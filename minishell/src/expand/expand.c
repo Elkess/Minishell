@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 08:56:07 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/20 18:06:34 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/21 11:41:36 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,13 +60,18 @@ static void	expand_dollar(t_expand *expand, t_tool *tool, char *str, int status)
 
 static void	expand_to_buff(t_expand *expand, char *str, t_tool *tool)
 {
-	if (str[expand->j] == '*' && expand->flg != '\'' && expand->flg != '"')
+	if (str[expand->j] == '*')
 	{
 		expand->buff_exp = strjoin_char(expand->buff_exp, '*', tool);
 		expand->j++;
-		while (str[expand->j] && str[expand->j] == '*')
-			expand->j++;
-		expand->is_wildcard = 1;
+		if (expand->flg == '\'' || expand->flg == '"')
+			expand->is_wildcard = 0;
+		else
+		{
+			while (str[expand->j] && str[expand->j] == '*')
+				expand->j++;
+			expand->is_wildcard = 1;
+		}
 		if (str[expand->j] != '\0')
 			expand->is_char = 1;
 		return ;

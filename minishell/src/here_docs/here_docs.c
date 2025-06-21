@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_docs.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 18:17:26 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/21 08:00:18 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/21 10:41:35 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@ void	read_from_pipe(t_redir *red, int status, t_tool *tool, int fd)
 				if (read(fd, buff, 1) <= 0)
 					break ;
 				if (buff[0] == '\0')
+				{
+					lines = ft_strjoin(lines, "\0", tool);
 					break ;
+				}
 				buff[1] = '\0';
 				lines = ft_strjoin(lines, buff, tool);
 			}
@@ -69,10 +72,17 @@ void	here_docs(t_redir *red, t_tool *tool)
 	if (pipe(fd) == -1)
 		print_err(NULL, "pipe failed :", strerror(errno));
 	n_herdocs = there_is_herdoc(red);
-	pid = 0;
+	pid = -1;
 	if (n_herdocs)
+	{
 		pid = fork();
-	if (pid == 0 && n_herdocs)
+		if (pid < 0)
+		{
+			print_err(NULL, "herdoc fork failed", strerror(errno));
+			tool->herdoc_err = 1;
+		}
+	}
+	if (pid == 0)
 		handle_child(red, tool, fd);
 	handle_parent(red, tool, pid, fd);
 }
