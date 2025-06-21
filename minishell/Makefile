@@ -71,6 +71,8 @@ Funs =	src/main.c \
 		src/expand/expand_dollar.c \
 		src/expand/expand_help.c \
 		src/parser/tree_help.c \
+		src/main_sett.c \
+		src/main_utils.c \
 
 OFuns = $(Funs:.c=.o)
 
