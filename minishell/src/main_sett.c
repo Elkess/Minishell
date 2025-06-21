@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_sett.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 08:13:49 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/21 08:20:12 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/21 08:29:27 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void	init_struct_tool_exec(t_tool *tool, t_env **envh, char **env)
 	tool->err = 0;
 	tool->signal = -2;
 	tool->inside_pipe = 0;
+	tool->pwd_backup = NULL;
 	tcgetattr(STDIN_FILENO, &tool->orig_termios);
 	fun_help();
 	*envh = fill_env(env);

@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 18:41:24 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/20 22:56:13 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/21 08:36:21 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,8 @@ char	*rebuild_path(char **splited_path, t_tool *tool, size_t *i)
 
 int	handle_chdir(t_env **envh, t_tree *cmd, char **pwd_backup, t_tool *tool)
 {
-	dprintf(2, "{%zu}\n", tool->dot_counter);
 	if (!tool->dot_counter)
 	{
-		puts(ft_strjoin(tool->new_path, tool->new_arg, tool));
 		if (chdir(ft_strjoin(tool->new_path, tool->new_arg, tool)))
 		{
 			add_to_grbg(&tool->grbg, getcwd(0, 0));
@@ -112,7 +110,6 @@ int	cd_complex(t_env **envh, t_tree *cmd, char **pwd_backup, t_tool *tool)
 	splited_path = ft_split(*pwd_backup, '/', tool);
 	has_doubl_dots = check_double_dots(splited_arg);
 	tool->new_arg = rebuild_arg(splited_arg, tool, has_doubl_dots);
-	puts(tool->new_arg);
 	if ((!ft_strcmp(splited_arg[0], cmd->cmd[0])
 			&& !splited_arg[1]) || tool->dot_counter)
 		tool->new_path = NULL;
@@ -120,7 +117,6 @@ int	cd_complex(t_env **envh, t_tree *cmd, char **pwd_backup, t_tool *tool)
 		tool->new_path = rebuild_path(splited_path, tool, &i);
 	if (!ft_strcmp(cmd->cmd[0], ".."))
 		tool->new_path = rebuild_path(splited_path, tool, &i);
-	puts(tool->new_path);
 	if (i + 1 != ft_dstrlen((const char **)splited_path))
 		return (print_err("cd: ", cmd->cmd[0], strerror(errno)), 1);
 	return (handle_chdir(envh, cmd, pwd_backup, tool));

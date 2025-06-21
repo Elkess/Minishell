@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 10:01:34 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/20 22:18:14 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/21 08:27:34 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,21 +58,6 @@ int	cd_helper(t_env **envh, char *cmd, char	**pwd_backup, t_tool *tool)
 	}
 	return (0);
 }
-
-// int	is_full_of_dots(char **str)
-// {
-// 	size_t	i;
-
-// 	i = 0;
-// 	if (!ft_strcmp(str, "./") || !ft_strcmp(str, "."))
-// 		return (1);
-// 	while (str && str[i] && str[i] == '.' 
-// 			&& (str[i + 1] == '/' || str[i +1] == '\0'))
-// 		i += 2;
-// 	if (i == ft_strlen(str))
-// 		return (1);
-// 	return (0);
-// }
 
 int	cd(t_env **envh, t_tree *cmd, char **pwd_backup, t_tool *tool)
 {
