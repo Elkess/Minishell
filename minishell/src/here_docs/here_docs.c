@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 18:17:26 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/21 10:41:35 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/21 15:17:29 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,19 +97,12 @@ static char	*expand_quote_file(char *delimiter, t_tool *tool)
 	while (delimiter[i])
 	{
 		if ((delimiter[i] == '"' || delimiter[i] == '\'') && quote_char == 0)
-		{
 			quote_char = delimiter[i];
-			i++;
-			if (delimiter[i + 1] == '\0')
-				return (ft_strdup("", tool));
-		}
 		else if (delimiter[i] == quote_char)
-		{
 			quote_char = 0;
-			i++;
-		}
 		else
-			result = strjoin_char(result, delimiter[i++], tool);
+			result = strjoin_char(result, delimiter[i], tool);
+		i++;
 	}
 	if (!result)
 		return (ft_strdup("", tool));

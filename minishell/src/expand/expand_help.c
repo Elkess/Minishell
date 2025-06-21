@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_help.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 09:44:53 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/20 09:52:28 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/21 15:18:25 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@ int	handle_question(t_expand *expand, t_tool *tool, int status)
 
 	var_name = ft_itoa(status, tool);
 	if (var_name)
-		lst_add_back(&expand->token,
-			new_lst(ft_strdup(var_name, tool), tool));
+		expand->buff_exp = ft_strjoin(expand->buff_exp, var_name, tool);
 	expand->j++;
 	return (1);
 }

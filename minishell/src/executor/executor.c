@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/21 10:30:52 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/21 15:20:02 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,9 +71,9 @@ int	is_builtin(t_tree *tree, char	*cmd, t_env **envh, t_tool *tool)
 		if (tool->tmp)
 		{
 			if (tool->pwd_backup)
-				(free(tool->tmp), free(tool->pwd_backup),
+				(free(tool->pwd_backup),
 					tool->pwd_backup = NULL);
-			tool->pwd_backup = getcwd(0, 0);
+			tool->pwd_backup = tool->tmp;
 		}
 		return (cd(envh, tree, &tool->pwd_backup, tool));
 	}

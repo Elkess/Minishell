@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 09:40:55 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/20 14:58:17 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/21 15:18:11 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,12 @@ int	handle_special(t_expand *exp, t_tool *tool, char *str, int status)
 	}
 	else if (str[exp->j] == '0')
 	{
-		lst_add_back(&exp->token, new_lst(ft_strdup("minishell", tool), tool));
+		exp->buff_exp = ft_strjoin(exp->buff_exp,
+				ft_strdup("minishell", tool), tool);
 		exp->j++;
 		return (1);
 	}
-	else if (!ft_isalnum(str[exp->j]) && str[exp->j] != '_')
+	else if (str[exp->j] == '\0')
 	{
 		exp->buff_exp = strjoin_char(exp->buff_exp, '$', tool);
 		exp->is_char = 1;

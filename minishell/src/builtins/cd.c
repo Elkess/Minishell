@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 10:01:34 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/21 08:27:34 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/21 14:44:54 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,7 @@ char	*get_home_dir(t_env *envh)
 	{
 		s = sh_env(envh, "HOME")->value;
 		if (s)
-		{
-			if (chdir(s))
-				perror("");
-		}
+			chdir(s);
 	}
 	else
 		ft_putstr_fd("minishell: HOME not set\n", 2);

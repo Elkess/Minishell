@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 16:52:06 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/21 11:42:34 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/21 13:08:18 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*filter_arg(char *s, int *sign, t_env *envh, t_tool *tool)
 
 	args = ft_split(s, 32, tool);
 	if (!args || !args[0] || (args && args[1]))
-		(print_err("exit: ", s, ": numeric Filter Range argument required\n"),
+		(print_err("exit: ", s, ": numeric argument required"),
 			free_envh(envh), exit(255));
 	i = 0;
 	if (args[0] && (args[0][i] == '-' || args[0][i] == '+'))
@@ -53,7 +53,7 @@ void	check_range(char *s, int sign, t_env *envh)
 		if (sign == -1)
 		{
 			if (s[i] > exit_min[i])
-				(print_err("exit: ", s, ": numeric argument required\n"),
+				(print_err("exit: ", s, ": numeric argument required"),
 					free_envh(envh), exit(255));
 		}
 		i++;
