@@ -1,0 +1,17 @@
+  minishell$ export x=" " 
+➜  minishell$ export x=" tab " 
+➜  minishell$ $x
+minishell:      : command not found
+---------------------------
+leaks :
+melkess@e3r9p16 minishell % env -i ./minishell 
+➜  minishell$ cat << l
+> 
+➜  minishell$ cat << l
+> ➜  minishell$ 
+---------------------------
+minishell$ export $x="yassine"
+minishell: export: `a b=yassine ': not a valid identifier
+---------------------------
+cat <<l | ls | cat <<l | ls | export c="ls -l -a" && $c
+---------------------------

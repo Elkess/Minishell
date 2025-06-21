@@ -6,13 +6,13 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 10:01:34 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/21 14:44:54 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/21 18:05:30 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-char	*get_home_dir(t_env *envh)
+char	*get_home_dir(t_env *envh, t_tool *tool)
 {
 	char	*s;
 
@@ -21,7 +21,8 @@ char	*get_home_dir(t_env *envh)
 	{
 		s = sh_env(envh, "HOME")->value;
 		if (s)
-			chdir(s);
+			if (chdir(s) < 0)
+				tool->home = 1;
 	}
 	else
 		ft_putstr_fd("minishell: HOME not set\n", 2);
@@ -60,13 +61,16 @@ int	cd(t_env **envh, t_tree *cmd, char **pwd_backup, t_tool *tool)
 {
 	char	*dir;
 
+	tool->home = 0;
 	tool->flag = 0;
 	cmd->cmd++;
 	if (!cmd->cmd[0])
 	{
-		cmd->cmd[0] = get_home_dir(*envh);
+		cmd->cmd[0] = get_home_dir(*envh, tool);
 		if (!cmd->cmd[0])
 			return (1);
+		if (tool->home)
+			return (0);
 	}
 	dir = getcwd(0, 0);
 	if (dir)

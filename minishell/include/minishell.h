@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/21 09:33:35 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/21 18:04:16 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,7 @@ typedef struct s_tool
 	t_env			*envh;
 	t_garbcoll		*grbg;
 	int				status_exp;
+	int				home;
 	char			*new_arg;
 	char			*new_path;
 	size_t			dot_counter;

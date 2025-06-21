@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 14:54:25 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/20 15:34:37 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/21 18:26:38 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +53,11 @@ int	has_space(const char *str)
 {
 	if (!str)
 		return (0);
-	if (*str == ' ')
+	if (*str == 32)
 		return (2);
 	while (*str)
 	{
-		if (*str == ' ')
+		if (*str == 32)
 			return (1);
 		str++;
 	}

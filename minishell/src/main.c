@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/21 08:18:46 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/21 18:24:16 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ void	main_err(t_tool *tool, char *line)
 	tool->herdoc_err = 0;
 	tool->err = 1;
 	free(line);
+	clear_garbcoll(tool->grbg);
 }
 
 int	main(int ac, char **av, char **env)

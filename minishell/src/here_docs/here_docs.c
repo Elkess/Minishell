@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 18:17:26 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/21 15:17:29 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/21 17:53:31 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	here_docs(t_redir *red, t_tool *tool)
 	pid_t	pid;
 
 	if (pipe(fd) == -1)
-		print_err(NULL, "pipe failed :", strerror(errno));
+		return (print_err(NULL, "pipe failed :", strerror(errno)));
 	n_herdocs = there_is_herdoc(red);
 	pid = -1;
 	if (n_herdocs)
