@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/21 15:20:02 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/22 08:41:27 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,8 @@ int	execute_cmd(t_tree *tree, t_env **envh, int status, t_tool *tool)
 			}
 		}
 	}
+	else
+		status = 0;
 	return (status);
 }
 

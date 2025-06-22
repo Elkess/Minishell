@@ -6,18 +6,18 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/21 18:24:16 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/22 08:46:10 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-char	*ft_get_prompt(int exit_status, t_tool *tool)
+char	*ft_get_prompt(t_tool *tool)
 {
 	char	*prompt;
 
 	disable_echoctl(&tool->orig_termios);
-	if (exit_status == 0)
+	if (tool->err == 0)
 		prompt = readline("\033[0m\033[0;32m➜\033[0m  minishell$ ");
 	else
 		prompt = readline("\033[0;32m\033[0;31m➜\033[0m  minishell$ ");
@@ -27,7 +27,7 @@ char	*ft_get_prompt(int exit_status, t_tool *tool)
 	if (!prompt)
 	{
 		ft_putstr_fd("exit\n", 2);
-		exit(exit_status);
+		exit(tool->err);
 	}
 	return (prompt);
 }
@@ -65,7 +65,7 @@ int	main(int ac, char **av, char **env)
 	while (av || ac)
 	{
 		main_sigs(&tool);
-		line = ft_get_prompt(tool.err, &tool);
+		line = ft_get_prompt(&tool);
 		if (g_signal)
 			main_g_sig(&tool);
 		if (is_only_space(line))

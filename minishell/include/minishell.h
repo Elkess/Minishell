@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/21 18:04:16 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/22 08:34:40 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -300,4 +300,5 @@ void		init_struct_tool_exec(t_tool *tool, t_env **envh, char **env);
 void		colse_all(void);
 void		main_helper(t_tool *tool, char *line);
 void		main_sigs(t_tool *tool);
+int			is_only_whitespace(char *str);
 #endif

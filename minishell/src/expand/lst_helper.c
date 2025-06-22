@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 08:14:34 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/20 14:58:25 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/22 08:37:16 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,22 @@ int	one_wildcard(char *str)
 		if (*str != '*')
 			return (0);
 		str++;
+	}
+	return (1);
+}
+
+int	is_only_whitespace(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (!str)
+		return (1);
+	while (str[i])
+	{
+		if (!is_space(str[i]))
+			return (0);
+		i++;
 	}
 	return (1);
 }
