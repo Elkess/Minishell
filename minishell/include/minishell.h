@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/24 20:17:30 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/24 20:19:08 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -308,5 +308,9 @@ int			is_only_whitespace(char *str);
 void		check_if_quoted(char *val, t_expand *expand);
 void		check_export_split(t_expand *expand);
 int			hlp(const char *str, int i, t_expand *exp, t_tool *tool);
+void		up_key(char *key, char *val, t_env **envh);
+void		fill_fds(int *fds, t_redir *red, t_tool *tool);
+char		*generate_file(t_redir *red, t_tool *tool);
+t_redir		*find_lasthd(t_redir *redirs);
 
 #endif

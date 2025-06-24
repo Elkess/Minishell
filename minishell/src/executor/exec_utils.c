@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:46:03 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/24 14:50:57 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/24 20:20:47 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	is_dir(char **p, char *path)
 	return (0);
 }
 
-void	exec_helper(char **cmd, char **env, t_tool *tool, char **path)
+void	exec_helper(char **cmd, char **env, char **path)
 {
 	size_t	i;
 	char	*new_path;
@@ -81,7 +81,7 @@ void	execute_child(t_tree *cmd, t_tool *tool, char **env)
 				+ 1 * (errno != 2 && errno != 20 && errno != 13));
 		}
 	}
-	exec_helper(cmd->cmd, env, tool, tool->path);
+	exec_helper(cmd->cmd, env, tool->path);
 }
 
 int	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
