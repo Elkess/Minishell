@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 18:41:24 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/21 08:36:21 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/23 17:01:48 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,22 +65,21 @@ int	handle_chdir(t_env **envh, t_tree *cmd, char **pwd_backup, t_tool *tool)
 	if (!tool->dot_counter)
 	{
 		if (chdir(ft_strjoin(tool->new_path, tool->new_arg, tool)))
-		{
-			add_to_grbg(&tool->grbg, getcwd(0, 0));
 			return (print_err("cd: ", cmd->cmd[0], strerror(errno)), 1);
-		}
+		up_key("OLDPWD", *pwd_backup, envh);
+		free(*pwd_backup);
+		*pwd_backup = getcwd(0, 0);
+		up_key("PWD", *pwd_backup, envh);
 	}
 	else
 	{
 		if (chdir(cmd->cmd[0]))
-		{
-			add_to_grbg(&tool->grbg, getcwd(0, 0));
 			return (print_err("cd: ", cmd->cmd[0], strerror(errno)), 1);
-		}
+		up_key("OLDPWD", *pwd_backup, envh);
+		free(*pwd_backup);
+		*pwd_backup = getcwd(0, 0);
+		up_key("PWD", *pwd_backup, envh);
 	}
-	if (sh_env(*envh, "PWD"))
-		*envh = edit_env(ft_strdup_env("PWD", 0),
-				ft_strdup_env(*pwd_backup, 0), *envh, 0);
 	return (0);
 }
 

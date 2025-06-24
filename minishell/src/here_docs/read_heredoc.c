@@ -6,11 +6,27 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 16:34:19 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/21 11:44:01 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/24 11:26:05 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+void	fill_fds(int *fds, t_redir *red, t_tool *tool)
+{
+	char	*str;
+
+	str = generate_file(red, tool);
+	fds[0] = open(str, O_CREAT | O_RDONLY);
+	if (fds[0] < 0)
+		return (tool->herdoc_err = 1,
+			print_err(NULL, "fds failed", strerror(errno)));
+	fds[1] = open(str, O_CREAT | O_WRONLY);
+	if (fds[1] < 0)
+		return (tool->herdoc_err = 1,
+			print_err(NULL, "fds failed", strerror(errno)));
+	unlink(str);
+}
 
 char	*generate_file(t_redir *red, t_tool *tool)
 {
@@ -43,7 +59,7 @@ void	write_helper(char *file, t_redir *red, t_tool *tool, int status)
 	{
 		add_to_grbg(&tool->grbg, line);
 		line = expand_herdoc_content(line, tool, status);
-		write(fd, line, ft_strlen(line) + 1);
+		write(fd, line, ft_strlen(line));
 		line = get_next_line(red->fd);
 	}
 	(close(red->fd), close(fd));

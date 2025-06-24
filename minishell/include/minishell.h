@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/22 08:34:40 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/24 11:09:08 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -301,4 +301,9 @@ void		colse_all(void);
 void		main_helper(t_tool *tool, char *line);
 void		main_sigs(t_tool *tool);
 int			is_only_whitespace(char *str);
+void		up_key(char *key, char *val, t_env **envh);
+void		fill_fds(int *fds, t_redir *red, t_tool *tool);
+char		*generate_file(t_redir *red, t_tool *tool);
+t_redir		*find_lasthd(t_redir *redirs);
+
 #endif
