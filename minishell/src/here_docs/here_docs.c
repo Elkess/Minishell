@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 18:17:26 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/21 17:53:31 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/24 12:09:51 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,28 +15,21 @@
 void	read_from_pipe(t_redir *red, int status, t_tool *tool, int fd)
 {
 	char	*lines;
-	char	buff[2];
+	char	*line;
 
 	while (red && !WIFSIGNALED(status))
 	{
-		if (red->type == REDIR_HEREDOC)
+		red->content = NULL;
+		lines = NULL;
+		while (1)
 		{
-			red->content = NULL;
-			lines = NULL;
-			while (1)
-			{
-				if (read(fd, buff, 1) <= 0)
-					break ;
-				if (buff[0] == '\0')
-				{
-					lines = ft_strjoin(lines, "\0", tool);
-					break ;
-				}
-				buff[1] = '\0';
-				lines = ft_strjoin(lines, buff, tool);
-			}
-			red->content = lines;
+			line = get_next_line(fd);
+			if (!line)
+				break ;
+			lines = ft_strjoin(lines, line, tool);
+			free(line);
 		}
+		red->content = lines;
 		red = red->next;
 	}
 }
@@ -65,26 +58,31 @@ void	handle_parent(t_redir *red, t_tool *tool, pid_t pid, int fd[2])
 
 void	here_docs(t_redir *red, t_tool *tool)
 {
-	int		fd[2];
+	int		fds[2];
 	size_t	n_herdocs;
-	pid_t	pid;
+	int		pid;
 
-	if (pipe(fd) == -1)
-		return (print_err(NULL, "pipe failed :", strerror(errno)));
 	n_herdocs = there_is_herdoc(red);
-	pid = -1;
 	if (n_herdocs)
 	{
-		pid = fork();
-		if (pid < 0)
+		while (red)
 		{
-			print_err(NULL, "herdoc fork failed", strerror(errno));
-			tool->herdoc_err = 1;
+			if (tool->herdoc_err)
+				break ;
+			if (red->type == REDIR_HEREDOC)
+			{
+				fill_fds(fds, red, tool);
+				pid = fork();
+				if (pid == 0)
+					handle_child(red, tool, fds);
+				else
+					handle_parent(red, tool, pid, fds);
+			}
+			if (find_lasthd(red) == red)
+				break ;
+			red = red->next;
 		}
 	}
-	if (pid == 0)
-		handle_child(red, tool, fd);
-	handle_parent(red, tool, pid, fd);
 }
 
 static char	*expand_quote_file(char *delimiter, t_tool *tool)

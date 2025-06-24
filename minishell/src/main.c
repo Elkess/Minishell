@@ -6,36 +6,35 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/22 08:46:10 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/24 11:14:01 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+void	main_g_sig(t_tool *tool)
+{
+	tool->err = 1;
+	g_signal = 0;
+}
 
 char	*ft_get_prompt(t_tool *tool)
 {
 	char	*prompt;
 
 	disable_echoctl(&tool->orig_termios);
-	if (tool->err == 0)
-		prompt = readline("\033[0m\033[0;32m➜\033[0m  minishell$ ");
-	else
-		prompt = readline("\033[0;32m\033[0;31m➜\033[0m  minishell$ ");
+	prompt = readline("minishell$ ");
 	restore_terminal(&tool->orig_termios);
 	if (prompt && prompt[0])
 		add_history(prompt);
+	if (g_signal)
+		main_g_sig(tool);
 	if (!prompt)
 	{
 		ft_putstr_fd("exit\n", 2);
 		exit(tool->err);
 	}
 	return (prompt);
-}
-
-void	main_g_sig(t_tool *tool)
-{
-	tool->err = 1;
-	g_signal = 0;
 }
 
 void	setup_herdocs(t_tree *tree, t_tool *tool)
@@ -66,8 +65,6 @@ int	main(int ac, char **av, char **env)
 	{
 		main_sigs(&tool);
 		line = ft_get_prompt(&tool);
-		if (g_signal)
-			main_g_sig(&tool);
 		if (is_only_space(line))
 			continue ;
 		tree = parsing_input(line, &tool);

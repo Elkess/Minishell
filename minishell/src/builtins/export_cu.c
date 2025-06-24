@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 23:22:47 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/20 23:23:24 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/23 17:00:14 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ static int	handle_plus_case(t_env **envh, char *key, char *val, char *arg)
 	{
 		print_err("export: `", arg, "': not a valid identifier");
 		free(key);
+		free(val);
 		return (1);
 	}
 	return (0);
@@ -38,6 +39,7 @@ static int	handle_normal_case(t_env **envh, char *key, char *val, char *arg)
 	{
 		print_err("export: `", arg, "': not a valid identifier");
 		free(key);
+		free(val);
 		return (1);
 	}
 	return (0);
@@ -54,7 +56,7 @@ int	manipulate_export(t_env **envh, t_tree *cmd, char *key, char *val)
 	{
 		key = ext_data(cmd->cmd[i], 0);
 		val = ext_data(cmd->cmd[i], 1);
-		if (key && *key && *key != '+' && key[ft_strlen(key) - 1] == '+')
+		if (val && key && *key && *key != '+' && key[ft_strlen(key) - 1] == '+')
 		{
 			if (handle_plus_case(envh, key, val, cmd->cmd[i]))
 				status = 1;

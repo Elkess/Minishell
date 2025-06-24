@@ -1,0 +1,193 @@
+bash-3.2$ pwd
+/tmp/1/2/3/4/5
+bash-3.2$ cd ..
+cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+bash-3.2$ export | grep PWD && pwd
+declare -x OLDPWD="/tmp/1/2/3/4/5"
+declare -x PWD="/tmp/1/2/3/4/5/.."
+/tmp/1/2/3/4/5/..
+bash-3.2$ export | grep PWD && pwd
+declare -x OLDPWD="/tmp/1/2/3/4/5"
+declare -x PWD="/tmp/1/2/3/4/5/.."
+/tmp/1/2/3/4/5/..
+bash-3.2$ cd ..
+cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+bash-3.2$ export | grep PWD && pwd
+declare -x OLDPWD="/tmp/1/2/3/4/5/.."
+declare -x PWD="/tmp/1/2/3/4/5/../.."
+/tmp/1/2/3/4/5/../..
+bash-3.2$ cd ..
+cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+bash-3.2$ export | grep PWD && pwd
+declare -x OLDPWD="/tmp/1/2/3/4/5/../.."
+declare -x PWD="/tmp/1/2/3/4/5/../../.."
+/tmp/1/2/3/4/5/../../..
+bash-3.2$ cd ..
+bash-3.2$ export | grep PWD && pwd
+declare -x OLDPWD="/tmp/1/2/3/4/5/../../.."
+declare -x PWD="/private/tmp/1"
+/private/tmp/1
+bash-3.2$ cd ..
+bash-3.2$ export | grep PWD && pwd
+declare -x OLDPWD="/private/tmp/1"
+declare -x PWD="/private/tmp"
+/private/tmp
+bash-3.2$ cd 1
+bash-3.2$ pwd
+/private/tmp/1
+bash-3.2$ chmod 0 .
+bash-3.2$ cd ss
+bash: cd: ss: Permission denied
+bash-3.2$ $?
+bash: 1: command not found
+
+ minishell$ mkdir -p 0/1/2
+➜  minishell$ cd 0/1/2
+➜  minishell$ pwd
+/mnt/homes/melkess/Desktop/_minishell-1/minishell/0/1/2
+➜  minishell$ rm -rf v
+➜  minishell$ rm -rf /mnt/homes/melk/mnt/homes/melkess/Desktop/_minishell-1/minishell/0
+➜  minishell$ cd ../../..
+minishell: 3cd: ../../.. No such file or directory
+➜  minishell$ /mnt/homes/melkess/mnt/homes/melkess/Desktop/_minishell-1/minishell/0
+➜  minishell$ /mnt/homes/melkess/mnt/homes/melkess/Desktop/_minishell-1/minishell/minishell
+minishell error: the program cannot run in orphan path
+➜  minishell$ $?
+minishell: 1: command not found
+export ""=s
+export a+=a
+inishell: syntax error quotes
+➜  minishell$ export a+=a
+a+
+minishell: export: `a+=a ': not a valid identifier
+➜  minishell$ export =
+
+minishell: export: `= ': not a valid identifier
+➜  minishell$ export +
++
+minishell: export: `+ ': not a valid identifier
+➜  minishell$ export +=
++
+minishell: export: `+= ': not a valid identifier
+➜  minishell$ export +s
++s
+minishell: export: `+s ': not a valid identifier
+➜  minishell$ export +saa
++saa
+minishell: export: `+saa ': not a valid identifier
+➜  minishell$ export =+
+
+minishell: export: `=+ ': not a valid identifier
+➜  minishell$ export =+s
+
+minishell: export: `=+s ': not a valid identifier
+➜  minishell$ export a=+s
+a
+➜  minishell$ export s+=a
+s+
+minishell: export: `s+=a ': not a valid identifier
+➜  minishell$ export s=a
+s
+➜  minishell$ 
+
+minishell: export: `+= ': not a valid identifier
+➜  minishell$ export +=s
++
+minishell: export: `+=s ': not a valid identifier
+➜  minishell$ export p+s
+p+s
+minishell: export: `p+s ': not a valid identifier
+➜  minishell$ export p+
+p+
+➜  minishell$ export p+=
+
+➜  minishell$ export p+
+p+
+➜  minishell$ export p+=
+p+
+➜  minishell$ export p+=aa
+p+
+➜  minishell$ export p+=f
+p+
+➜  minishell$ export p+
+p+
+➜  minishell$ export p+=
+p+
+➜  minishell$ export p++
+p++
+
+
+bash-3.2$ cat << l << ""
+> l
+> ppppppp
+>
+ppppppp
+
+bash-3.2$ cat << l << ""
+> lllllll
+> l
+> oooooooooooooo
+>
+oooooooooooooo
+
+
+
+ls | export a=kk && echo $a
+
+bash-3.2$ unset HOME
+bash-3.2$ cd
+bash: cd: HOME not set
+bash-3.2$ pwd
+/tmp
+bash-3.2$ cd
+bash: cd: HOME not set
+bash-3.2$ $?
+bash: 1: command not found
+bash-3.2$ export HOME
+bash-3.2$ export | grep HOME
+declare -x HOME
+bash-3.2$ cd
+bash: cd: HOME not set
+bash-3.2$ pwd
+/tmp
+bash-3.2$ export HOME=
+bash-3.2$ cd
+bash-3.2$ pwd
+/tmp
+bash-3.2$ export HOME=""
+bash-3.2$ cd
+bash-3.2$ export HOME="s"
+bash-3.2$ cd
+bash: cd: s: No such file or directory
+
+
+
+cat | ls
+Process 25122: 839 nodes malloced for 360 KB
+Process 25122: 13 leaks for 1488 total leaked bytes.
+
+    13 (1.45K) << TOTAL >>
+
+      6 (816 bytes) ROOT LEAK: 0x7fb35c407700 [256]
+         1 (112 bytes) 0x7fb35c407800 [112]
+         1 (112 bytes) 0x7fb35c407bd0 [112]
+         1 (112 bytes) 0x7fb35c6040c0 [112]
+         1 (112 bytes) 0x7fb35c604170 [112]
+         1 (112 bytes) 0x7fb35c604220 [112]
+
+      6 (576 bytes) ROOT LEAK: 0x7fb35c407420 [256]
+         1 (64 bytes) 0x7fb35c407520 [64]
+         1 (64 bytes) 0x7fb35c4075f0 [64]
+         1 (64 bytes) 0x7fb35c604080 [64]
+         1 (64 bytes) 0x7fb35c604130 [64]
+         1 (64 bytes) 0x7fb35c6041e0 [64]
+
+      1 (96 bytes) ROOT LEAK: <OS_xpc_pipe 0x7fb35c7041b0> [96]
+
+LEAKS
+minishell$ << l cat  -e
+> lll
+> l
+lll$
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuerLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae tincidunt sapien, vel dictum purus. Duis finibus dolor vitae nisl placerat, non pellentesque purus molestie. Nulla facilisi. Praesent sit amet sapien ullamcorper, fringilla nunc quis, gravida massa. Donec justo sapien, pretium quis mattis vel, consectetur quis lorem. Nam finibus ante id blandit pellentesque. Maecenas id odio accumsan, varius velit id, consectetur urna. Mauris ultricies sodales auctor. Vivamus at felis risus. Phasellus ullamcorper hendrerit ante, ut congue elit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuer

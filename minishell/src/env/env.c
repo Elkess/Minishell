@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 13:08:39 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/20 23:45:08 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/23 08:08:38 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,6 @@ int	handle_defaults(t_env **envh)
 	append_defaults(envh, keys, va);
 	return (0);
 }
-
-// TODO: Test it more; you are NOT fully understand how it works 
 
 char	*handle_shlvl(char *val)
 {

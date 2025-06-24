@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:46:03 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/21 11:42:48 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/24 14:50:57 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,13 @@ void	exec_helper(char **cmd, char **env, t_tool *tool, char **path)
 
 	new_path = NULL;
 	i = 0;
-	if (!ft_strchr(cmd[0], '/') && cmd[0] && *cmd[0])
+	if (cmd[0] && *cmd[0] && !ft_strchr(cmd[0], '/'))
 	{
 		while (path && path[i])
 		{
-			new_path = ft_strjoin(path[i], "/", tool);
-			new_path = ft_strjoin(new_path, cmd[0], tool);
-			if (!access(new_path, F_OK))
+			new_path = ft_strjoin_env(path[i], "/", 0);
+			new_path = ft_strjoin_env(new_path, cmd[0], 1);
+			if (!access(new_path, X_OK))
 			{
 				if (execve(new_path, cmd, env) == -1)
 					(print_err(NULL, cmd[0], strerror(errno)),
@@ -69,25 +69,19 @@ void	handle_err(t_tree *cmd, t_tool *tool)
 
 void	execute_child(t_tree *cmd, t_tool *tool, char **env)
 {
-	tool->inside_pipe = 0;
-	(signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_DFL));
-	if (!is_dir(tool->path, cmd->cmd[0]))
+	if ((!access(cmd->cmd[0], X_OK) && (!tool->path || !*tool->path))
+		|| (!access(cmd->cmd[0], X_OK) && ft_strchr(cmd->cmd[0], '/')))
 	{
-		if ((!access(cmd->cmd[0], F_OK) && (!tool->path || !*tool->path))
-			|| (!access(cmd->cmd[0], F_OK) && ft_strchr(cmd->cmd[0], '/')))
+		if (execve(cmd->cmd[0], cmd->cmd, env) == -1)
 		{
-			if (execve(cmd->cmd[0], cmd->cmd, env) == -1)
-			{
-				print_err(NULL, cmd->cmd[0], strerror(errno));
-				exit(
-					126 * (errno == 13 || errno == 20)
-					+ 127 * (errno == 2)
-					+ 1 * (errno != 2 && errno != 20 && errno != 13));
-			}
+			print_err(NULL, cmd->cmd[0], strerror(errno));
+			exit(
+				126 * (errno == 13 || errno == 20)
+				+ 127 * (errno == 2)
+				+ 1 * (errno != 2 && errno != 20 && errno != 13));
 		}
-		exec_helper(cmd->cmd, env, tool, tool->path);
 	}
-	handle_err(cmd, tool);
+	exec_helper(cmd->cmd, env, tool, tool->path);
 }
 
 int	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
@@ -104,7 +98,6 @@ int	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
 	if (tool->pid == 0)
 	{
 		(signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_DFL));
-		tool->inside_pipe = 0;
 		if (!is_dir(tool->path, cmd->cmd[0]))
 			execute_child(cmd, tool, env);
 		handle_err(cmd, tool);

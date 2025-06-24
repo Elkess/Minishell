@@ -1,0 +1,169 @@
+export x="ls -la"
+
+if the variable not quoted like that : $x -> it will expanded splitted by space
+so it will executed as ls -la
+
+
+
+if it quoted like that : "$x" -> it will expanded as a normal string without splitting
+bash: ls -la: command not found
+
+------------------------
+bash-3.2$ echo $? | $?
+bash: 0: command not found
+bash-3.2$ $? | echo $?
+bash: 127: command not found
+0
+bash-3.2$ lss
+bash: lss: command not found
+bash-3.2$ $? | echo $?
+bash: 127: command not found
+0
+bash-3.2$ $? | echo $? | $?
+bash: 0: command not found
+bash: 0: command not found
+bash-3.2$ lss
+bash: lss: command not found
+bash-3.2$ $? | echo $? | $?
+bash: 127: command not found
+bash: 0: command not found
+bash-3.2$ lss
+bash: lss: command not found
+bash-3.2$ $? |  $? | echo $?
+bash: 127: command not found
+bash: 0: command not found
+0
+bash-3.2$ cat > /dev/null | ls
+Makefile        library         src
+include         minishell
+^C
+bash-3.2$ cat > /dev/null | ls
+Makefile        library         src
+include         minishell
+
+minishell$> echo $?
+130
+minishell$> cat > /dev/null | cat
+^C
+minishell$> echo $?
+130
+minishell$> cat > /dev/null | ls
+Makefile        library         src
+include         minishell
+^Cminishell$
+minishell$> echo $?
+0
+minishell$> cat > /dev/null | ls
+Makefile        library         src
+include         minishell
+^Cminishell$> echo $?
+0
+minishell$> cat | cat
+^C
+minishell$> cat | ls
+Makefile        library         src
+include         minishell
+^C
+minishell$> cat > /dev/null | ls
+Makefile        library         src
+include         minishell
+^Cminishell$> cat > /dev/null | ls
+
+
+cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat
+
+ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls
+
+cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls |   cat | ls | cat |cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | cat | ls | wc
+
+mkdir -p a/a && cd a/a/ && rm -rf ../../a && ../../minishell
+
+while true; do leaks -q minishell ; sleep 1; clear; done
+while true; do lsof -c minishell; sleep 1; clear; done
+
+chmod 777 p && cd p && chmod 0 .
+chmod 777 2 && mkdir -p 2/3 && cd 2/3/ && chmod 0 ../../2
+chmod 777 2 && mkdir 2 && cd 2 && chmod 0 ../2
+OR 
+chmod 777 2 && cd 2 && chmod 0 ../2
+cd ..
+
+mkdir -p 1/2/3 && cd 1/2/3/ && rm -rf /mnt/homes/melkess/Desktop/main/minishell/1
+pwd
+cd ..
+
+if exit built-in -> exit with last status DONE
+if (enter) leaks
+/******************************************************************************************/
+➜  minishell$ export a="      "
+➜  minishell$ hfgd
+minishell: hfgd: 2command not found
+➜  minishell$ $a
+zsh: segmentation fault  ./minishell
+
+/******************************************************************************************/
+elkess@e3r6p2 minishell % env -i ./minishell
+➜  minishell$ export a="      "
+➜  minishell$ sss
+minishell: sss: 2command not found
+➜  minishell$ $a
+➜  minishell$ $a
+➜  minishell$ $a
+zsh: segmentation fault  env -i ./minishell
+
+/******************************************************************************************/
+➜  minishell$ chmod 0 . 				DONE
+➜  minishell$ chmod 755 .
+chmod: .: Permission denied
+➜  minishell$ cd ..
+minishell: 4cd: .. Permission denied
+➜  minishell$ pwf
+minishell: pwf: 2command not found
+➜  minishell$ pwd
+zsh: segmentation fault  ./minishell
+
+/******************************************************************************************/
+
+➜  minishell$ echo $$$
+$$
+➜  minishell$ echo $>l
+➜  minishell$ cat l
+zsh: segmentation fault  ./minishell
+
+/******************************************************************************************/
+
+minishell$ ls
+Makefile        Untitled-1.lua  include         library         minishell       p               src
+➜  minishell$ chmod 777 p
+➜  minishell$ cd p
+➜  minishell$ pwd
+/mnt/homes/melkess/Desktop/main/minishell/p
+➜  minishell$ chmod 0 .
+➜  minishell$ pwd
+
+
+/******************************************************************************************/
+
+➜  minishell$ ls
+Makefile        Untitled-1.lua  include         library         minishell       p               src
+➜  minishell$ cd p
+minishell: 4cd: p Permission denied
+➜  minishell$ chmod 777 p
+➜  minishell$ cd p
+➜  minishell$ chmod 0 .
+➜  minishell$ pwd
+/mnt/homes/melkess/Desktop/main/minishell/p
+➜  minishell$ cd ..
+➜  minishell$ pwd
+/mnt/homes/melkess/Desktop/main/minishell
+➜  minishell$
+
+/******************************************************************************************/
+
+minishell$ chmod 777 p
+➜  minishell$ cd p
+➜  minishell$ chmod 0 .
+➜  minishell$ pwd
+PATH=/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/bin:/mnt/homes/melkess/bin:/mnt/homes/melkess/bin:/mnt/homes/melkess/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki:/Library/Apple/usr/bin
+➜  minishell$ cd ..
+minishell: 4cd: .. Permission denied
