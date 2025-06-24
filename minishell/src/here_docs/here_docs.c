@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 18:17:26 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/24 11:16:56 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/24 12:09:51 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	read_from_pipe(t_redir *red, int status, t_tool *tool, int fd)
 			if (!line)
 				break ;
 			lines = ft_strjoin(lines, line, tool);
+			free(line);
 		}
 		red->content = lines;
 		red = red->next;
