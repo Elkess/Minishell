@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_help.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 09:44:53 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/21 15:18:25 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/24 18:20:33 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,51 @@ int	handle_question(t_expand *expand, t_tool *tool, int status)
 	return (1);
 }
 
+char	*ext_data_pars(char *line, int flag)
+{
+	size_t	i;
+
+	i = 0;
+	while (line[i] && ((line[i] != '+' || line[i + 1] != '=')
+			&& line[i] != '='))
+		i++;
+	if (flag == 1)
+	{
+		if (!line[i])
+			return (NULL);
+		if (line[i] == '+' && line[i + 1] == '=')
+			return (ft_substr_env(line, i + 2, ft_strlen(line)));
+		return (ft_substr_env(line, ++i, ft_strlen(line)));
+	}
+	return (ft_substr_env(line, 0, i));
+}
+
+void	check_export_keys(t_expand *expand, t_tree *tree)
+{
+	char	*key;
+	char	*val;
+	int		j;
+
+	key = NULL;
+	val = NULL;
+	expand->flg_split = 0;
+	expand->val_quotes = 0;
+	j = 1;
+	if (!ft_strcmp(tree->cmd[0], "export"))
+		expand->is_there_export = 1;
+	else
+		expand->is_there_export = 0;
+	while (tree->cmd[j])
+	{
+		key = ext_data_pars(tree->cmd[j], 0);
+		val = ext_data_pars(tree->cmd[j], 1);
+		if (is_valid_key(key))
+			expand->flg_split = 1;
+		check_if_quoted(val, expand);
+		j++;
+	}
+}
+
 void	init_expand(t_expand *expand, t_tree *tree)
 {
 	expand->i = 0;
@@ -32,10 +77,8 @@ void	init_expand(t_expand *expand, t_tree *tree)
 	expand->is_wildcard = 0;
 	expand->token = NULL;
 	expand->buff_exp = NULL;
-	if (!ft_strcmp(tree->cmd[0], "export"))
-		expand->is_there_export = 1;
-	else
-		expand->is_there_export = 0;
+	check_export_keys(expand, tree);
+	check_export_split(expand);
 }
 
 void	process_wildcard_expansion(t_expand *expand, t_tool *tool)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 08:56:07 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/22 08:35:43 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/24 18:18:05 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,16 +48,13 @@ static void	expand_dollar(t_expand *expand, t_tool *tool, char *str, int status)
 	env_node = sh_env(tool->envh, var_name);
 	if (env_node && env_node->value)
 	{
-		if (!is_only_whitespace(env_node->value))
-			expand_env_variable(expand, tool, env_node);
-	}
-	else
-	{
-		if (expand->flg == '"' || expand->is_char == 1)
-		{
-			expand->buff_exp = ft_strjoin(expand->buff_exp, "", tool);
-			expand->is_char = 1;
-		}
+		if (ft_strchr(env_node->value, '*'))
+			expand->is_wildcard = 1;
+		if (expand->env_split == 1 && expand->is_there_export == 1)
+			expand_env_with_split(expand, tool, env_node);
+		else if (!is_only_whitespace(env_node->value))
+			expand->buff_exp = ft_strjoin(expand->buff_exp,
+					env_node->value, tool);
 	}
 }
 

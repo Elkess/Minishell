@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_dollar.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 09:40:55 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/21 15:18:11 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/24 18:27:59 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,25 +52,6 @@ char	*extract_var_name(t_expand *expand, t_tool *tool, char *str)
 	return (var_name);
 }
 
-static void	handle_multiple_spaces(t_expand *expand, t_tool *tool, char **words)
-{
-	int	i;
-
-	if (expand->buff_exp)
-	{
-		lst_add_back(&expand->token,
-			new_lst(ft_strdup(expand->buff_exp, tool), tool));
-		expand->buff_exp = NULL;
-	}
-	i = 0;
-	while (words[i])
-	{
-		lst_add_back(&expand->token, new_lst(ft_strdup(words[i], tool), tool));
-		i++;
-	}
-	return ;
-}
-
 static void	handle_space_expansion(t_expand *expand, t_tool *tool, char **words)
 {
 	if (!expand->buff_exp)
@@ -102,22 +83,44 @@ void	expand_env_variable(t_expand *exp, t_tool *tool, t_env *env_node)
 {
 	char	**words;
 
-	if (!env_node->value || env_node->value[0] == '\0')
-		return ;
-	if (env_node->value && ft_strchr(env_node->value, '*'))
-		exp->is_wildcard = 1;
-	if (exp->flg != '"' && !exp->is_there_export
-		&& has_space(env_node->value))
+	if (exp->flg != '"' && !exp->is_there_export && has_space(env_node->value))
 	{
 		words = ft_split(env_node->value, ' ', tool);
 		if (!words || !words[0])
 			return ;
-		if (has_space(words[0]) == 2)
-			handle_multiple_spaces(exp, tool, words);
 		handle_space_expansion(exp, tool, words);
 	}
 	else
 	{
 		exp->buff_exp = ft_strjoin(exp->buff_exp, env_node->value, tool);
+	}
+}
+
+void	expand_env_with_split(t_expand *exp, t_tool *tool, t_env *env_node)
+{
+	int		k;
+
+	k = 0;
+	while (env_node->value[k] && env_node->value[k] == ' ')
+		k++;
+	while (env_node->value[k] && env_node->value[k] != ' ')
+	{
+		exp->buff_exp = strjoin_char(exp->buff_exp, env_node->value[k], tool);
+		k++;
+	}
+	if (exp->buff_exp && env_node->value[k])
+	{
+		lst_add_back(&exp->token,
+			new_lst(ft_strdup(exp->buff_exp, tool), tool));
+		exp->buff_exp = NULL;
+		exp->is_char = 0;
+		while (env_node->value[k] && env_node->value[k] == ' ')
+			k++;
+		while (env_node->value[k])
+		{
+			k = hlp(env_node->value, k, exp, tool);
+			while (env_node->value[k] && env_node->value[k] == ' ')
+				k++;
+		}
 	}
 }

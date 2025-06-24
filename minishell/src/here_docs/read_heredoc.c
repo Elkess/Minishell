@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   read_heredoc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 16:34:19 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/21 11:44:01 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/24 18:28:07 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,4 +73,20 @@ void	read_from_heredoc(t_redir *red, t_tool *tool, int status)
 		}
 		red = red->next;
 	}
+}
+
+int	hlp(const char *str, int i, t_expand *exp, t_tool *tool)
+{
+	int		start;
+	char	*word;
+
+	start = i;
+	while (str[i] && str[i] != ' ')
+		i++;
+	if (i > start)
+	{
+		word = ft_substr(str, start, i - start, tool);
+		lst_add_back(&exp->token, new_lst(word, tool));
+	}
+	return (i);
 }
