@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:29:32 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/19 16:00:14 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/25 11:22:42 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,4 +65,5 @@ void	clear_garbcoll(t_garbcoll *head)
 		head = head->next;
 		free(token);
 	}
+	close_all();
 }
