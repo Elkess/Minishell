@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 08:13:49 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/25 11:47:10 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/25 13:35:43 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void	init_struct_tool_exec(t_tool *tool, t_env **envh, char **env)
 	tool->signal = -2;
 	tool->inside_pipe = 0;
 	tool->pwd_backup = NULL;
+	tool->grbg = NULL;
 	tcgetattr(STDIN_FILENO, &tool->orig_termios);
 	fun_help();
 	*envh = fill_env(env);

@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 07:50:25 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/25 11:40:55 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/25 13:31:14 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ t_env	*append_node(t_env *head, char *key, char *val)
 
 	node = malloc(sizeof(t_env));
 	if (!node)
-		(head);
+		return (head);
 	node->key = key;
 	node->value = val;
 	node->next = NULL;
