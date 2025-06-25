@@ -167,3 +167,11 @@ minishell$ chmod 777 p
 PATH=/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/bin:/mnt/homes/melkess/bin:/mnt/homes/melkess/bin:/mnt/homes/melkess/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/mnt/homes/melkess/goinfre/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki:/Library/Apple/usr/bin
 ➜  minishell$ cd ..
 minishell: 4cd: .. Permission denied
+
+understand every func 
+
+test exit from the start
+test << haredc in multi processe 
+test failing malloc
+
+test ALL

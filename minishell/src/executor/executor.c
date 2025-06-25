@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:51:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/24 11:43:47 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/25 11:28:11 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ int	executor(t_tree *tree, t_env **envh, t_tool	*tool)
 		return (1);
 	expanded_cmd = handel_expand(tree, status, tool);
 	tree->cmd = expanded_cmd;
-	(expand_redir(tree, tool, status), ft_dup(fds, 1));
+	(expand_redir(tree, tool, status), ft_dup(fds, 1, tool));
 	if (tree->redirs)
 	{
 		read_from_heredoc(tree->redirs, tool, status);
@@ -140,7 +140,7 @@ int	executor(t_tree *tree, t_env **envh, t_tool	*tool)
 		status = execute_cmd(tree, envh, status, tool);
 	else if (!redir_status && tree->type == NODE_PARENTHS)
 		status = execute_tree(tree->left, envh, tool);
-	ft_dup(fds, 0);
+	ft_dup(fds, 0, tool);
 	if (redir_status)
 		return (redir_status);
 	return (status);

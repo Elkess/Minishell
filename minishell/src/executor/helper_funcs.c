@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:39:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/23 11:31:52 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/25 11:28:54 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ char	**struct_to_darr(t_env *envh, t_tool *tool)
 	len = ft_envlen(envh);
 	env = malloc((len +1) * sizeof(char *));
 	if (!env)
-		(perror(""), free_envh(envh), exit (2));
+		(NULL);
 	add_to_grbg(&tool->grbg, env);
 	len = 0;
 	while (envh)
@@ -90,7 +90,7 @@ char	**struct_to_darr(t_env *envh, t_tool *tool)
 	return (env);
 }
 
-void	ft_dup(int *io, int flag)
+void	ft_dup(int *io, int flag, t_tool *tool)
 {
 	if (flag)
 	{
@@ -99,6 +99,7 @@ void	ft_dup(int *io, int flag)
 		if (io[0] == -1 || io[1] == -1)
 		{
 			(close(io[0]), close(io[1]));
+			clear_garbcoll(tool->grbg);
 			(perror("dup failed"), exit (1));
 		}
 	}
@@ -107,6 +108,7 @@ void	ft_dup(int *io, int flag)
 		if (dup2(io[0], 0) < 0 || dup2(io[1], 1) < 0)
 		{
 			(close(io[0]), close(io[1]));
+			clear_garbcoll(tool->grbg);
 			(perror("dup failed"), exit (1));
 		}
 		(close(io[0]), close(io[1]));

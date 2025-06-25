@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 16:37:47 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/24 11:19:51 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/25 11:26:54 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,5 +88,6 @@ void	handle_child(t_redir *red, t_tool *tool, int fd[2])
 	close(fd[0]);
 	signal(SIGINT, SIG_DFL);
 	here_doc(tool, red, fd[1]);
+	clear_garbcoll(tool->grbg);
 	exit(0);
 }

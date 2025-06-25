@@ -70,6 +70,7 @@ Funs =	src/main.c \
 		src/here_docs/read_heredoc.c \
 		src/expand/expand_dollar.c \
 		src/expand/expand_help.c \
+		src/expand/expand_split.c \
 		src/parser/tree_help.c \
 		src/main_sett.c \
 		src/main_utils.c \

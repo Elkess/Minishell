@@ -3,34 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:46:03 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/24 20:20:47 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/25 11:39:19 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	is_dir(char **p, char *path)
+int	is_dir(char **p, char *path, t_tool *tool)
 {
 	struct stat	s;
 
 	if (!ft_strcmp(path, "."))
-		(print_err(NULL, path, "command not found"), exit(127));
+		(print_err(NULL, path, "command not found"),
+			clear_garbcoll(tool), exit(127));
 	if (!stat(path, &s) && S_ISDIR(s.st_mode))
 	{
 		if ((p && *p && !ft_strcmp(path, ".."))
 			|| (!ft_strchr(path, '/') && p && *p))
-			(print_err(NULL, path, "command not found"), exit(127));
+			(print_err(NULL, path, "command not found"),
+				clear_garbcoll(tool), exit(127));
 		else if (!p || !*p || ft_strchr(path, '/'))
-			(print_err(NULL, path, "is a directory"), exit(126));
+			(print_err(NULL, path, "is a directory"),
+				clear_garbcoll(tool), exit(126));
 		return (1);
 	}
 	return (0);
 }
 
-void	exec_helper(char **cmd, char **env, char **path)
+void	exec_helper(char **cmd, char **env, t_tool *tool, char **path)
 {
 	size_t	i;
 	char	*new_path;
@@ -41,12 +44,13 @@ void	exec_helper(char **cmd, char **env, char **path)
 	{
 		while (path && path[i])
 		{
-			new_path = ft_strjoin_env(path[i], "/", 0);
-			new_path = ft_strjoin_env(new_path, cmd[0], 1);
+			new_path = ft_strjoin(path[i], "/", tool);
+			new_path = ft_strjoin(new_path, cmd[0], tool);
 			if (!access(new_path, X_OK))
 			{
 				if (execve(new_path, cmd, env) == -1)
 					(print_err(NULL, cmd[0], strerror(errno)),
+						clear_garbcoll(tool),
 						exit(126 * (errno == 13 || errno == 20)
 							+ 127 * (errno == 2)
 							+ 1 * (errno != 2 && errno != 20 && errno != 13)));
@@ -59,12 +63,15 @@ void	exec_helper(char **cmd, char **env, char **path)
 void	handle_err(t_tree *cmd, t_tool *tool)
 {
 	if (errno == 13)
-		(print_err(NULL, cmd->cmd[0], strerror(errno)), exit (126));
+		(print_err(NULL, cmd->cmd[0], strerror(errno)),
+			clear_garbcoll(tool), exit (126));
 	if (((errno == 20 || errno == 2) && ft_strchr(cmd->cmd[0], '/'))
 		|| !tool->path || !*tool->path)
 		(print_err(NULL, cmd->cmd[0], strerror(errno)),
+			clear_garbcoll(tool),
 			exit (126 * (errno != 2) + 127 * (errno == 2)));
-	(print_err(NULL, cmd->cmd[0], "command not found"), exit(127));
+	(print_err(NULL, cmd->cmd[0], "command not found"),
+		clear_garbcoll(tool), exit(127));
 }
 
 void	execute_child(t_tree *cmd, t_tool *tool, char **env)
@@ -75,13 +82,14 @@ void	execute_child(t_tree *cmd, t_tool *tool, char **env)
 		if (execve(cmd->cmd[0], cmd->cmd, env) == -1)
 		{
 			print_err(NULL, cmd->cmd[0], strerror(errno));
+			clear_garbcoll(tool);
 			exit(
 				126 * (errno == 13 || errno == 20)
 				+ 127 * (errno == 2)
 				+ 1 * (errno != 2 && errno != 20 && errno != 13));
 		}
 	}
-	exec_helper(cmd->cmd, env, tool->path);
+	exec_helper(cmd->cmd, env, tool, tool->path);
 }
 
 int	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
@@ -98,7 +106,7 @@ int	execute_one(t_tree *cmd, t_env *envh, t_tool *tool)
 	if (tool->pid == 0)
 	{
 		(signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_DFL));
-		if (!is_dir(tool->path, cmd->cmd[0]))
+		if (!is_dir(tool->path, cmd->cmd[0], tool))
 			execute_child(cmd, tool, env);
 		handle_err(cmd, tool);
 	}

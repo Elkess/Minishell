@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 08:39:55 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/23 15:22:52 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/25 11:30:16 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,10 @@ int	failed_fork(t_tool *tool)
 {
 	perror("Fork failed");
 	if (tool->inside_pipe == 1)
+	{
+		clear_garbcoll(tool);
 		exit (1);
+	}
 	else
 		return (1);
 }

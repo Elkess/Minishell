@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/25 11:22:32 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/25 13:26:56 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,9 +257,10 @@ char		**struct_to_darr(t_env *envh, t_tool *tool);
 void		here_docs(t_redir *redirs, t_tool *tool);
 void		handle_herdocs(t_tree *tree, t_tool *tool);
 int			ft_atoi(const char *str);
-long long	ft_atol_ex(char *str, int sign, int i);
+long long	ft_atol_ex(char *str, int sign, int i, t_tool *tool);
 size_t		ft_dstrlen(const char **s);
 char		**ft_split(char const *s, char c, t_tool *tool);
+char		**ft_split_var(char const *s, t_tool *tool);
 char		*ft_strjoin(char *s1, char *s2, t_tool *tool);
 void		ft_putchar_fd(char c, int fd);
 char		*ft_substr(char const *s, unsigned int start,
@@ -287,7 +288,7 @@ void		process_wildcard_expansion(t_expand *expand, t_tool *tool);
 int			is_break_token(int type);
 void		update_links(t_token **input, t_token *prev, t_token *target);
 void		add_to_index(t_redir *after, int index);
-void		ft_dup(int *io, int flag);
+void		ft_dup(int *io, int flag, t_tool *tool);
 void		read_from_heredoc(t_redir *red, t_tool *tool, int status);
 void		handle_child(t_redir *red, t_tool *tool, int fd[2]);
 size_t		there_is_herdoc(t_redir *red);
