@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 08:14:34 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/24 18:30:03 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/25 11:49:52 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	is_only_whitespace(char *str)
 		return (1);
 	while (str[i])
 	{
-		if (!is_space(str[i]))
+		if (!is_space(str[i]) || str[i] != '\t')
 			return (0);
 		i++;
 	}

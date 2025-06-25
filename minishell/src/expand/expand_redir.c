@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_redir.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 14:55:36 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/20 18:21:28 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/25 10:12:58 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,9 +76,6 @@ static char	*handle_var_case(char *line, int *i, char *result, t_tool *tool)
 
 static char	*handle_dollar_exp(char *line, int *i, char *result, t_tool *tool)
 {
-	char	*var_name;
-
-	var_name = NULL;
 	(*i)++;
 	if (line[*i] == '?')
 	{
@@ -104,12 +101,10 @@ static char	*handle_dollar_exp(char *line, int *i, char *result, t_tool *tool)
 
 char	*expand_herdoc_content(char *line, t_tool *tool, int status)
 {
-	t_env	*expand_line;
 	char	*result;
 	int		i;
 
 	i = 0;
-	expand_line = NULL;
 	result = NULL;
 	tool->status_exp = status;
 	while (line[i])

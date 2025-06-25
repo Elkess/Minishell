@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 14:54:25 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/21 18:26:38 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/25 11:55:18 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +53,11 @@ int	has_space(const char *str)
 {
 	if (!str)
 		return (0);
-	if (*str == 32)
+	if (*str == 32 || *str == '\t')
 		return (2);
 	while (*str)
 	{
-		if (*str == 32)
+		if (*str == 32 || *str == '\t')
 			return (1);
 		str++;
 	}
