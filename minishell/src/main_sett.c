@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 08:13:49 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/21 13:15:33 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/25 11:22:32 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	init_struct_tool_exec(t_tool *tool, t_env **envh, char **env)
 	*envh = fill_env(env);
 }
 
-void	colse_all(void)
+void	close_all(void)
 {
 	int	i;
 

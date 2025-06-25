@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/25 09:59:41 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/25 11:22:32 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -301,7 +301,7 @@ void		init_struct_tool_exec(t_tool *tool, t_env **envh, char **env);
 void		fun_help(void);
 void		init_struct_tool_exec(t_tool *tool, t_env **envh, char **env);
 void		expand_env_with_split(t_expand *exp, t_tool *tool, t_env *env_node);
-void		colse_all(void);
+void		close_all(void);
 void		main_helper(t_tool *tool, char *line);
 void		main_sigs(t_tool *tool);
 int			is_only_whitespace(char *str);
