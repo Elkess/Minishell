@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 09:40:55 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/25 13:07:20 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/25 15:30:28 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,29 +54,31 @@ char	*extract_var_name(t_expand *expand, t_tool *tool, char *str)
 
 static void	handle_space_expansion(t_expand *expand, t_tool *tool, char **words)
 {
-	if (!expand->buff_exp)
+	int	i;
+	int	word_count;
+
+	word_count = 0;
+	while (words[word_count])
+		word_count++;
+	i = 0;
+	while (i < word_count)
 	{
-		if (words[0])
-			lst_add_back(&expand->token,
-				new_lst(ft_strdup(words[0], tool), tool));
-		if (words[1])
-			expand->buff_exp = ft_strjoin(expand->buff_exp, words[1], tool);
-		else
-			expand->buff_exp = NULL;
-	}
-	else
-	{
-		if (words[0])
-			expand->buff_exp = ft_strjoin(expand->buff_exp, words[0], tool);
-		if (expand->buff_exp)
+		if (i == 0 && expand->buff_exp)
+		{
+			expand->buff_exp = ft_strjoin(expand->buff_exp, words[i], tool);
 			lst_add_back(&expand->token,
 				new_lst(ft_strdup(expand->buff_exp, tool), tool));
-		if (words[1])
-			expand->buff_exp = ft_strjoin(NULL, words[1], tool);
-		else
 			expand->buff_exp = NULL;
+		}
+		else if (i == word_count - 1)
+			expand->buff_exp = ft_strdup(words[i], tool);
+		else
+		{
+			lst_add_back(&expand->token,
+				new_lst(ft_strdup(words[i], tool), tool));
+		}
+		i++;
 	}
-	return ;
 }
 
 void	expand_env_variable(t_expand *exp, t_tool *tool, t_env *env_node)
