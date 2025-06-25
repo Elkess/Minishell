@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 09:44:53 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/24 18:20:33 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/25 09:57:27 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	handle_question(t_expand *expand, t_tool *tool, int status)
 	return (1);
 }
 
-char	*ext_data_pars(char *line, int flag)
+char	*ext_data_pars(char *line, int flag, t_tool *tool)
 {
 	size_t	i;
 
@@ -36,13 +36,13 @@ char	*ext_data_pars(char *line, int flag)
 		if (!line[i])
 			return (NULL);
 		if (line[i] == '+' && line[i + 1] == '=')
-			return (ft_substr_env(line, i + 2, ft_strlen(line)));
-		return (ft_substr_env(line, ++i, ft_strlen(line)));
+			return (ft_substr(line, i + 2, ft_strlen(line), tool));
+		return (ft_substr(line, ++i, ft_strlen(line), tool));
 	}
-	return (ft_substr_env(line, 0, i));
+	return (ft_substr(line, 0, i, tool));
 }
 
-void	check_export_keys(t_expand *expand, t_tree *tree)
+void	check_export_keys(t_expand *expand, t_tree *tree, t_tool *tool)
 {
 	char	*key;
 	char	*val;
@@ -59,8 +59,8 @@ void	check_export_keys(t_expand *expand, t_tree *tree)
 		expand->is_there_export = 0;
 	while (tree->cmd[j])
 	{
-		key = ext_data_pars(tree->cmd[j], 0);
-		val = ext_data_pars(tree->cmd[j], 1);
+		key = ext_data_pars(tree->cmd[j], 0, tool);
+		val = ext_data_pars(tree->cmd[j], 1, tool);
 		if (is_valid_key(key))
 			expand->flg_split = 1;
 		check_if_quoted(val, expand);
@@ -68,7 +68,7 @@ void	check_export_keys(t_expand *expand, t_tree *tree)
 	}
 }
 
-void	init_expand(t_expand *expand, t_tree *tree)
+void	init_expand(t_expand *expand, t_tree *tree, t_tool *tool)
 {
 	expand->i = 0;
 	expand->j = 0;
@@ -77,7 +77,7 @@ void	init_expand(t_expand *expand, t_tree *tree)
 	expand->is_wildcard = 0;
 	expand->token = NULL;
 	expand->buff_exp = NULL;
-	check_export_keys(expand, tree);
+	check_export_keys(expand, tree, tool);
 	check_export_split(expand);
 }
 

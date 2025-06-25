@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 08:56:07 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/24 18:18:05 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/25 10:00:56 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,7 @@ static void	expand_dollar(t_expand *expand, t_tool *tool, char *str, int status)
 		if (expand->env_split == 1 && expand->is_there_export == 1)
 			expand_env_with_split(expand, tool, env_node);
 		else if (!is_only_whitespace(env_node->value))
-			expand->buff_exp = ft_strjoin(expand->buff_exp,
-					env_node->value, tool);
+			expand_env_variable(expand, tool, env_node);
 	}
 }
 
@@ -109,7 +108,7 @@ char	**handel_expand(t_tree *tree, int exit_status, t_tool *tool)
 
 	if (!tree || !tree->cmd)
 		return (NULL);
-	init_expand(&expand, tree);
+	init_expand(&expand, tree, tool);
 	while (tree->cmd[expand.i])
 	{
 		cmd_arg(&expand, tree->cmd[expand.i], exit_status, tool);

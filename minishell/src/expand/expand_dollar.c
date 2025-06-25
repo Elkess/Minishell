@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 09:40:55 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/24 18:27:59 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/25 09:42:24 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,9 +91,7 @@ void	expand_env_variable(t_expand *exp, t_tool *tool, t_env *env_node)
 		handle_space_expansion(exp, tool, words);
 	}
 	else
-	{
 		exp->buff_exp = ft_strjoin(exp->buff_exp, env_node->value, tool);
-	}
 }
 
 void	expand_env_with_split(t_expand *exp, t_tool *tool, t_env *env_node)

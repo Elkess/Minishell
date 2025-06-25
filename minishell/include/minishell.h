@@ -6,7 +6,7 @@
 /*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/24 20:19:08 by sgmih            ###   ########.fr       */
+/*   Updated: 2025/06/25 09:59:41 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,7 +282,7 @@ int			handle_special(t_expand *exp, t_tool *tool, char *str, int status);
 char		*extract_var_name(t_expand *expand, t_tool *tool, char *str);
 void		expand_env_variable(t_expand *exp, t_tool *tool, t_env *env_node);
 int			handle_question(t_expand *expand, t_tool *tool, int status);
-void		init_expand(t_expand *expand, t_tree *tree);
+void		init_expand(t_expand *expand, t_tree *tree, t_tool *tool);
 void		process_wildcard_expansion(t_expand *expand, t_tool *tool);
 int			is_break_token(int type);
 void		update_links(t_token **input, t_token *prev, t_token *target);
