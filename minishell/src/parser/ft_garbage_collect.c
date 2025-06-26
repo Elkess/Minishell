@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:29:32 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/25 13:34:17 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/25 18:33:13 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	add_to_grbg(t_garbcoll **head, void *value)
 	}
 }
 
-void	clear_garbcoll(t_garbcoll *head)
+void	clear_garbcoll(t_garbcoll *head, int flag)
 {
 	t_garbcoll	*token;
 
@@ -65,5 +65,6 @@ void	clear_garbcoll(t_garbcoll *head)
 		head = head->next;
 		free(token);
 	}
-	close_all();
+	if (flag)
+		close_all();
 }

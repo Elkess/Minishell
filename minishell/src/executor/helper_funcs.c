@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:39:01 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/25 11:28:54 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/25 18:46:02 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void	ft_dup(int *io, int flag, t_tool *tool)
 		if (io[0] == -1 || io[1] == -1)
 		{
 			(close(io[0]), close(io[1]));
-			clear_garbcoll(tool->grbg);
+			clear_garbcoll(tool->grbg, 1);
 			(perror("dup failed"), exit (1));
 		}
 	}
@@ -108,7 +108,7 @@ void	ft_dup(int *io, int flag, t_tool *tool)
 		if (dup2(io[0], 0) < 0 || dup2(io[1], 1) < 0)
 		{
 			(close(io[0]), close(io[1]));
-			clear_garbcoll(tool->grbg);
+			clear_garbcoll(tool->grbg, 1);
 			(perror("dup failed"), exit (1));
 		}
 		(close(io[0]), close(io[1]));

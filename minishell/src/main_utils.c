@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 08:09:11 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/25 13:38:01 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/25 18:33:49 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	main_helper(t_tool *tool, char *line)
 		ft_putstr_fd("Quit: 3\n", 2);
 	tool->inside_pipe = 0;
 	free(line);
-	clear_garbcoll(tool->grbg);
+	clear_garbcoll(tool->grbg, 1);
 	tool->grbg = NULL;
 }
 

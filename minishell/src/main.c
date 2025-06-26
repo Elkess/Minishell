@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:21:18 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/25 13:38:28 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/25 18:34:04 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ char	*ft_get_prompt(t_tool *tool)
 	if (!prompt)
 	{
 		ft_putstr_fd("exit\n", 2);
-		clear_garbcoll(tool->grbg);
+		clear_garbcoll(tool->grbg, 1);
 		exit(tool->err);
 	}
 	return (prompt);
@@ -43,7 +43,7 @@ void	setup_herdocs(t_tree *tree, t_tool *tool)
 	if (count_heredocs(tree) > 16)
 		(ft_putstr_fd(
 				"minishell: maximum here-document count exceeded", 2),
-			clear_garbcoll(tool->grbg), exit(2));
+			clear_garbcoll(tool->grbg, 1), exit(2));
 	handle_herdocs(tree, tool);
 }
 
@@ -52,7 +52,7 @@ void	main_err(t_tool *tool, char *line)
 	tool->herdoc_err = 0;
 	tool->err = 1;
 	free(line);
-	clear_garbcoll(tool->grbg);
+	clear_garbcoll(tool->grbg, 1);
 }
 
 int	main(int ac, char **av, char **env)

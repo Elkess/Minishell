@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/25 13:26:56 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/25 21:20:56 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,7 @@ void		lst_add_back(t_token **head, t_token *token);
 void		hundel_quotes_paren(t_tool *tool, char cmd);
 void		add_redir(t_redir **redirs, t_redir *new_redir);
 void		add_to_grbg(t_garbcoll **head, void *value);
-void		clear_garbcoll(t_garbcoll *head);
+void		clear_garbcoll(t_garbcoll *head, int flag);
 int			is_delimter(char c, char d);
 int			pars_err(t_token **token, t_tool *tool);
 char		*strjoin_char(char *str, char c, t_tool *tool);

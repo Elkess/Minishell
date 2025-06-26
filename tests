@@ -229,3 +229,284 @@ minishell$ '$b'
 minishell: $b: command not found
 minishell$ ls$a-l$b-a
 minishell: ls-l: command not found
+
+bash-3.2$ echo ls$a-l$b-a
+ls -l -a
+bash-3.2$ export x="   ls                 -l     -a      "
+bash-3.2$ $x
+total 8
+drwxrwxrwt  7 root     wheel  224 Jun 25 15:33 .
+drwxr-xr-x  6 root     wheel  192 Feb 22  2023 ..
+drwx------  4 melkess  wheel  128 Jun 25 12:55 .vbox-melkess-ipc
+drwx------  3 melkess  wheel   96 Jun 25 12:55 com.apple.launchd.0XhVy8I4Jd
+-rw-r--r--  1 root     wheel   48 Jun 25 15:31 last_fs_sync
+drwxr-xr-x  2 root     wheel   64 Jun 25 12:52 powerlog
+drwx------  2 root     wheel   64 Jun 25 12:52 pymp-wswuja69
+bash-3.2$ $x$x
+ls: -a: No such file or directory
+ls: -l: No such file or directory
+ls: ls: No such file or directory
+bash-3.2$ echo $x$x
+ls -l -a ls -l -a
+bash-3.2$ export x="   ls                 -l     -a"
+bash-3.2$ echo $x$x
+ls -l -a ls -l -a
+
+minishell$ echo -nnn
+minishell$ echo -nnne
+-nnne
+minishell$ echo -nnnt
+-nnnt
+minishell$ echo -
+-
+minishell$ echo "hello"
+hello
+minishell$ echo "hello " world $a
+hello  world
+minishell$ echo "hello " world $a""
+hello  world
+minishell$ echo ""
+
+minishell$ echo $""
+
+minishell$ ech$o $""
+minishell: ech: command not found
+minishell$ echo $""$a
+
+minishell$ echo /
+/
+minishell$ exit 7 4
+exit
+minishell: exit: too many arguments
+minishell$ echo $?
+1
+minishell$ exit | exit
+minishell$ exit 7  4 > k
+exit
+minishell: exit: too many arguments
+minishell$ exit | exit 5
+minishell$ echo $?
+5
+*******************************************
+minishell$ top
+minishell$ python
+
+WARNING: Python 2.7 is not recommended.
+This version is included in macOS for compatibility with legacy software.
+Future versions of macOS will not include Python 2.7.
+Instead, it is recommended that you transition to using 'python3' from within Terminal.
+
+Python 2.7.16 (default, Mar 25 2021, 03:11:28)
+[GCC 4.2.1 Compatible Apple LLVM 11.0.3 (clang-1103.0.29.20) (-macos10.15-objc- on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>>
+KeyboardInterrupt
+>>>
+KeyboardInterrupt
+>>>
+KeyboardInterrupt
+>>>
+KeyboardInterrupt
+>>>
+KeyboardInterrupt
+>>>
+>>> ^D
+minishell$ $_
+minishell$
+exit
+minishell$ "" | ""
+minishell: : command not found
+minishell: : command not found
+minishell$ "" | ""*
+minishell: : command not found
+minishell: Makefile: command not found
+minishell$ < *
+minishell: *:  ambiguous redirect
+minishell$ < "*
+minishell: syntax error quotes
+"minishell$ "
+minishell$ < "*"
+minishell: *: No such file or directory
+minishell$ < $'"USER"'
+minishell: "USER": No such file or directory
+minishell$ < $'"$USER"'
+minishell: "$USER": No such file or directory
+minishell$ < $'"$USER'"'
+minishell: syntax error quotes
+minishell$
+minishell$ < $'"'"$USER"'"'
+minishell: "melkess": No such file or directory
+minishell$ < '"'"$USER"'"'
+minishell: "melkess": No such file or directory
+minishell$ < '"'"'$USER'"'"'
+minishell: "'melkess'": No such file or directory
+minishell$ < '"'"'"$USER"'"'"'
+minishell: "'melkess'": No such file or directory
+minishell$ < '"'"'"''$USER''"'"'"'
+minishell: "'melkess'": No such file or directory
+minishell$ < '"'"'"''$USER''"'"'"' ''
+minishell: "'melkess'": No such file or directory
+minishell$ < '"'"'"''$USER''"'"'"' $''
+minishell: "'melkess'": No such file or directory
+minishell$ < '"'"'"''$USER''"'"'"' $'$'$''
+minishell: "'melkess'": No such file or directory
+minishell$ < '"'"'"''$USER''"'"'"' $'$'$''<>
+minishell: syntax error near unexpected token `>'
+minishell$ < '"'"'"''$USER''"'"'"' $'$'$''<
+minishell: syntax error near unexpected token `newline'
+minishell$ < '"'"'"''$USER''"'"'"' $'$'$''|
+minishell: syntax error near unexpected token `|'
+minishell$ ||
+minishell: syntax error near unexpected token `||'
+minishell$ 1 || !
+minishell: 1: command not found
+minishell: !: command not found
+minishell$ 1 || 1
+minishell: 1: command not found
+minishell: 1: command not found
+minishell$ $""
+minishell: : command not found
+minishell$ $""$""$$
+minishell: $: command not found
+minishell$ echo * cat
+Makefile include k l library minishell src cat
+minishell$ echo * | cat
+Makefile include k l library minishell src
+minishell$ echo * | cat -e
+Makefile include k l library minishell src$
+minishell$ ls | grep M | tr M X
+Xakefile
+minishell$ ls | grep M | tr M X | wx -l
+minishell: wx: command not found
+minishell$ ls | grep M | tr M X | wc -l
+       1
+minishell$ wc
+wq
+wq
+       2       2       6
+minishell$ awk '{a+=1 ,print a}'
+awk: syntax error at source line 1
+ context is
+	{a+=1 >>>  , <<<
+awk: illegal statement at source line 1
+awk: illegal statement at source line 1
+minishell$
+minishell$
+minishell$ ()
+minishell: syntax error near unexpected token `('
+minishell$ ("")
+minishell: : command not found
+minishell$ $(""$)
+minishell: syntax error near unexpected token `('
+minishell$ $(""$)$""()
+minishell: syntax error near unexpected token `('
+minishell$
+minishell$
+minishell$ $(""$)$"""()
+minishell: syntax error quotes
+minishell$ $(""$)$"""""()
+minishell: syntax error quotes
+minishell$
+minishell$ ("") | ("")
+minishell: : command not found
+minishell: : command not found
+minishell$ ("") $a | $a ("")
+minishell: syntax error near unexpected token `$a'
+minishell$ ("") $a < Makefile "" | $a ("")
+minishell: syntax error near unexpected token `$a'
+minishell$
+minishell$
+minishell$
+minishell$ echo $?
+1
+minishell$ ("") $a < Makefile "" | $a ("")
+minishell: syntax error near unexpected token `$a'
+minishell$ echo $?
+258
+minishell$ echo hello > ou
+minishell$ < ou << a < ou << a < ou < dd env >>out
+> a
+> a
+minishell: dd: No such file or directory
+minishell$ << a cat
+> hello
+> hello
+> hello
+> hello
+>
+hello
+hello
+hello
+hello
+minishell$ << ("a")
+minishell: syntax error near unexpected token `('
+minishell$ << $("a"$)
+minishell: syntax error near unexpected token `('
+minishell$ << $("a"$")"
+minishell: syntax error near unexpected token `)'
+minishell$ << $"(""a"$")"
+> a
+> a
+>  a
+> $
+> ()
+> << $"(""a"$")"
+> $"(""a"$")"
+> $(a$)
+minishell$ << ""a
+> $USER
+minishell$ << ""a cat
+> $USER
+>
+$USER
+minishell$ << a cat
+> $USER
+>
+melkess
+minishell$
+exit
+*******************************************
+
+------------------------
+minishell$ export a="c b"
+minishell$ export $a""=$a
+minishell: export: `=c ': not a valid identifier
+-----------------------
+bash-3.2$ unset ""                     DONE
+bash: unset: `': not a valid identifier
+----------------
+bash: ls: No such file or directory    DONE
+bash-3.2$ echo $?
+127
+------------------------
+minishell$ cd $OLDPWD         GOING
+minishell$ pwd
+/mnt/homes/melkess
+minishell$ pwd
+/mnt/homes/melkess
+minishell$ cd Desktop/_minishell-1/minishell/
+minishell$ unset PWD
+minishell$ cd ..
+minishell$ pwd
+/mnt/homes/melkess/Desktop/_minishell-1
+minishell$ echo $PWD
+
+minishell$ echo $OLDPWD
+/mnt/homes/melkess/Desktop/_minishell-1/minishell
+minishell$ unset OLDPWD
+minishell$ cd ..
+minishell$ echo $OLDPWD
+
+------------------------
+minishell$ cat ls
+minishell: cat: No such file or directory
+minishell$ /bin/cat ls
+#!/bin/sh
+minishell$ /bin/echo "echo hello" >> ls
+minishell$ ls
+format
+------------------------
+------------------------
+------------------------
+------------------------
+------------------------

@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:46:03 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/25 13:31:01 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/25 18:35:19 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,16 @@ int	is_dir(char **p, char *path, t_tool *tool)
 
 	if (!ft_strcmp(path, "."))
 		(print_err(NULL, path, "command not found"),
-			clear_garbcoll(tool->grbg), exit(127));
+			clear_garbcoll(tool->grbg, 1), exit(127));
 	if (!stat(path, &s) && S_ISDIR(s.st_mode))
 	{
 		if ((p && *p && !ft_strcmp(path, ".."))
 			|| (!ft_strchr(path, '/') && p && *p))
 			(print_err(NULL, path, "command not found"),
-				clear_garbcoll(tool->grbg), exit(127));
+				clear_garbcoll(tool->grbg, 1), exit(127));
 		else if (!p || !*p || ft_strchr(path, '/'))
 			(print_err(NULL, path, "is a directory"),
-				clear_garbcoll(tool->grbg), exit(126));
+				clear_garbcoll(tool->grbg, 1), exit(126));
 		return (1);
 	}
 	return (0);
@@ -50,7 +50,7 @@ void	exec_helper(char **cmd, char **env, t_tool *tool, char **path)
 			{
 				if (execve(new_path, cmd, env) == -1)
 					(print_err(NULL, cmd[0], strerror(errno)),
-						clear_garbcoll(tool->grbg),
+						clear_garbcoll(tool->grbg, 0),
 						exit(126 * (errno == 13 || errno == 20)
 							+ 127 * (errno == 2)
 							+ 1 * (errno != 2 && errno != 20 && errno != 13)));
@@ -64,14 +64,14 @@ void	handle_err(t_tree *cmd, t_tool *tool)
 {
 	if (errno == 13)
 		(print_err(NULL, cmd->cmd[0], strerror(errno)),
-			clear_garbcoll(tool->grbg), exit (126));
+			clear_garbcoll(tool->grbg, 0), exit (126));
 	if (((errno == 20 || errno == 2) && ft_strchr(cmd->cmd[0], '/'))
 		|| !tool->path || !*tool->path)
 		(print_err(NULL, cmd->cmd[0], strerror(errno)),
-			clear_garbcoll(tool->grbg),
+			clear_garbcoll(tool->grbg, 0),
 			exit (126 * (errno != 2) + 127 * (errno == 2)));
 	(print_err(NULL, cmd->cmd[0], "command not found"),
-		clear_garbcoll(tool->grbg), exit(127));
+		clear_garbcoll(tool->grbg, 0), exit(127));
 }
 
 void	execute_child(t_tree *cmd, t_tool *tool, char **env)
@@ -82,7 +82,7 @@ void	execute_child(t_tree *cmd, t_tool *tool, char **env)
 		if (execve(cmd->cmd[0], cmd->cmd, env) == -1)
 		{
 			print_err(NULL, cmd->cmd[0], strerror(errno));
-			clear_garbcoll(tool->grbg);
+			clear_garbcoll(tool->grbg, 0);
 			exit(
 				126 * (errno == 13 || errno == 20)
 				+ 127 * (errno == 2)

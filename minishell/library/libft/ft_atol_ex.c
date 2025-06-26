@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 11:29:09 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/25 12:05:14 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/25 18:33:43 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ long long	ft_atol_ex(char *str, int sign, int count, t_tool *tool)
 	}
 	if (i != ft_strlen(str))
 		(print_err("exit: ", str, "numeric  argument required"),
-			clear_garbcoll(tool->grbg), exit(255));
+			clear_garbcoll(tool->grbg, 1), exit(255));
 	if (count > 1)
 		return (ft_putstr_fd("minishell: exit: too many arguments\n", 2), 1);
 	return (result * sign);

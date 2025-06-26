@@ -6,7 +6,7 @@
 /*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 14:12:29 by melkess           #+#    #+#             */
-/*   Updated: 2025/06/20 23:31:45 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/25 18:47:35 by melkess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,11 @@ int	unset(t_env **envh, char **args)
 	size_t	i;
 	int		n;
 
-	i = 0;
+	i = 1;
 	n = 0;
 	while (args[i])
 	{
-		if (is_valid_key(args[i]))
+		if (args[i] && *args[i] && is_valid_key(args[i]))
 		{
 			if (sh_env(*envh, args[i]))
 				*envh = delete_var(*envh, args[i]);
