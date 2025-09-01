@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melkess <melkess@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sgmih <sgmih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:49:41 by sgmih             #+#    #+#             */
-/*   Updated: 2025/06/25 21:20:56 by melkess          ###   ########.fr       */
+/*   Updated: 2025/06/26 09:35:44 by sgmih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,10 @@
 # include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-# include <stdbool.h>
 # include <fcntl.h>
 # include <limits.h>
-# include <string.h>
 # include <sys/stat.h>
+# include <sys/wait.h>
 # include <errno.h>
 # include <termios.h> 
 # include <dirent.h>
