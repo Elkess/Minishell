@@ -2,7 +2,7 @@
 
 A minimalist UNIX shell implementation that serves as an introduction to the foundational concepts of command interpreters. While shells may appear simple on the surface, they exhibit precise and well-defined behaviors in nearly every interaction, most of which require careful implementation.
 
-![Minishell Demo](https://via.placeholder.com/800x400.png?text=Minishell+Demo+GIF) *<!-- Replace this with a link to a real GIF/video of your shell in action! -->*
+![Minishell Demo](https://github.com/user-attachments/assets/58d614f4-495b-4819-ae0a-f8d8df573287)
 
 ### About The Project :
 
@@ -57,7 +57,8 @@ The behavior of this minishell is heavily based on the bash shell. For every fea
   - **`unset`** → Removes variables (**no options**).
   - **`env`** → Displays the environment variables (**no options or arguments**).
   - **`exit`** → Terminates the shell (**no options**).
-  > 💡 _Extra:_ You can optionally implement logical operators `&&` and `||` for conditional command execution.
+
+> 💡 _Extra:_ You can optionally implement logical operators `&&` and `||` for conditional command execution.
  
 - must handle the following functions:
   - Display a prompt while waiting for a new command.
@@ -65,5 +66,19 @@ The behavior of this minishell is heavily based on the bash shell. For every fea
   - Find and launch executables via `PATH` or absolute/relative paths.
   - Environment variable expansion (`$VAR`).
   - Handle `$?` for the last command's exit status.
+  - **Single Quotes ('')**: Prevents interpretation of all metacharacters.
+  - **Double Quotes ("")**: Prevents interpretation of metacharacters except `$`.
+  - `<` Redirect input.
+  - `>` Redirect output (overwrite).
+  - `<<` Here Documents (reads input until a delimiter).
+  - `>>` Redirect output (append).
+  - `|` Pipes to connect the output of one command to the input of the next.
+  - `ctrl-C` (SIGINT): Prints a new prompt on a new line.
+  - `ctrl-D` (EOF): Exits the shell.
+  - `ctrl-\` (SIGQUIT): Does nothing.
 
-  
+> 💡 _Extra:_ You can support subshells using parentheses `()` and wildcards `*` for filename expansion.
+
+## Contributors
+- SOUKAINA GMIH
+- MOHAMMED AMINE ELKESS
